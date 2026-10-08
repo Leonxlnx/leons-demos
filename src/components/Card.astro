@@ -1,88 +1,51 @@
 ---
 import Icon from "./Icon.astro";
-import { categoryShort, compact, sizedImage, CATEGORIES, type ViewDemo } from "../lib/demos";
+import { compact, sizedImage, type ViewDemo } from "../lib/demos";
 
 interface Props {
   demo: ViewDemo;
+  eager?: boolean;
 }
-const { demo } = Astro.props;
-const short = categoryShort(demo.category);
-const catLabel = CATEGORIES.find((c) => c.id === demo.category)?.label ?? demo.category;
-const extraMedia = demo.media.length - 1;
-const hue = (Number(demo.id.slice(-6)) % 360) || 200;
+const { demo, eager = false } = Astro.props;
 ---
 
-<article
-  class="card"
-  data-id={demo.id}
-  data-cat={short}
-  data-likes={demo.likes}
-  data-date={demo.created_at}
->
-  <div class="card-media" data-video={demo.video ?? undefined} style={`--hue:${hue}`}>
+<article class="card" data-cat={demo.cat}>
+  <div class="media">
     {
-      demo.thumb ? (
+      demo.poster && (
         <img
-          src={sizedImage(demo.thumb, "small")}
+          src={sizedImage(demo.poster, "small")}
           alt=""
-          loading="lazy"
+          loading={eager ? "eager" : "lazy"}
+          fetchpriority={eager ? "high" : "auto"}
           decoding="async"
           width="680"
           height="425"
         />
-      ) : (
-        <div class="placeholder" aria-hidden="true">
-          <span>{demo.title.split(/[:(]/)[0]}</span>
-        </div>
       )
     }
-    <span class="rank-chip">#{String(demo.rank).padStart(2, "0")}</span>
-    <span class="media-badges">
-      {demo.video && (
-        <span class="badge" title="Video">
-          <Icon name="play" size={11} />
-          Video
-        </span>
-      )}
-      {extraMedia > 0 && (
-        <span class="badge" title={`${demo.media.length} media items`}>
-          <Icon name="images" size={11} />
-          {demo.media.length}
-        </span>
-      )}
-    </span>
+    {demo.video && <video data-src={demo.video} muted loop playsinline preload="none" aria-hidden="true" />}
   </div>
-  <div class="card-body">
-    <div class="card-meta">
-      <span class={`cat cat--${short}`}>{catLabel}</span>
-      <time datetime={demo.created_at}>{demo.dateLabel}</time>
-    </div>
-    <h3 class="card-title">
-      <button type="button" class="card-open" data-open={demo.id}>{demo.title}</button>
-    </h3>
-    <div class="card-foot">
-      <div class="stats">
-        <span class="stat stat--likes" title={`${demo.likes.toLocaleString("en-US")} likes`}>
-          <Icon name="heart" size={13} />{compact(demo.likes)}
-        </span>
-        <span class="stat" title={`${demo.views.toLocaleString("en-US")} views`}>
-          <Icon name="eye" size={13} />{compact(demo.views)}
-        </span>
-      </div>
-      <div class="card-links">
+  <div class="body">
+    <h2 class="title">
+      <a href={demo.post_url} target="_blank" rel="noopener" title={demo.title}>{demo.shortTitle}</a>
+    </h2>
+    <div class="foot">
+      <span class="likes" title={`${demo.likes.toLocaleString("en-US")} likes`}>
+        <Icon name="heart" size={12} />{compact(demo.likes)}
+      </span>
+      <span class="links">
         {
           demo.links_.map((l) => (
-            <a class={`pill pill--${l.kind}`} href={l.url} target="_blank" rel="noopener" title={l.url}>
-              {l.kind === "play" ? <Icon name="play" size={10} /> : l.kind === "repo" ? <Icon name="github" size={12} /> : null}
+            <a class:list={["btn", l.primary && "btn--primary"]} href={l.url} target="_blank" rel="noopener">
               {l.label}
-              {l.kind !== "repo" && l.kind !== "play" && <Icon name="arrow" size={11} />}
             </a>
           ))
         }
-        <a class="pill pill--x" href={demo.post_url} target="_blank" rel="noopener" title="View post on X" aria-label={`View “${demo.title}” on X`}>
+        <a class="btn btn--icon" href={demo.post_url} target="_blank" rel="noopener" aria-label="View on X">
           <Icon name="x" size={12} />
         </a>
-      </div>
+      </span>
     </div>
   </div>
 </article>
