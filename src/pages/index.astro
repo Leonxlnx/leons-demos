@@ -4,7 +4,7 @@ import "../styles/global.css";
 
 import Card from "../components/Card.astro";
 import Icon from "../components/Icon.astro";
-import { DEMOS, FILTERS } from "../lib/demos";
+import { DEMOS, VISIBLE_FILTERS } from "../lib/demos";
 
 const description = "AI-built demos by Leon Lin, ranked by likes.";
 const ogImage = DEMOS[0]?.poster ?? undefined;
@@ -35,9 +35,9 @@ const ogImage = DEMOS[0]?.poster ?? undefined;
 
     <header class="top">
       <h1 class="site-title"><a href="/">Leon's demos</a></h1>
-      <nav class="filters" aria-label="Filter demos">
+      <nav class="filters" aria-label="Filter demos" hidden={VISIBLE_FILTERS.length < 3}>
         {
-          FILTERS.map((f) => (
+          VISIBLE_FILTERS.map((f) => (
             <button type="button" data-filter={f.id} aria-pressed={f.id === "all" ? "true" : "false"}>
               {f.label}
             </button>

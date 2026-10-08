@@ -106,6 +106,9 @@ video {
   border-radius: 999px;
   background: rgba(0, 0, 0, 0.6);
 }
+.filters[hidden] {
+  display: none;
+}
 .filters button {
   padding: 0.35rem 0.85rem;
   border-radius: 999px;

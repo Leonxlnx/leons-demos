@@ -47,9 +47,9 @@ export const FILTERS: { id: string; label: string; category?: Category }[] = [
 
 const catId = (c: Category) => FILTERS.find((f) => f.category === c)?.id ?? "other";
 
-/** Drops trailing parentheticals such as "(GPT 6 Astra)" or "(screenshots)". */
+/** Drops parenthetical notes such as "(GPT 6 Astra)" or "(screenshots)". */
 export function shortTitle(title: string): string {
-  return title.replace(/(\s*\([^()]*\))+\s*$/, "").trim() || title;
+  return title.replace(/\s*\([^()]*\)/g, "").replace(/\s+([,:])/g, "$1").trim() || title;
 }
 
 export function describeLink(url: string, category: Category): DemoLink {
@@ -64,6 +64,7 @@ export function describeLink(url: string, category: Category): DemoLink {
     return { url, label: "Repo", primary: false };
   }
   if (host === "codepen.io") return { url, label: "CodePen", primary: true };
+  if (host === "claude.ai" && u.pathname.startsWith("/artifact")) return { url, label: "Artifact", primary: true };
   return { url, label: category === "Games" ? "Play" : "Live", primary: true };
 }
 
@@ -105,3 +106,6 @@ export const DEMOS: ViewDemo[] = (raw as Demo[])
       video: primary?.video ?? null,
     };
   });
+
+/** Filters with at least one demo; "All" is always first. */
+export const VISIBLE_FILTERS = FILTERS.filter((f) => !f.category || DEMOS.some((d) => d.category === f.category));
