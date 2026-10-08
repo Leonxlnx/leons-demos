@@ -4,9 +4,9 @@
   "category": "Web/Interactive",
   "title": "Verdant forest: 3,808 trees, 2.5M grass clumps, three.js + shaders (GPT 6 Astra)",
   "created_at": "2026-09-05T15:43:51.000Z",
-  "likes": 3969,
+  "likes": 3971,
   "reposts": 277,
-  "views": 1081412,
+  "views": 1081457,
   "post_url": "https://x.com/LexnLin/status/2096263046918197609",
   "text": "gave GPT 6 Astra about 5 hours to create a forest as detailed as possible \n\nit has 3,808 trees, 2.5 million grass clumps and almost 40,000 ferns\n(everything three.js plus some custom shaders)\n\nit is just absolutely insane, just look at the details\n\nhttps://t.co/bvbTgHDNEl https://t.co/mVei8ctS8D",
   "links": [
@@ -14,7 +14,8 @@
    "https://github.com/Leonxlnx/verdant-forest"
   ],
   "related_posts": [
-   "https://x.com/i/status/2099515451881496700"
+   "https://x.com/i/status/2099515451881496700",
+   "https://x.com/i/status/2097212271311134930"
   ],
   "media": [
    {
@@ -31,11 +32,13 @@
   "created_at": "2026-09-25T00:37:06.000Z",
   "likes": 2002,
   "reposts": 131,
-  "views": 687449,
+  "views": 687537,
   "post_url": "https://x.com/LexnLin/status/2103282610948464811",
-  "text": "This is a demo of how far AI has come in game development.\n\nAfter 500+ hours of agent runtime, we built this recreation of Zelda: Ocarina of Time completely from scratch.\n\nEverything you're seeing in this video was made from scratch. No game engine used.\n\nBuilt with GPT 6 Astra, https://t.co/DrVpelBGhY",
+  "text": "This is a demo of how far AI has come in game development.\n\nAfter 500+ hours of agent runtime, we built this recreation of Zelda: Ocarina of Time completely from scratch.\n\nEverything you're seeing in this video was made from scratch. No game engine used.\n\nBuilt with GPT 6 Astra, Fable 5.1 and Opus 5.5.",
   "links": [],
-  "related_posts": [],
+  "related_posts": [
+   "https://x.com/i/status/2103539721649692713"
+  ],
   "media": [
    {
     "type": "video",
@@ -49,9 +52,9 @@
   "category": "Animations/Videos",
   "title": "Claude Opus 5.5 made its own ad (sound on)",
   "created_at": "2026-10-02T19:18:57.000Z",
-  "likes": 1359,
+  "likes": 1363,
   "reposts": 66,
-  "views": 81705,
+  "views": 81834,
   "post_url": "https://x.com/LexnLin/status/2106101651010449796",
   "text": "Claude Opus 5.5 made its own ad. (sound on)\n\n(prompt/strategy below) https://t.co/ZJzkdF44Ok",
   "links": [],
@@ -69,9 +72,9 @@
   "category": "Animations/Videos",
   "title": "Launch video for a fake calendar app, all code incl. soundtrack (Opus 5.5, one prompt)",
   "created_at": "2026-09-27T09:56:46.000Z",
-  "likes": 1334,
+  "likes": 1336,
   "reposts": 40,
-  "views": 96856,
+  "views": 96993,
   "post_url": "https://x.com/LexnLin/status/2104148233106723099",
   "text": "I asked Claude Code (Opus 5.5) to make a launch video for a fake calendar app and HOLY fuck, everything you see AND hear is code\nONE prompt, it cooked for about 8h\nname, logo, UI, animations, soundtrack, sound effects\n\nopensource, repo in replies :) https://t.co/J5Pb3QtFKD",
   "links": [
@@ -93,9 +96,9 @@
   "category": "Animations/Videos",
   "title": "GPT 6 Astra composed a piano melody + 3D pianist whose fingers follow the notes",
   "created_at": "2026-09-05T09:19:20.000Z",
-  "likes": 1113,
+  "likes": 1114,
   "reposts": 83,
-  "views": 275577,
+  "views": 275584,
   "post_url": "https://x.com/LexnLin/status/2096166277849239804",
   "text": "I asked GPT 6 Astra to compose a piano melody and build a 3D pianist to play it\n\nand holy fuck, the fingers do follow the actual notes\n\nPLUS this ONLY took about 2h\n\nhttps://t.co/QKemNiqZeW https://t.co/EyxfOTvblk",
   "links": [
@@ -113,15 +116,23 @@
  {
   "id": "2100842256630534283",
   "category": "Other",
-  "title": "TasteCode launch: open-source desktop app for coding agents with Design Mode (video)",
+  "title": "TasteCode: open-source desktop app for coding agents with a Design Mode/Design Agent",
   "created_at": "2026-09-18T07:00:00.000Z",
-  "likes": 1089,
+  "likes": 1090,
   "reposts": 68,
-  "views": 131665,
+  "views": 131927,
   "post_url": "https://x.com/LexnLin/status/2100842256630534283",
-  "text": "We built TasteSkill to help people create better frontends with AI.\n\nToday we're introducing TasteCode \n\nA desktop app for your coding agents, with a dedicated Design Mode that avoids slop and instead produces good UI\n\nIt is opensource and you can use it with your existing AI https://t.co/HmEKDeKVqf",
-  "links": [],
-  "related_posts": [],
+  "text": "We built TasteSkill to help people create better frontends with AI.\n\nToday we're introducing TasteCode \n\nA desktop app for your coding agents, with a dedicated Design Mode that avoids slop and instead produces good UI\n\nIt is opensource and you can use it with your existing AI subscriptions!",
+  "links": [
+   "https://github.com/Leonxlnx/tastecode"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2101755381265387824",
+   "https://x.com/i/status/2101466512204743148",
+   "https://x.com/i/status/2101430146238484731",
+   "https://x.com/i/status/2088927645354410199",
+   "https://x.com/i/status/2088798087024107733"
+  ],
   "media": [
    {
     "type": "video",
@@ -137,7 +148,7 @@
   "created_at": "2026-09-06T08:38:48.000Z",
   "likes": 980,
   "reposts": 54,
-  "views": 65927,
+  "views": 65930,
   "post_url": "https://x.com/LexnLin/status/2096518467105308782",
   "text": "built a weird experiment with GPT 6 Astra\n\nso there's a person sitting at a computer running a local model, you talk to him, he turns around and listens, then turns back to the PC and uses ai for you\n\nyou can literally build anything now\n\nhttps://t.co/u75cY8DAUw https://t.co/TWdwUCQyDT",
   "links": [
@@ -159,7 +170,7 @@
   "created_at": "2026-09-05T20:57:22.000Z",
   "likes": 890,
   "reposts": 35,
-  "views": 58576,
+  "views": 58581,
   "post_url": "https://x.com/LexnLin/status/2096341945979383932",
   "text": "asked GPT 6 Astra to build an ocean in the browser\n\ntotal time was around 5+ hours of coding\n\nway better than what I got with Fable and Opus\nhttps://t.co/zOfG7ilRpG https://t.co/u0naKH76S6",
   "links": [
@@ -177,15 +188,19 @@
  {
   "id": "2085876281443336319",
   "category": "Animations/Videos",
-  "title": "OpenAI logo animation made in Codex",
+  "title": "OpenAI logo animation made in Codex (improved single-HTML version on CodePen)",
   "created_at": "2026-08-07T23:50:33.000Z",
   "likes": 788,
   "reposts": 10,
   "views": 61252,
   "post_url": "https://x.com/LexnLin/status/2085876281443336319",
   "text": "Little animation for the OpenAI logo, made in Codex https://t.co/rUnMbyok9S",
-  "links": [],
-  "related_posts": [],
+  "links": [
+   "https://codepen.io/editor/LeonLinBuild/pen/019fe1a1-10ea-7cc9-bc50-924fa0c06a5b"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2086094127658123360"
+  ],
   "media": [
    {
     "type": "video",
@@ -205,7 +220,9 @@
   "post_url": "https://x.com/LexnLin/status/2076655443691069927",
   "text": "I'm ngl, it turned out WAY better than I thought. \n\nHere are 3 examples using the UI skill GPT 5.6 Sol made https://t.co/PET8aa8Goz https://t.co/9BppgzXMDA",
   "links": [],
-  "related_posts": [],
+  "related_posts": [
+   "https://x.com/i/status/2077529794011340824"
+  ],
   "media": [
    {
     "type": "video",
@@ -221,13 +238,16 @@
   "created_at": "2026-10-03T21:16:43.000Z",
   "likes": 711,
   "reposts": 39,
-  "views": 73250,
+  "views": 73377,
   "post_url": "https://x.com/LexnLin/status/2106493673425047896",
   "text": "Claude Opus 5.5 built this 3D world.\nKeys 1-5 switch between five rendering styles: Natural, Painterly, Anime, Cartoon, Ultra. \n\nEVERYTHING is generated in code. No asset was used\n https://t.co/HECekpvOUN https://t.co/e5qHJGiEmW",
   "links": [
    "https://claude.ai/artifact/FTUS2WmKKUFaqTKVHE7k4f"
   ],
-  "related_posts": [],
+  "related_posts": [
+   "https://x.com/i/status/2107634511714390397",
+   "https://x.com/i/status/2108014522736775305"
+  ],
   "media": [
    {
     "type": "video",
@@ -243,7 +263,7 @@
   "created_at": "2026-10-01T17:00:27.000Z",
   "likes": 688,
   "reposts": 35,
-  "views": 97034,
+  "views": 97091,
   "post_url": "https://x.com/LexnLin/status/2105704408898003333",
   "text": "Point Lookout, North Stradbroke Island, Queensland, Australia \n\nmade with opus-5.5 and gpt-6 astra https://t.co/HoCmPYiSwI",
   "links": [
@@ -267,7 +287,7 @@
   "created_at": "2026-09-21T20:29:14.000Z",
   "likes": 667,
   "reposts": 16,
-  "views": 69388,
+  "views": 69393,
   "post_url": "https://x.com/LexnLin/status/2102133072585965759",
   "text": "every frame of this is painted with JavaScript\n\nmade with Opus 5 (probably routed to 5.5), \nsounds on :)\n\nhttps://t.co/vmz4CxmIff https://t.co/rfxiy9QjQx",
   "links": [
@@ -292,14 +312,17 @@
   "created_at": "2026-09-23T18:55:55.000Z",
   "likes": 664,
   "reposts": 36,
-  "views": 52283,
+  "views": 52290,
   "post_url": "https://x.com/LexnLin/status/2102834362530079093",
   "text": "Claude Opus 5.5 built a full open world game that runs in your browser\n\nzero assets. terrain, creatures, boss fight, animations, sound, music. all code\n\nit even cut this trailer and made the soundtrack (cover is image generated)\n\nplay it: https://t.co/ISe3ocR9Sf https://t.co/NNTYNjlsHh",
   "links": [
    "https://arkenfall.site"
   ],
   "related_posts": [
-   "https://x.com/i/status/2104926431814008937"
+   "https://x.com/i/status/2104926431814008937",
+   "https://x.com/i/status/2103913144284287135",
+   "https://x.com/i/status/2104925400388501950",
+   "https://x.com/i/status/2103999965341110332"
   ],
   "media": [
    {
@@ -320,7 +343,9 @@
   "post_url": "https://x.com/LexnLin/status/2078160372029071527",
   "text": "Kimi K3 is CRAZY at frontend\n\nused about 3 vague prompts to create this site in Kimi Code https://t.co/bnws69E7Qi",
   "links": [],
-  "related_posts": [],
+  "related_posts": [
+   "https://x.com/i/status/2078173464502980708"
+  ],
   "media": [
    {
     "type": "video",
@@ -334,9 +359,9 @@
   "category": "Web/Interactive",
   "title": "Opus 5.5 detailed 3D world with weird creative builds, one prompt (<8h)",
   "created_at": "2026-09-24T18:45:12.000Z",
-  "likes": 620,
+  "likes": 621,
   "reposts": 40,
-  "views": 29880,
+  "views": 29884,
   "post_url": "https://x.com/LexnLin/status/2103194052850241739",
   "text": "This is insane\n\nOpus 5.5 built THIS detailed 3d world with a lot of weird creative builds in one prompt and in less than 8h!\n\nCheck it out here:\nhttps://t.co/MOY4FpS7dD\n(prompt is below) https://t.co/3Qe3F409Ut",
   "links": [
@@ -355,33 +380,13 @@
   ]
  },
  {
-  "id": "2096982947639468284",
-  "category": "Animations/Videos",
-  "title": "Human doing parkour: GPT 6 Astra (ultra) benchmark result",
-  "created_at": "2026-09-07T15:24:29.000Z",
-  "likes": 600,
-  "reposts": 20,
-  "views": 56940,
-  "post_url": "https://x.com/LexnLin/status/2096982947639468284",
-  "text": "This is probably going to be one of my new benchmarks for testing new models\n\na human doing parkour\n\nThis is GPT 6 Astras (on ultra) result\n\nthe prompt and my thoughts are below! https://t.co/qCZ3LLp8Nf",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2096982002872578048/img/lkdRPA3ijSPktvk9.jpg",
-    "video": "https://video.twimg.com/amplify_video/2096982002872578048/vid/avc1/1280x720/VOhyCSBW1zStR-4C.mp4"
-   }
-  ]
- },
- {
   "id": "2107922902423417199",
   "category": "Animations/Videos",
   "title": "Motion piece recreated with GPT-6 Astra in JS/canvas/WebGL",
   "created_at": "2026-10-07T19:55:57.000Z",
-  "likes": 552,
-  "reposts": 13,
-  "views": 23166,
+  "likes": 602,
+  "reposts": 16,
+  "views": 25389,
   "post_url": "https://x.com/LexnLin/status/2107922902423417199",
   "text": "holy shit, recreated this with GPT-6 Astra\n\nusing javascript, canvas and webgl. \ntook about 1.5 weekly limits and 20hours of work\n\nnot a 100% perfect clone. \nmire comparisons + details are below https://t.co/lAbKaxSSoj https://t.co/76vDNeqn36",
   "links": [
@@ -399,13 +404,33 @@
   ]
  },
  {
+  "id": "2096982947639468284",
+  "category": "Animations/Videos",
+  "title": "Human doing parkour: GPT 6 Astra (ultra) benchmark result",
+  "created_at": "2026-09-07T15:24:29.000Z",
+  "likes": 600,
+  "reposts": 20,
+  "views": 56943,
+  "post_url": "https://x.com/LexnLin/status/2096982947639468284",
+  "text": "This is probably going to be one of my new benchmarks for testing new models\n\na human doing parkour\n\nThis is GPT 6 Astras (on ultra) result\n\nthe prompt and my thoughts are below! https://t.co/qCZ3LLp8Nf",
+  "links": [],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2096982002872578048/img/lkdRPA3ijSPktvk9.jpg",
+    "video": "https://video.twimg.com/amplify_video/2096982002872578048/vid/avc1/1280x720/VOhyCSBW1zStR-4C.mp4"
+   }
+  ]
+ },
+ {
   "id": "2106463734336307362",
   "category": "Web/Interactive",
   "title": "Own 3D benchmark run with GPT 6 Astra in Codex (Brackenmere valley)",
   "created_at": "2026-10-03T19:17:45.000Z",
   "likes": 494,
   "reposts": 19,
-  "views": 44568,
+  "views": 44590,
   "post_url": "https://x.com/LexnLin/status/2106463734336307362",
   "text": "what the fuck guys, I'm just running my own 3d benchmark with Astra rn, WHAT THE FUCK is codex doing\n\nhttps://t.co/d0vvEZcxGn https://t.co/iNbKvZLE30",
   "links": [
@@ -458,9 +483,9 @@
   "category": "Animations/Videos",
   "title": "Cinetic: skill that makes coding agents direct launch videos (demo film)",
   "created_at": "2026-10-04T23:36:48.000Z",
-  "likes": 428,
+  "likes": 430,
   "reposts": 14,
-  "views": 17680,
+  "views": 17730,
   "post_url": "https://x.com/LexnLin/status/2106891315371737480",
   "text": "Today I'm releasing a new skill\n\nOne that makes your coding agent direct a GOOD launch video/short film.\n\nThis video below was made with it in a quick short prompt!\n\nnpx skills add Leonxlnx/cinetic\nhttps://t.co/LiMwNhnJ8Y",
   "links": [
@@ -482,7 +507,7 @@
   "created_at": "2026-09-04T17:04:33.000Z",
   "likes": 391,
   "reposts": 8,
-  "views": 21412,
+  "views": 21413,
   "post_url": "https://x.com/LexnLin/status/2095920966899728661",
   "text": "Frontend with GPT Astra will go insane because image to code is already really good with sol and is probably going to be a lot crazier with astra\n\nI mean look at this, with a few reference images (generated using images 2.0), gpt sol made a pretty nice website in one shot: https://t.co/pbGmicT7j9",
   "links": [],
@@ -507,74 +532,22 @@
   ]
  },
  {
-  "id": "2081501975456129255",
-  "category": "Other",
-  "title": "Brand kits generated with GPT Images 2.0 (TasteSkill)",
-  "created_at": "2026-07-26T22:08:38.000Z",
-  "likes": 347,
-  "reposts": 5,
-  "views": 18204,
-  "post_url": "https://x.com/LexnLin/status/2081501975456129255",
-  "text": "Tried generating brandkits with GPT Images 2.0\n\na result for tasteskill :)\n\nthe prompt template was: \n(tell chatgpt to fill in the keywords)\n\nCreate a square high-end brand identity showcase board for a fictional brand called [BRAND NAME].  \nThe brand should feel [BRAND TRAITS / https://t.co/brlSmy679q",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HOL6NteWMAARuZX.jpg"
-   }
-  ]
- },
- {
-  "id": "2077529794011340824",
-  "category": "Web/Interactive",
-  "title": "GPT 5.6 UI one-shots (4 videos)",
-  "created_at": "2026-07-15T23:04:36.000Z",
-  "likes": 317,
-  "reposts": 17,
-  "views": 14359,
-  "post_url": "https://x.com/LexnLin/status/2077529794011340824",
-  "text": "It's SOO nice that GPT 5.6 is great at UI oneshots :)\n\nfinally the gpt model we've been waiting for. https://t.co/SNNUsJPwPX",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2077529543179472896/img/ic3fV52YfjHd1W8u.jpg",
-    "video": "https://video.twimg.com/amplify_video/2077529543179472896/vid/avc1/1920x1240/8jwAROHMHROFHjPw.mp4"
-   },
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2077529548753620992/img/Kv1YmUFXAUEB7F6S.jpg",
-    "video": "https://video.twimg.com/amplify_video/2077529548753620992/vid/avc1/1920x1128/0plmdWguemGCZRdM.mp4"
-   },
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2077529552973168640/img/QhuTh4uQV_M8INUo.jpg",
-    "video": "https://video.twimg.com/amplify_video/2077529552973168640/vid/avc1/1920x1128/51cQPe1viTMshNga.mp4"
-   },
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2077529557641383936/img/saYecJOaoSicaNCB.jpg",
-    "video": "https://video.twimg.com/amplify_video/2077529557641383936/vid/avc1/1920x1128/tSn9R2ZH4NnhePv0.mp4"
-   }
-  ]
- },
- {
   "id": "2078663601963847935",
   "category": "Other",
   "title": "Kimi Code Desktop: unofficial open-source Windows app for Kimi Code CLI",
   "created_at": "2026-07-19T02:09:57.000Z",
   "likes": 294,
   "reposts": 17,
-  "views": 20545,
+  "views": 20546,
   "post_url": "https://x.com/LexnLin/status/2078663601963847935",
   "text": "Introducing Kimi Code Desktop\n\nan unofficial open source Windows app for Kimi Code CLI :)\n\nuse your own account + quota with projects, chats, git, terminal, previews, skills, MCPs and subagents in one place.\n\nhttps://t.co/LXBKndpnDE https://t.co/EdLyZwGDhh",
   "links": [
    "https://github.com/Leonxlnx/kimi-code-desktop"
   ],
   "related_posts": [
-   "https://x.com/i/status/2078663619466703102"
+   "https://x.com/i/status/2078663619466703102",
+   "https://x.com/i/status/2078473909029015685",
+   "https://x.com/i/status/2078218724318802081"
   ],
   "media": [
    {
@@ -586,15 +559,22 @@
  {
   "id": "2086540718235910272",
   "category": "Web/Interactive",
-  "title": "Tree in three.js made with Opus 5",
+  "title": "Sakura Realm: three.js sakura tree with weather + day/night cycle (Opus 5)",
   "created_at": "2026-08-09T19:50:47.000Z",
   "likes": 286,
   "reposts": 18,
   "views": 21535,
   "post_url": "https://x.com/LexnLin/status/2086540718235910272",
   "text": "I made a tree in threejs with Opus 5 https://t.co/AeYd687TQ4",
-  "links": [],
-  "related_posts": [],
+  "links": [
+   "https://sakura-realm.vercel.app/",
+   "https://github.com/Leonxlnx/sakura-realm"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2086789460373434777",
+   "https://x.com/i/status/2086594453192458552",
+   "https://x.com/i/status/2086402245201986027"
+  ],
   "media": [
    {
     "type": "video",
@@ -610,7 +590,7 @@
   "created_at": "2026-09-10T12:22:23.000Z",
   "likes": 269,
   "reposts": 3,
-  "views": 13998,
+  "views": 14000,
   "post_url": "https://x.com/LexnLin/status/2098024285512343979",
   "text": "GPT 6 Astra \n\nA beach made using threejs\n\nIt has a pretty dense forest, sand, water, waves, day night cycle and more! https://t.co/xoNz8qz6v4",
   "links": [],
@@ -663,11 +643,14 @@
   "created_at": "2026-09-13T11:55:50.000Z",
   "likes": 262,
   "reposts": 9,
-  "views": 18086,
+  "views": 18087,
   "post_url": "https://x.com/LexnLin/status/2099104768584974721",
   "text": "I let Claude Opus 5 and Fable 5.1 work on a small realistic-looking browser-based Three.js world for a few days.\n\nSo far it took about 5 major iteration prompts, plus a lot of \"continue\" prompts.\n\nThis is where it's at right now: https://t.co/VDHKJyG6Rl",
   "links": [],
-  "related_posts": [],
+  "related_posts": [
+   "https://x.com/i/status/2093982122197627217",
+   "https://x.com/i/status/2095183475037155667"
+  ],
   "media": [
    {
     "type": "photo",
@@ -698,7 +681,9 @@
   "post_url": "https://x.com/LexnLin/status/2081345526272803093",
   "text": "I told Opus 5 to add liquid glass to my android mobile app. \n\nThis shit looks soo clean https://t.co/uCWX6k1bz9",
   "links": [],
-  "related_posts": [],
+  "related_posts": [
+   "https://x.com/i/status/2082206250150813704"
+  ],
   "media": [
    {
     "type": "video",
@@ -712,9 +697,9 @@
   "category": "Games",
   "title": "Claude Haiku 5.5 one-hour build: 3D adventure game (clip)",
   "created_at": "2026-10-07T20:52:11.000Z",
-  "likes": 246,
+  "likes": 256,
   "reposts": 4,
-  "views": 18336,
+  "views": 20131,
   "post_url": "https://x.com/LexnLin/status/2107937053321077147",
   "text": "Wow. This is impressive as hell for Haiku 5.5 with one hour (!!) of work\ntook 1% of my 5h limit btw https://t.co/iVh4xSL7zT",
   "links": [],
@@ -783,7 +768,7 @@
  {
   "id": "2081438372447350957",
   "category": "Games",
-  "title": "FPS game from a reverse-engineered prompt (Opus 5 high in Cursor)",
+  "title": "Claude of Duty: FPS game from a reverse-engineered prompt (Opus 5 high in Cursor), later improved via Gauntlet Loop",
   "created_at": "2026-07-26T17:55:53.000Z",
   "likes": 220,
   "reposts": 4,
@@ -796,7 +781,8 @@
    "https://github.com/Leonxlnx/claude-of-duty/blob/main/PROMPT.md"
   ],
   "related_posts": [
-   "https://x.com/i/status/2081438375005892900"
+   "https://x.com/i/status/2081438375005892900",
+   "https://x.com/i/status/2086246290094964930"
   ],
   "media": [
    {
@@ -811,9 +797,9 @@
   "category": "Games",
   "title": "\"Clawd vs Codey\", a game made by Opus 5.5",
   "created_at": "2026-10-06T16:06:07.000Z",
-  "likes": 219,
+  "likes": 220,
   "reposts": 14,
-  "views": 14840,
+  "views": 14938,
   "post_url": "https://x.com/LexnLin/status/2107502672907506162",
   "text": "Clawd vs Codey\n\na game made by opus 5.5\nhttps://t.co/ht8e3aw13m https://t.co/Mu89KHzqjD",
   "links": [
@@ -832,36 +818,13 @@
   ]
  },
  {
-  "id": "2095034525516730836",
-  "category": "Other",
-  "title": "SVG of a PS5 controller by Gemini 3.8 Flash (with/without reference)",
-  "created_at": "2026-09-02T06:22:09.000Z",
-  "likes": 191,
-  "reposts": 2,
-  "views": 12888,
-  "post_url": "https://x.com/LexnLin/status/2095034525516730836",
-  "text": "SVG of a PS5 controller from Gemini 3.8 Flash\n\nfirst one is with reference image second one without https://t.co/glPg0kj3Lx",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HRMOx0CakAAynXe.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HRMOytJbsAEQ9qe.jpg"
-   }
-  ]
- },
- {
   "id": "2106791975320273260",
   "category": "Other",
   "title": "Claude Code mod for pacing Claude usage (image)",
   "created_at": "2026-10-04T17:02:03.000Z",
   "likes": 189,
   "reposts": 1,
-  "views": 7665,
+  "views": 7673,
   "post_url": "https://x.com/LexnLin/status/2106791975320273260",
   "text": "I built the perfect mod for pacing your Claude usage https://t.co/82n7QhzBba https://t.co/rOwfABfWxP",
   "links": [],
@@ -874,13 +837,35 @@
   ]
  },
  {
+  "id": "2108159248148611292",
+  "category": "Web/Interactive",
+  "title": "Tiny world in a glass box: squeeze clouds for rain, shake for lightning, wind brush, day/night + seasons (Opus 5.5)",
+  "created_at": "2026-10-08T11:35:07.000Z",
+  "likes": 185,
+  "reposts": 9,
+  "views": 5693,
+  "post_url": "https://x.com/LexnLin/status/2108159248148611292",
+  "text": "Opus 5.5 built a tiny world in a glass box \n\nyou can: grab a cloud &gt; squeeze rain out of it\nshake it &gt; lightning\n\"draw\" wind using the wind brush \nand theres a day night cycle + seasons as well\n\nhttps://t.co/WfErAwMlYW https://t.co/BwFQKvbCQ0",
+  "links": [
+   "https://claude.ai/artifact/3bhygX763cPdpcHQYmfrPk"
+  ],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2108158525599789057/img/mLu5-p3OakL1Rzwa.jpg",
+    "video": "https://video.twimg.com/amplify_video/2108158525599789057/vid/avc1/1920x1080/dZl7Jn9EvR2Nzc9K.mp4"
+   }
+  ]
+ },
+ {
   "id": "2106843514772639995",
   "category": "Web/Interactive",
   "title": "Opus 5.5 frontend piece (Claude artifact)",
   "created_at": "2026-10-04T20:26:51.000Z",
   "likes": 183,
   "reposts": 5,
-  "views": 9461,
+  "views": 9473,
   "post_url": "https://x.com/LexnLin/status/2106843514772639995",
   "text": "Opus 5.5 is pretty insane for frontend. It created this:\nhttps://t.co/07TBLnCEVQ\n(watch till the end to get what i mean lol)\n\nprompt/s I used are below https://t.co/kZXKMXOjxY",
   "links": [
@@ -952,9 +937,9 @@
   "category": "Web/Interactive",
   "title": "Claude Haiku 5.5 Ultracode (1h30): \"a website about yourself\"",
   "created_at": "2026-10-07T21:16:30.000Z",
-  "likes": 165,
+  "likes": 172,
   "reposts": 4,
-  "views": 15540,
+  "views": 17092,
   "post_url": "https://x.com/LexnLin/status/2107943170931613923",
   "text": "Claude Haiku 5.5 Ultracode (1h 30min time) on \"a website about yourself\" https://t.co/eFQSn76eXI",
   "links": [],
@@ -968,35 +953,15 @@
   ]
  },
  {
-  "id": "2079856664103027100",
-  "category": "Other",
-  "title": "Kimi K3 turned it into a mobile Android app, one-shot",
-  "created_at": "2026-07-22T09:10:45.000Z",
-  "likes": 160,
-  "reposts": 6,
-  "views": 20496,
-  "post_url": "https://x.com/LexnLin/status/2079856664103027100",
-  "text": "oneshot and it made a mobile android app out of it\n\nKimi K3 is amazing https://t.co/wAL1siDmrI https://t.co/fSHAi9BPAY",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2079856497907974144/img/qbv-XaiNXX65Dtz9.jpg",
-    "video": "https://video.twimg.com/amplify_video/2079856497907974144/vid/avc1/2712x1220/1Ru50EHiD5iQ3vvk.mp4"
-   }
-  ]
- },
- {
   "id": "2103153535252582792",
   "category": "Web/Interactive",
   "title": "Museum with broken physics: sideways gravity, upward water, reversed time (Opus 5.5)",
   "created_at": "2026-09-24T16:04:12.000Z",
   "likes": 156,
   "reposts": 9,
-  "views": 5870,
+  "views": 5872,
   "post_url": "https://x.com/LexnLin/status/2103153535252582792",
-  "text": "Claude Opus 5.5 is REALLY creative.\n\nasked it to build a museum where the laws of physics are broken and it created rooms with sideways gravity, water flowing upward, time running backward, slow light, and more\n\nzero assets were used. everything was generated in code. https://t.co/6ZouSHfgwf",
+  "text": "Claude Opus 5.5 is REALLY creative.\n\nasked it to build a museum where the laws of physics are broken and it created rooms with sideways gravity, water flowing upward, time running backward, slow light, and more\n\nzero assets were used. everything was generated in code.\nhttps://t.co/TBGfZYIq1c",
   "links": [
    "https://wrongphysics.vercel.app/"
   ],
@@ -1006,125 +971,6 @@
     "type": "video",
     "image": "https://pbs.twimg.com/amplify_video_thumb/2103153010104758272/img/1aNzxDMZ1h4wuR56.jpg",
     "video": "https://video.twimg.com/amplify_video/2103153010104758272/vid/avc1/1920x1080/OOxg8dsUc3bf_Tjo.mp4"
-   }
-  ]
- },
- {
-  "id": "2101755381265387824",
-  "category": "Other",
-  "title": "TasteCode Design Agent outputs (screenshots) + repo",
-  "created_at": "2026-09-20T19:28:26.000Z",
-  "likes": 156,
-  "reposts": 7,
-  "views": 11178,
-  "post_url": "https://x.com/LexnLin/status/2101755381265387824",
-  "text": "To all TasteSkill users! \n\nGive TasteCode Design Agent a shot, it should be better than most of the skills in this area!\n\nhttps://t.co/QNAat0Nmtt https://t.co/5meMcQgNe8 https://t.co/TNl4ad5TJG",
-  "links": [
-   "https://github.com/Leonxlnx/tastecode"
-  ],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HSrvRi8XIAAaM3H.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HSrvRisWgAAxKa5.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HSrvRi8WUAAUzyh.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HSrvRjGWMAAlafF.jpg"
-   }
-  ]
- },
- {
-  "id": "2097212271311134930",
-  "category": "Web/Interactive",
-  "title": "Forest coded by GPT 6 Astra Pro in 1.5h, free camera",
-  "created_at": "2026-09-08T06:35:44.000Z",
-  "likes": 155,
-  "reposts": 10,
-  "views": 6717,
-  "post_url": "https://x.com/LexnLin/status/2097212271311134930",
-  "text": "wow, i think we aren't using GPT 6 Astra Pro enough\n\nit spent ONLY 1.5h coding this forest\n\nhundreds of trees, dense grass, ferns, moss, roots, fallen branches, mushrooms, etc etc + a free camera\n\nand it recorded this video as well! https://t.co/n8i08DNidU",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2097211887347740672/img/miUmfcD7btoyiBSc.jpg",
-    "video": "https://video.twimg.com/amplify_video/2097211887347740672/vid/avc1/1920x1080/X-xAhb2q9X4Hmm57.mp4"
-   }
-  ]
- },
- {
-  "id": "2088927645354410199",
-  "category": "Web/Interactive",
-  "title": "Page made with the Design Agent (image)",
-  "created_at": "2026-08-16T09:55:35.000Z",
-  "likes": 148,
-  "reposts": 2,
-  "views": 5123,
-  "post_url": "https://x.com/LexnLin/status/2088927645354410199",
-  "text": "made with design agent https://t.co/x8MJtPJVMn",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HP1cnuRWUAA0Jxb.jpg"
-   }
-  ]
- },
- {
-  "id": "2083636204965085386",
-  "category": "Animations/Videos",
-  "title": "Codex-made ad for the Codex Micro (image gen + editing)",
-  "created_at": "2026-08-01T19:29:18.000Z",
-  "likes": 145,
-  "reposts": 0,
-  "views": 18875,
-  "post_url": "https://x.com/LexnLin/status/2083636204965085386",
-  "text": "\"Codex make me an ad for the Codex Micro using a lot of Image Gen + modern editing. 25-30s long video\"\n\nResult: https://t.co/Le3MeD7nmi",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2083636020650635264/img/1YGlELARaRfIPJKI.jpg",
-    "video": "https://video.twimg.com/amplify_video/2083636020650635264/vid/avc1/1080x1350/dbidKFZtyRjgqKKm.mp4"
-   }
-  ]
- },
- {
-  "id": "2087589653821948238",
-  "category": "Web/Interactive",
-  "title": "\"Sakura tree in threejs\": DeepSeek v4 pro vs GPT 5.6 Sol vs Opus 5",
-  "created_at": "2026-08-12T17:18:53.000Z",
-  "likes": 142,
-  "reposts": 2,
-  "views": 12711,
-  "post_url": "https://x.com/LexnLin/status/2087589653821948238",
-  "text": "Deepseek-v4-pro-0813 compared to GPT 5.6 Sol high (top right/second image) and Opus 5 high (bottom right/third image)\n\n\"Sakura tree in threejs\" https://t.co/lfaczcHevO",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HPibZDbWoAAAvnw.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HPibbSQWcAAeWIQ.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HPibcr2XwAAohJl.png"
    }
   ]
  },
@@ -1155,7 +1001,7 @@
   "created_at": "2026-07-19T11:43:59.000Z",
   "likes": 129,
   "reposts": 1,
-  "views": 10787,
+  "views": 10788,
   "post_url": "https://x.com/LexnLin/status/2078808062769479860",
   "text": "Damnn Fable + Kimi K3 cooked up a really nice productivity app https://t.co/r3uy2BwkcL",
   "links": [],
@@ -1175,7 +1021,7 @@
   "created_at": "2026-09-07T03:15:45.000Z",
   "likes": 128,
   "reposts": 11,
-  "views": 9866,
+  "views": 9869,
   "post_url": "https://x.com/LexnLin/status/2096799556478357923",
   "text": "asked GPT 6 Astra to build a knight vs mage battle in threejs\n\ntook a bit more than 2h \n\nimo Astra is pretty good at some creative tasks. i mean look it developed all these different attacks by itself \n\nhttps://t.co/lF5OHdF6Ak https://t.co/kyhoWkXA2p",
   "links": [
@@ -1191,77 +1037,13 @@
   ]
  },
  {
-  "id": "2091588118734323944",
-  "category": "Web/Interactive",
-  "title": "Three.js output approaching image-gen quality (screenshots)",
-  "created_at": "2026-08-23T18:07:21.000Z",
-  "likes": 128,
-  "reposts": 1,
-  "views": 4312,
-  "post_url": "https://x.com/LexnLin/status/2091588118734323944",
-  "text": "Three.js output is getting closer and closer to actual image generation quality as models improve.\n\nreally insane how fast this is moving https://t.co/aumeOYQ5Bl",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HQbQTFCXsAAcXoW.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HQbQTh4XgAALB5i.jpg"
-   }
-  ]
- },
- {
-  "id": "2086094127658123360",
-  "category": "Animations/Videos",
-  "title": "Improved OpenAI logo animation, single HTML file",
-  "created_at": "2026-08-08T14:16:12.000Z",
-  "likes": 127,
-  "reposts": 4,
-  "views": 18950,
-  "post_url": "https://x.com/LexnLin/status/2086094127658123360",
-  "text": "Made a newer version of the OpenAI logo animation which should look a bit better :)\n\nIt's all in one html file, check it out here!\nhttps://t.co/pBFGDbf24e https://t.co/93V0yutIC4 https://t.co/e8f2MiHb5L",
-  "links": [
-   "https://codepen.io/editor/LeonLinBuild/pen/019fe1a1-10ea-7cc9-bc50-924fa0c06a5b"
-  ],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2086093872791175169/img/M6Xt1M3X8d8RNTpg.jpg",
-    "video": "https://video.twimg.com/amplify_video/2086093872791175169/vid/avc1/1728x1080/msT3od1Z29EB7iBN.mp4"
-   }
-  ]
- },
- {
-  "id": "2095183475037155667",
-  "category": "Web/Interactive",
-  "title": "Three.js-only browser scene, no assets (teaser screenshot)",
-  "created_at": "2026-09-02T16:14:01.000Z",
-  "likes": 120,
-  "reposts": 0,
-  "views": 6030,
-  "post_url": "https://x.com/LexnLin/status/2095183475037155667",
-  "text": "omg I feel like I'm building something REALLY crazy\n\nEverything here is threejs in the browser\n\nusing only text prompts no given assets, no blender or other tools used\n\nwill share more soon! https://t.co/YAW71yfRHP",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HROWQLbasAAKm4-.jpg"
-   }
-  ]
- },
- {
   "id": "2103069626473341273",
   "category": "Other",
   "title": "Claude Opus 5.5 draws the Mona Lisa in Van Gogh style",
   "created_at": "2026-09-24T10:30:46.000Z",
   "likes": 119,
   "reposts": 3,
-  "views": 9453,
+  "views": 9455,
   "post_url": "https://x.com/LexnLin/status/2103069626473341273",
   "text": "I asked Claude Opus 5.5 to draw the Mona Lisa in Van Gogh style. https://t.co/lYsGfY5dh9",
   "links": [],
@@ -1285,7 +1067,7 @@
   "created_at": "2026-09-26T08:55:02.000Z",
   "likes": 117,
   "reposts": 0,
-  "views": 5823,
+  "views": 5826,
   "post_url": "https://x.com/LexnLin/status/2103770311145431430",
   "text": "wow, Opus 5.5 (high) made this insane animation in less than 4h\n\nmodels are getting insane these days https://t.co/T8Q2wOet2x",
   "links": [],
@@ -1309,35 +1091,20 @@
   "post_url": "https://x.com/LexnLin/status/2080080211178115074",
   "text": "Holy, Kimi K3 oneshotted this\n\n3D scroll based website \nprompt is in the link below (no this is not bait) https://t.co/M5dLpEEkl9",
   "links": [
-   "https://leonsbenchmark.vercel.app/"
+   "https://leonsbenchmark.vercel.app/",
+   "https://serica-estates-threejs.vercel.app/"
   ],
   "related_posts": [
-   "https://x.com/i/status/2080080212717347282"
+   "https://x.com/i/status/2080080212717347282",
+   "https://x.com/i/status/2080321818825523540",
+   "https://x.com/i/status/2080321822097113595",
+   "https://x.com/i/status/2080955544605434149"
   ],
   "media": [
    {
     "type": "video",
     "image": "https://pbs.twimg.com/amplify_video_thumb/2080070969373110272/img/jOY0JAfBIiPG1VCB.jpg",
     "video": "https://video.twimg.com/amplify_video/2080070969373110272/vid/avc1/1920x1080/sAjGqrls-k0QW3k3.mp4"
-   }
-  ]
- },
- {
-  "id": "2078979357721145702",
-  "category": "Games",
-  "title": "3D game made with 2 prompts on Fable 5 high (screenshot)",
-  "created_at": "2026-07-19T23:04:39.000Z",
-  "likes": 114,
-  "reposts": 1,
-  "views": 24449,
-  "post_url": "https://x.com/LexnLin/status/2078979357721145702",
-  "text": "omg I literally just made a 3d game and used 2 prompts:\nfirst ate 25% weekly (about 1,5h runtime)\n\nsecond ate 75% weekly (about 2h runtime) and it didn't finish 😭\n\nboth using fable 5 high\n\nNow I paid $10 for on-demand usage and told it to create a handoff.md really quickly. it https://t.co/rHXVKo1HJN",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HNoEL3FWsAAuZ9A.png"
    }
   ]
  },
@@ -1375,32 +1142,13 @@
   ]
  },
  {
-  "id": "2088798087024107733",
-  "category": "Web/Interactive",
-  "title": "Design Agent preview: \"Sable Office\" site (image)",
-  "created_at": "2026-08-16T01:20:46.000Z",
-  "likes": 113,
-  "reposts": 1,
-  "views": 4749,
-  "post_url": "https://x.com/LexnLin/status/2088798087024107733",
-  "text": "skills are pretty weird, sometimes they give you shit results and then you change one little thing and BAM\n\nlittle preview of design agent ;) https://t.co/6nFKxg9VF9",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HPzmuR0XsAAtn9x.jpg"
-   }
-  ]
- },
- {
   "id": "2107211922320044279",
   "category": "Games",
   "title": "Little 3D Clawd RPG: fight bugs and model bosses, collect friends",
   "created_at": "2026-10-05T20:50:47.000Z",
-  "likes": 110,
+  "likes": 111,
   "reposts": 6,
-  "views": 8269,
+  "views": 8293,
   "post_url": "https://x.com/LexnLin/status/2107211922320044279",
   "text": "I made a little 3d game for clawd! \n\nYou fight as clawd against bugs and other models as bosses and collect your friends (haiku, sonnet, fable) on the way!\n\nhave fun playing :))\nhttps://t.co/WGqB8xP7Zv https://t.co/B0IlWidcCX",
   "links": [
@@ -1412,45 +1160,6 @@
     "type": "video",
     "image": "https://pbs.twimg.com/amplify_video_thumb/2107210983559008256/img/L5H3Ks-fZ6_oM-2S.jpg",
     "video": "https://video.twimg.com/amplify_video/2107210983559008256/vid/avc1/1680x1020/wsyUO0Fsyh1wuQVg.mp4"
-   }
-  ]
- },
- {
-  "id": "2103539721649692713",
-  "category": "Games",
-  "title": "Zelda: Ocarina of Time recreation, follow-up clip + clarifications",
-  "created_at": "2026-09-25T17:38:46.000Z",
-  "likes": 109,
-  "reposts": 4,
-  "views": 9887,
-  "post_url": "https://x.com/LexnLin/status/2103539721649692713",
-  "text": "okay a few clarifications because there seems to be a lot of confusion in the replies:\n\n1. This is just a small area from Zelda: Ocarina of Time. We gave the agents basically unlimited time and told them to recreate as much of it as possible.\n2. This is a DEMO showing what AI https://t.co/VTSjO6ahnr https://t.co/kuQWyBkA9H",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2103538924417081344/img/5FXpeQzOkGNQIOJM.jpg",
-    "video": "https://video.twimg.com/amplify_video/2103538924417081344/vid/avc1/1920x1080/qyZvZkp-xsNLytTl.mp4"
-   }
-  ]
- },
- {
-  "id": "2078473909029015685",
-  "category": "Other",
-  "title": "Kimi Code Desktop progress: \"We are getting somewhere\" (screenshot)",
-  "created_at": "2026-07-18T13:36:10.000Z",
-  "likes": 107,
-  "reposts": 0,
-  "views": 8801,
-  "post_url": "https://x.com/LexnLin/status/2078473909029015685",
-  "text": "We are getting somewhere :) https://t.co/dzxhqFZ31d https://t.co/Sqe9wzZv5A",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HNg4_F9WkAAvCwo.jpg"
    }
   ]
  },
@@ -1483,7 +1192,7 @@
   "created_at": "2026-10-05T20:33:57.000Z",
   "likes": 103,
   "reposts": 2,
-  "views": 3918,
+  "views": 3938,
   "post_url": "https://x.com/LexnLin/status/2107207686110531765",
   "text": "claude opus 5.5 built this whole 3d mansion\n\nenjoy watching https://t.co/QU5LPcrB68",
   "links": [
@@ -1514,75 +1223,14 @@
    "https://singularity-lab-omega.vercel.app/"
   ],
   "related_posts": [
-   "https://x.com/i/status/2093534580473229443"
+   "https://x.com/i/status/2093534580473229443",
+   "https://x.com/i/status/2091588118734323944"
   ],
   "media": [
    {
     "type": "video",
     "image": "https://pbs.twimg.com/amplify_video_thumb/2093534525318119424/img/6MMiu_A7umfUxz9-.jpg",
     "video": "https://video.twimg.com/amplify_video/2093534525318119424/vid/avc1/1280x720/FPMvEIKRB6s_SEzN.mp4"
-   }
-  ]
- },
- {
-  "id": "2080402291815833630",
-  "category": "Games",
-  "title": "Kimi K3, 2 prompts / ~9-10h: 3D driving scene (screenshots)",
-  "created_at": "2026-07-23T21:18:53.000Z",
-  "likes": 100,
-  "reposts": 1,
-  "views": 5632,
-  "post_url": "https://x.com/LexnLin/status/2080402291815833630",
-  "text": "2 prompts with Kimi K3\n\nworked for about 9-10h total https://t.co/HVqq2qXsHu",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HN8SgENXQAAPTky.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HN8Sj2HX0AAh_34.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HN8Sj2TWUAA_IGD.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HN8Sj2gXkAEuICU.jpg"
-   }
-  ]
- },
- {
-  "id": "2107634511714390397",
-  "category": "Web/Interactive",
-  "title": "GPT 6 Astra 3D scene in different styles (screenshots)",
-  "created_at": "2026-10-07T00:50:00.000Z",
-  "likes": 100,
-  "reposts": 0,
-  "views": 6618,
-  "post_url": "https://x.com/LexnLin/status/2107634511714390397",
-  "text": "GPT 6 Astra can cook pretty good in different styles in 3d! https://t.co/oPkdViQihy",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HT0wCafXsAAJOXa.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HT0wNHAWYAEsi6Y.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HT0xdb9WEAAKCGn.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HT0xinMW4AEzRt8.jpg"
    }
   ]
  },
@@ -1606,154 +1254,13 @@
   ]
  },
  {
-  "id": "2086402245201986027",
-  "category": "Web/Interactive",
-  "title": "Opus 5 three.js sakura render (image)",
-  "created_at": "2026-08-09T10:40:33.000Z",
-  "likes": 94,
-  "reposts": 2,
-  "views": 3535,
-  "post_url": "https://x.com/LexnLin/status/2086402245201986027",
-  "text": "although opus 5 is overall not a good model, it has one thing where it just mogs every other model: threejs https://t.co/QlB1mQSZuM",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HPRjmFDW4AABOEQ.jpg"
-   }
-  ]
- },
- {
-  "id": "2078173464502980708",
-  "category": "Web/Interactive",
-  "title": "Site built inside his Kimi Code Desktop app (image)",
-  "created_at": "2026-07-17T17:42:19.000Z",
-  "likes": 91,
-  "reposts": 0,
-  "views": 7420,
-  "post_url": "https://x.com/LexnLin/status/2078173464502980708",
-  "text": "btw I build this site in the Kimi Code Desktop App I'm building rn haha https://t.co/rzJEnK9oo0 https://t.co/BgIp5AW6bm",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HNcnqduWEAAgdA4.png"
-   }
-  ]
- },
- {
-  "id": "2082206250150813704",
-  "category": "Other",
-  "title": "Android app with improved liquid glass (Kimi K3)",
-  "created_at": "2026-07-28T20:47:10.000Z",
-  "likes": 88,
-  "reposts": 1,
-  "views": 8969,
-  "post_url": "https://x.com/LexnLin/status/2082206250150813704",
-  "text": "Here is an updated version with a better liquid glass. This time using Kimi K3! https://t.co/8bOxEPFZ4u https://t.co/8MFTyMXCl5",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2082206214205657088/img/hVm4jYvKJicUOgU3.jpg",
-    "video": "https://video.twimg.com/amplify_video/2082206214205657088/vid/avc1/1220x2712/RUiUn1PA5keVPkX2.mp4"
-   }
-  ]
- },
- {
-  "id": "2086594453192458552",
-  "category": "Web/Interactive",
-  "title": "Sakura tree scene: weather + day/night cycle (Opus 5)",
-  "created_at": "2026-08-09T23:24:19.000Z",
-  "likes": 83,
-  "reposts": 5,
-  "views": 11552,
-  "post_url": "https://x.com/LexnLin/status/2086594453192458552",
-  "text": "Also has weather / day-night cycle!\n\nHere are a few more images of the tree, everything made with Opus 5 https://t.co/4FYtZhOBTH https://t.co/3cPeczwuia",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HPUR3jCWYAAKEgW.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HPUR3jFXQAA48jP.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HPUSQlkWcAE9FQv.jpg"
-   },
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2086594249512951808/img/-aLdbP5orw4ecy3W.jpg",
-    "video": "https://video.twimg.com/amplify_video/2086594249512951808/vid/avc1/1642x954/JISaMVEz_v0r2YFS.mp4"
-   }
-  ]
- },
- {
-  "id": "2104925400388501950",
-  "category": "Games",
-  "title": "Opus 5.5 long-goal game progress (screenshots)",
-  "created_at": "2026-09-29T13:24:57.000Z",
-  "likes": 82,
-  "reposts": 0,
-  "views": 3753,
-  "post_url": "https://x.com/LexnLin/status/2104925400388501950",
-  "text": "After one large goal(still running) using Opus 5.5 with some steering, this is where the game is at right now https://t.co/ZVbYeUTqPI",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HTYyem-b0AErR39.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HTYyfAkbEAAezih.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HTYyfY1bMAAeZzQ.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HTYyfsYacAAaN40.jpg"
-   }
-  ]
- },
- {
-  "id": "2101430146238484731",
-  "category": "Web/Interactive",
-  "title": "Copenhagen coffee shop site made with Astra in TasteCode Design Agent",
-  "created_at": "2026-09-19T21:56:04.000Z",
-  "likes": 82,
-  "reposts": 1,
-  "views": 4817,
-  "post_url": "https://x.com/LexnLin/status/2101430146238484731",
-  "text": "A website made with Astra medium in TasteCode using the Design Agent!\n\nprompt\n\"Create a website with at least 8sections for a third-wave coffee shop in Copenhagen with 2locations, a small roastery and weekend cupping sessions. Warm, unhurried, photography-led.\" https://t.co/EGTmKE1iJw",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2101430066261422080/img/oQZW7zYTgPxzWx2_.jpg",
-    "video": "https://video.twimg.com/amplify_video/2101430066261422080/vid/avc1/1736x1080/ButvRb-6g_oSDJxm.mp4"
-   }
-  ]
- },
- {
   "id": "2089704858970673447",
   "category": "Web/Interactive",
   "title": "Landing page made for Artesiana (screenshots)",
   "created_at": "2026-08-18T13:23:57.000Z",
   "likes": 82,
   "reposts": 3,
-  "views": 5686,
+  "views": 5687,
   "post_url": "https://x.com/LexnLin/status/2089704858970673447",
   "text": "Made a landingpage for Artesiana (https://t.co/bzgEZyzaPW) https://t.co/KkcILuvcNF",
   "links": [
@@ -1811,56 +1318,6 @@
   ]
  },
  {
-  "id": "2093982122197627217",
-  "category": "Games",
-  "title": "3D browser-based world/game WIP with Codex + Claude Code (screenshots)",
-  "created_at": "2026-08-30T08:40:16.000Z",
-  "likes": 74,
-  "reposts": 2,
-  "views": 3788,
-  "post_url": "https://x.com/LexnLin/status/2093982122197627217",
-  "text": "I am building a 3d world (browserbased game) using Codex and Claude Code https://t.co/KctriVi5Du",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HQ9RezCaUAAykpf.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HQ9RfoLaQAAF1GU.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HQ9RgO2asAA4phu.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HQ9RoQDakAAznXc.jpg"
-   }
-  ]
- },
- {
-  "id": "2079293908543062271",
-  "category": "Games",
-  "title": "Quote follow-up: Kimi K3 3D car game (image)",
-  "created_at": "2026-07-20T19:54:33.000Z",
-  "likes": 74,
-  "reposts": 0,
-  "views": 28196,
-  "post_url": "https://x.com/LexnLin/status/2079293908543062271",
-  "text": "Can't believe an open-weights(soon) model made this https://t.co/zNSWDhwF1g https://t.co/E1aZyiZLv8",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HNsisHbXkAAbLHw.jpg"
-   }
-  ]
- },
- {
   "id": "2091550626421338325",
   "category": "Web/Interactive",
   "title": "Particle experience, one long prompt (Opus 5)",
@@ -1885,135 +1342,9 @@
   ]
  },
  {
-  "id": "2088248123873181755",
-  "category": "Web/Interactive",
-  "title": "Gemini 3.7 Flash real three.js attempt (screenshots)",
-  "created_at": "2026-08-14T12:55:25.000Z",
-  "likes": 73,
-  "reposts": 0,
-  "views": 7213,
-  "post_url": "https://x.com/LexnLin/status/2088248123873181755",
-  "text": "tried again with real threejs\n\nnot that bad gemini 3.7 flash https://t.co/GqXjvnHwwC https://t.co/nDkt27AzuA",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HPryW4dWwAAMpNa.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HPrycmlXsAAMN1O.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HPryhQzWgAAYT63.png"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HPrykDMW8AAMWiA.jpg"
-   }
-  ]
- },
- {
-  "id": "2078218724318802081",
-  "category": "Other",
-  "title": "Kimi Code Desktop app WIP (screenshot)",
-  "created_at": "2026-07-17T20:42:09.000Z",
-  "likes": 73,
-  "reposts": 0,
-  "views": 15048,
-  "post_url": "https://x.com/LexnLin/status/2078218724318802081",
-  "text": "kimi code destkop app looking like this atm. added most of the necessary features, now it's time to focus on design :) https://t.co/116x6GuEWy https://t.co/eqGF1EkIlU",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HNdQtfZXgAAG8w-.jpg"
-   }
-  ]
- },
- {
-  "id": "2092890365930131920",
-  "category": "Other",
-  "title": "AI-made visuals for a random math brand",
-  "created_at": "2026-08-27T08:22:01.000Z",
-  "likes": 71,
-  "reposts": 0,
-  "views": 22517,
-  "post_url": "https://x.com/LexnLin/status/2092890365930131920",
-  "text": "made all of these visuals for a random math brand in a few minutes with AI\n\npretty insane that we live in this era https://t.co/cEsqObenoO",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HQtwrQhaMAEVL0h.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HQtwrsMaAAAt-bb.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HQtwsEMa4AAmmvZ.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HQtwsakbwAAK-pI.jpg"
-   }
-  ]
- },
- {
-  "id": "2086789460373434777",
-  "category": "Web/Interactive",
-  "title": "Sakura Realm: try it + open source",
-  "created_at": "2026-08-10T12:19:12.000Z",
-  "likes": 68,
-  "reposts": 4,
-  "views": 6349,
-  "post_url": "https://x.com/LexnLin/status/2086789460373434777",
-  "text": "Try it here: https://t.co/RCjrVRuQkT\n\nOpensourced: https://t.co/Pp7qLztQhx https://t.co/1gHz8iNwfE https://t.co/MeerJg0E8R",
-  "links": [
-   "https://sakura-realm.vercel.app/",
-   "https://github.com/Leonxlnx/sakura-realm"
-  ],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2086788971720282112/img/96zPgJoH4EMRnl24.jpg",
-    "video": "https://video.twimg.com/amplify_video/2086788971720282112/vid/avc1/1640x952/f6kx6Y-Y-LQ84dJl.mp4"
-   }
-  ]
- },
- {
-  "id": "2080955544605434149",
-  "category": "Web/Interactive",
-  "title": "Opus 5 (high) 3D real-estate website benchmark run",
-  "created_at": "2026-07-25T09:57:18.000Z",
-  "likes": 65,
-  "reposts": 3,
-  "views": 8301,
-  "post_url": "https://x.com/LexnLin/status/2080955544605434149",
-  "text": "I ran Opus 5 (high) on this 3d real estate website prompt\n\nHere is the result, pretty laggy but looks way better than GPT 5.6's one and is around Kimi K3 level\n\nAdded it to the site! (prompt is there as well)  https://t.co/TSHgz9YA22 https://t.co/GozgkzlFHK https://t.co/9p0OQXczTm",
-  "links": [
-   "https://leonsbenchmark.vercel.app"
-  ],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2080954167883952128/img/M0KOOh7AdR0zTOQm.jpg",
-    "video": "https://video.twimg.com/amplify_video/2080954167883952128/vid/avc1/1634x1026/uz2Bp4UBxodsI4MP.mp4"
-   }
-  ]
- },
- {
   "id": "2079233761242235081",
   "category": "Games",
-  "title": "Kimi K3 3D car game: water, roads, weather, day/night cycle",
+  "title": "Kimi K3 3D car game: water, roads, weather, day/night cycle (+ one-shot Android port)",
   "created_at": "2026-07-20T15:55:33.000Z",
   "likes": 63,
   "reposts": 1,
@@ -2021,7 +1352,11 @@
   "post_url": "https://x.com/LexnLin/status/2079233761242235081",
   "text": "holy shit\n\nKimi K3 is REALLY good at 3D.\nIt built this 3D car game using external assets, with pretty realistic water, landscapes, roads, weather, a day night cycle, and a lot more. https://t.co/i9KJ8M9Cnp",
   "links": [],
-  "related_posts": [],
+  "related_posts": [
+   "https://x.com/i/status/2079293908543062271",
+   "https://x.com/i/status/2079856664103027100",
+   "https://x.com/i/status/2080402291815833630"
+  ],
   "media": [
    {
     "type": "video",
@@ -2044,190 +1379,13 @@
   ]
  },
  {
-  "id": "2085342268999819405",
-  "category": "Other",
-  "title": "Genie 3 world generated in a minute",
-  "created_at": "2026-08-06T12:28:35.000Z",
-  "likes": 60,
-  "reposts": 2,
-  "views": 7216,
-  "post_url": "https://x.com/LexnLin/status/2085342268999819405",
-  "text": "Genie 3 is still a pretty cool experiment, generated this in a minute https://t.co/DBqZwkIQWc",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2085342141459361792/img/b_m5cxOSko73abdp.jpg",
-    "video": "https://video.twimg.com/amplify_video/2085342141459361792/vid/avc1/1920x1080/Tl0U9voK0-GBwzmo.mp4"
-   }
-  ]
- },
- {
-  "id": "2103913144284287135",
-  "category": "Games",
-  "title": "Arkenfall now playable on mobile + controller support (clip)",
-  "created_at": "2026-09-26T18:22:37.000Z",
-  "likes": 57,
-  "reposts": 0,
-  "views": 5224,
-  "post_url": "https://x.com/LexnLin/status/2103913144284287135",
-  "text": "you can now play https://t.co/ISe3ocR9Sf on mobile! + controllers are supported as well :)\n\nthis game is going to be insane trust me https://t.co/E00peMnRmR https://t.co/F7KrPhaeLa",
-  "links": [
-   "https://arkenfall.site"
-  ],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2103910514657001472/img/ftJI1At0MbstCMUJ.jpg",
-    "video": "https://video.twimg.com/amplify_video/2103910514657001472/vid/avc1/1920x864/zBG5mvJ7PPzt4Jd2.mp4"
-   }
-  ]
- },
- {
-  "id": "2108014522736775305",
-  "category": "Web/Interactive",
-  "title": "Claude Haiku 5.5: a 3D world in 4 different styles (screenshots)",
-  "created_at": "2026-10-08T02:00:01.000Z",
-  "likes": 57,
-  "reposts": 1,
-  "views": 1933,
-  "post_url": "https://x.com/LexnLin/status/2108014522736775305",
-  "text": "Made with Claude Haiku 5.5\n\na 3d world in 4 different styles https://t.co/AnLdKZZHhL",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HUEYJ-xWAAAwbUr.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HUEYQwWWYAAyszU.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HUEYZClXAAA0Lrc.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HUEYrtNWwAEmQ8c.jpg"
-   }
-  ]
- },
- {
-  "id": "2083630468071592212",
-  "category": "Games",
-  "title": "Minigames in Codex played with the Codex Micro",
-  "created_at": "2026-08-01T19:06:30.000Z",
-  "likes": 55,
-  "reposts": 1,
-  "views": 4674,
-  "post_url": "https://x.com/LexnLin/status/2083630468071592212",
-  "text": "You can play minigames in Codex using the Codex Micro \n\n3 minigames: https://t.co/50W5upOLun",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2083630346730422272/img/7IxSFFo4K7j_63B9.jpg",
-    "video": "https://video.twimg.com/amplify_video/2083630346730422272/vid/avc1/972x442/xJ0OEIzi2h2duX-9.mp4"
-   }
-  ]
- },
- {
-  "id": "2101466512204743148",
-  "category": "Web/Interactive",
-  "title": "Website comparison: old TasteSkill vs new Design Agent (videos)",
-  "created_at": "2026-09-20T00:20:34.000Z",
-  "likes": 52,
-  "reposts": 4,
-  "views": 5159,
-  "post_url": "https://x.com/LexnLin/status/2101466512204743148",
-  "text": "Website comparison between old tasteskill and new Design Agent beta https://t.co/DRUaGzYAkr https://t.co/XlNTq176WJ",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2101466161971892225/img/V8dX1RiSt0gKwLKt.jpg",
-    "video": "https://video.twimg.com/amplify_video/2101466161971892225/vid/avc1/1740x1080/_agQr3pr1Hzg67kG.mp4"
-   },
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2101466161946701824/img/FgkAccxn2aZdR6K2.jpg",
-    "video": "https://video.twimg.com/amplify_video/2101466161946701824/vid/avc1/1736x1080/CWC38RufiKnQzaUF.mp4"
-   }
-  ]
- },
- {
-  "id": "2082877787619164568",
-  "category": "Animations/Videos",
-  "title": "Whole video from one text prompt in ChatGPT work",
-  "created_at": "2026-07-30T17:15:37.000Z",
-  "likes": 47,
-  "reposts": 0,
-  "views": 6840,
-  "post_url": "https://x.com/LexnLin/status/2082877787619164568",
-  "text": "In case Tibo doesn't reset the limits today, I prepared a video with one prompt in ChatGPT work (yes it made the whole video from a text prompt) https://t.co/Q0uBwMCUDM",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2082877602813890560/img/x2Vek9hZTd5THNgO.jpg",
-    "video": "https://video.twimg.com/amplify_video/2082877602813890560/vid/avc1/1080x1920/OWdBWyWIGqUpVgYC.mp4"
-   }
-  ]
- },
- {
-  "id": "2103999965341110332",
-  "category": "Web/Interactive",
-  "title": "\"cooking.\": 3D landscape scenes (screenshots)",
-  "created_at": "2026-09-27T00:07:36.000Z",
-  "likes": 45,
-  "reposts": 0,
-  "views": 3975,
-  "post_url": "https://x.com/LexnLin/status/2103999965341110332",
-  "text": "cooking. https://t.co/Bm076atgC1",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HTLo0UYWQAE09ZH.jpg"
-   }
-  ]
- },
- {
-  "id": "2103131760087142837",
-  "category": "Games",
-  "title": "Card-pack opening clip (\"pulled Claude Fable 5.1\")",
-  "created_at": "2026-09-24T14:37:40.000Z",
-  "likes": 43,
-  "reposts": 0,
-  "views": 3212,
-  "post_url": "https://x.com/LexnLin/status/2103131760087142837",
-  "text": "GUYS I just pulled Claude Fable 5.1 https://t.co/eNa6i8nuop",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2103131708585279488/img/6U8q6Y3jI55NzIvJ.jpg",
-    "video": "https://video.twimg.com/amplify_video/2103131708585279488/vid/avc1/1682x1030/DgASBmHcNIBn-PyK.mp4"
-   }
-  ]
- },
- {
   "id": "2086799319206592613",
   "category": "Other",
   "title": "SharpShot: tiny native Windows screenshot/recording tool",
   "created_at": "2026-08-10T12:58:23.000Z",
   "likes": 42,
   "reposts": 3,
-  "views": 5193,
+  "views": 5194,
   "post_url": "https://x.com/LexnLin/status/2086799319206592613",
   "text": "I built SharpShot because taking and sharing a screen recording on Windows still feels wayyy too slow \n\nWin+Shift+D to screenshot\nWin+Shift+A to record any area\n\ninstantly copied, saved locally and ready to paste. native, open source and only ~81KB :)\n\nhttps://t.co/MHRGSA99ge https://t.co/N9eufDXVhg",
   "links": [
@@ -2241,28 +1399,6 @@
    {
     "type": "photo",
     "image": "https://pbs.twimg.com/media/HPXMTwvW0AAv8f8.jpg"
-   }
-  ]
- },
- {
-  "id": "2086246290094964930",
-  "category": "Games",
-  "title": "Old game improved via a Gauntlet Loop with Opus 5, playable",
-  "created_at": "2026-08-09T00:20:50.000Z",
-  "likes": 41,
-  "reposts": 3,
-  "views": 4002,
-  "post_url": "https://x.com/LexnLin/status/2086246290094964930",
-  "text": "I ran an own version of @mattshumer_ 's Gauntlet Loop  with Opus 5 to improve the quality of an old game\n\nPerformance should be good as well (not in the video because of a few sol ultra agents in the background lol)\n\nGo play it here!\nhttps://t.co/J5tAXzEwFg https://t.co/UeXrBR0v9o",
-  "links": [
-   "https://claude-of-duty-six.vercel.app/"
-  ],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2086245510013140992/img/q_Dv8sCawjRpptK1.jpg",
-    "video": "https://video.twimg.com/amplify_video/2086245510013140992/vid/avc1/1732x1080/MGCI4dHFJZ6oV3hL.mp4"
    }
   ]
  },
@@ -2283,51 +1419,6 @@
     "type": "video",
     "image": "https://pbs.twimg.com/amplify_video_thumb/2091900731192152064/img/yvt0w8ppbxdCMEkj.jpg",
     "video": "https://video.twimg.com/amplify_video/2091900731192152064/vid/avc1/1644x1028/0PAZVGL8y9ZCsyhH.mp4"
-   }
-  ]
- },
- {
-  "id": "2080321818825523540",
-  "category": "Web/Interactive",
-  "title": "GPT 5.6 Sol (high) on the personal 3D website benchmark",
-  "created_at": "2026-07-23T15:59:06.000Z",
-  "likes": 33,
-  "reposts": 0,
-  "views": 11157,
-  "post_url": "https://x.com/LexnLin/status/2080321818825523540",
-  "text": "Ran GPT 5.6 Sol (high) on this personal 3d website benchmark \n\nOf course way faster, done in less than an hour (compared to 4h from Kimi k3)\n\nBUT it looks worse. way too simple https://t.co/v6sWCmcj1J https://t.co/ng2yBjEddr",
-  "links": [
-   "https://leonsbenchmark.vercel.app/",
-   "https://serica-estates-threejs.vercel.app/"
-  ],
-  "related_posts": [
-   "https://x.com/i/status/2080321822097113595"
-  ],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2080318722254729216/img/ODPPdtIVJWq2Oryo.jpg",
-    "video": "https://video.twimg.com/amplify_video/2080318722254729216/vid/avc1/1638x1028/R_BuWyRnfhdsVpZ_.mp4"
-   }
-  ]
- },
- {
-  "id": "2085344481956528510",
-  "category": "Other",
-  "title": "Genie 3: another one for \"anthropic horror world\"",
-  "created_at": "2026-08-06T12:37:22.000Z",
-  "likes": 31,
-  "reposts": 1,
-  "views": 2986,
-  "post_url": "https://x.com/LexnLin/status/2085344481956528510",
-  "text": "Another one for \"anthropic horror world\" https://t.co/ykWm9ODGnv https://t.co/FIrOWwPMLq",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2085344372002873344/img/61SKJvz2ETeb6-W_.jpg",
-    "video": "https://video.twimg.com/amplify_video/2085344372002873344/vid/avc1/1920x1080/DdrfQ4jUlSvZ8j4u.mp4"
    }
   ]
  }
