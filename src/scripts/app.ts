@@ -27,8 +27,8 @@ function play(v: HTMLVideoElement) {
   if (!v.getAttribute("src")) {
     v.src = v.dataset.src!;
     const reveal = () => v.parentElement?.classList.add("playing");
-    if ("requestVideoFrameCallback" in v) v.requestVideoFrameCallback(reveal);
-    else v.addEventListener("playing", reveal, { once: true });
+    if (typeof v.requestVideoFrameCallback === "function") v.requestVideoFrameCallback(reveal);
+    else (v as HTMLVideoElement).addEventListener("playing", reveal, { once: true });
   }
   v.play().catch(() => {});
 }
