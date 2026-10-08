@@ -1,0 +1,216 @@
+---
+import "@fontsource-variable/geist";
+import "@fontsource-variable/geist-mono";
+import "@fontsource/instrument-serif/latin-400-italic.css";
+import "../styles/global.css";
+
+import Card from "../components/Card.astro";
+import Featured from "../components/Featured.astro";
+import Icon from "../components/Icon.astro";
+import { DEMOS, TOTALS, CATEGORIES, compact, categoryShort } from "../lib/demos";
+
+const X_URL = "https://x.com/LexnLin";
+const GH_URL = "https://github.com/Leonxlnx";
+
+const clientData = DEMOS.map((d) => ({
+  id: d.id,
+  rank: d.rank,
+  title: d.title,
+  cat: categoryShort(d.category),
+  catLabel: CATEGORIES.find((c) => c.id === d.category)?.label ?? d.category,
+  date: d.dateLabel,
+  iso: d.created_at,
+  likes: d.likes,
+  reposts: d.reposts,
+  views: d.views,
+  post: d.post_url,
+  html: d.textHtml,
+  links: d.links_,
+  related: d.related_posts,
+  media: d.media,
+}));
+const json = JSON.stringify(clientData).replace(/</g, "\\u003c");
+
+const description = `${TOTALS.demos} AI-built demos by Leon Lin — 3D games, three.js worlds, shaders, animations and web experiments, ranked by likes on X.`;
+const ogImage = DEMOS[0]?.thumb ?? undefined;
+const years = [...new Set(DEMOS.map((d) => d.created_at.slice(0, 4)))].sort();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="referrer" content="no-referrer" />
+    <title>Leon Lin — AI-built demos, ranked</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#09090b" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://pbs.twimg.com" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Leon Lin — AI-built demos, ranked by likes" />
+    <meta property="og:description" content={description} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@LexnLin" />
+    <meta name="twitter:creator" content="@LexnLin" />
+    <meta name="twitter:title" content="Leon Lin — AI-built demos, ranked by likes" />
+    <meta name="twitter:description" content={description} />
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
+  </head>
+  <body>
+    <a class="skip" href="#index">Skip to the index</a>
+
+    <header class="nav">
+      <a class="brand" href="#top" aria-label="Leon Lin — back to top">
+        <span class="brand-mark" aria-hidden="true">LL</span>
+        <span class="brand-name">Leon Lin</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary">
+        <a href="#top-liked" class="hide-sm">Most liked</a>
+        <a href="#index" class="hide-sm">Index</a>
+        <a href={X_URL} target="_blank" rel="noopener" class="nav-icon" aria-label="Leon Lin on X (@LexnLin)">
+          <Icon name="x" size={15} /><span class="hide-sm">@LexnLin</span>
+        </a>
+        <a href={GH_URL} target="_blank" rel="noopener" class="nav-icon" aria-label="Leon Lin on GitHub (Leonxlnx)">
+          <Icon name="github" size={16} /><span class="hide-sm">Leonxlnx</span>
+        </a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero">
+        <canvas class="hero-canvas" aria-hidden="true"></canvas>
+        <div class="hero-grain" aria-hidden="true"></div>
+        <div class="hero-inner">
+          <p class="eyebrow reveal" style="--d:0">
+            <span class="dot" aria-hidden="true"></span> Creative developer · AI-built demos
+          </p>
+          <h1 class="hero-title reveal" style="--d:1">
+            Leon <em>Lin</em>
+          </h1>
+          <p class="hero-lede reveal" style="--d:2">
+            3D games, three.js worlds, shaders, animations, launch videos and web experiments,
+            built with AI models and shared on X. All {TOTALS.demos} of them, ranked by likes.
+          </p>
+          <div class="hero-ctas reveal" style="--d:3">
+            <a class="btn btn--solid" href={X_URL} target="_blank" rel="noopener">
+              <Icon name="x" size={15} /> Follow @LexnLin
+            </a>
+            <a class="btn" href={GH_URL} target="_blank" rel="noopener">
+              <Icon name="github" size={16} /> github.com/Leonxlnx
+            </a>
+          </div>
+          <dl class="hero-stats reveal" style="--d:4">
+            <div><dt>Demos</dt><dd>{TOTALS.demos}</dd></div>
+            <div><dt>Likes</dt><dd>{compact(TOTALS.likes)}</dd></div>
+            <div><dt>Views</dt><dd>{compact(TOTALS.views)}</dd></div>
+            <div><dt>Reposts</dt><dd>{compact(TOTALS.reposts)}</dd></div>
+            <div><dt>With live links</dt><dd>{TOTALS.playable}</dd></div>
+          </dl>
+        </div>
+        <a class="scroll-cue" href="#top-liked" aria-label="Scroll to the most liked demos">
+          <span></span>
+        </a>
+      </section>
+
+      <section class="section" id="top-liked" aria-labelledby="top-liked-h">
+        <div class="section-head">
+          <p class="kicker">01 — The podium</p>
+          <h2 id="top-liked-h">Most <em>liked</em></h2>
+        </div>
+        <Featured demos={DEMOS.slice(0, 3)} />
+      </section>
+
+      <section class="section" id="index" aria-labelledby="index-h">
+        <div class="section-head">
+          <p class="kicker">02 — Everything</p>
+          <h2 id="index-h">The <em>index</em></h2>
+        </div>
+
+        <div class="controls" role="search">
+          <div class="chips" role="group" aria-label="Filter by category">
+            <button type="button" class="chip" data-cat="all" aria-pressed="true">
+              All <span class="chip-n">{TOTALS.demos}</span>
+            </button>
+            {
+              CATEGORIES.map((c) => (
+                <button type="button" class={`chip chip--${c.short}`} data-cat={c.short} aria-pressed="false">
+                  <span class="chip-dot" aria-hidden="true" />
+                  {c.label} <span class="chip-n">{TOTALS.byCategory[c.id]}</span>
+                </button>
+              ))
+            }
+          </div>
+          <div class="controls-right">
+            <label class="search">
+              <Icon name="search" size={15} />
+              <span class="sr-only">Search demos</span>
+              <input id="q" type="search" placeholder="Search demos…" autocomplete="off" spellcheck="false" />
+              <kbd aria-hidden="true">/</kbd>
+            </label>
+            <div class="seg" role="group" aria-label="Sort order">
+              <button type="button" data-sort="likes" aria-pressed="true">Most liked</button>
+              <button type="button" data-sort="new" aria-pressed="false">Newest</button>
+            </div>
+          </div>
+        </div>
+        <p class="result-count" aria-live="polite"><span id="count">{TOTALS.demos}</span> demos</p>
+
+        <div class="grid" id="grid">
+          {DEMOS.map((d) => <Card demo={d} />)}
+        </div>
+        <div class="empty" id="empty" hidden>
+          <p>No demos match that.</p>
+          <button type="button" class="btn" id="reset">Clear filters</button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-big">
+        <span>Leon <em>Lin</em></span>
+      </div>
+      <div class="footer-row">
+        <p>
+          {TOTALS.demos} demos posted on X, {years.join("–")}. Likes, reposts and views as recorded in
+          <code>data/demos.json</code>.
+        </p>
+        <p class="footer-links">
+          <a href={X_URL} target="_blank" rel="noopener"><Icon name="x" size={13} /> @LexnLin</a>
+          <a href={GH_URL} target="_blank" rel="noopener"><Icon name="github" size={14} /> Leonxlnx</a>
+        </p>
+      </div>
+    </footer>
+
+    <dialog class="lightbox" id="lightbox" aria-labelledby="lb-title">
+      <div class="lb-shell">
+        <div class="lb-media" id="lb-media"></div>
+        <div class="lb-side">
+          <div class="lb-top">
+            <div class="card-meta" id="lb-meta"></div>
+            <button type="button" class="icon-btn" id="lb-close" aria-label="Close"><Icon name="close" size={18} /></button>
+          </div>
+          <p class="lb-rank" id="lb-rank"></p>
+          <h3 class="lb-title" id="lb-title"></h3>
+          <div class="lb-stats stats" id="lb-stats"></div>
+          <div class="lb-links" id="lb-links"></div>
+          <div class="lb-text" id="lb-text"></div>
+          <div class="lb-related" id="lb-related"></div>
+          <div class="lb-nav">
+            <button type="button" class="icon-btn" id="lb-prev" aria-label="Previous demo"><Icon name="chev-left" size={18} /></button>
+            <span id="lb-pos"></span>
+            <button type="button" class="icon-btn" id="lb-next" aria-label="Next demo"><Icon name="chev-right" size={18} /></button>
+          </div>
+        </div>
+      </div>
+    </dialog>
+
+    <script type="application/json" id="demo-data" set:html={json} />
+    <script>
+      import "../scripts/app";
+      import "../scripts/shader";
+    </script>
+  </body>
+</html>
