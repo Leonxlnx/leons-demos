@@ -117,16 +117,16 @@ const years = [...new Set(DEMOS.map((d) => d.created_at.slice(0, 4)))].sort();
 
       <section class="section" id="top-liked" aria-labelledby="top-liked-h">
         <div class="section-head">
-          <p class="kicker">01 — The podium</p>
           <h2 id="top-liked-h">Most <em>liked</em></h2>
+          <p class="kicker">01 — The podium</p>
         </div>
         <Featured demos={DEMOS.slice(0, 3)} />
       </section>
 
       <section class="section" id="index" aria-labelledby="index-h">
         <div class="section-head">
-          <p class="kicker">02 — Everything</p>
           <h2 id="index-h">The <em>index</em></h2>
+          <p class="kicker">02 — Everything</p>
         </div>
 
         <div class="controls" role="search">
@@ -184,7 +184,7 @@ const years = [...new Set(DEMOS.map((d) => d.created_at.slice(0, 4)))].sort();
       </div>
     </footer>
 
-    <dialog class="lightbox" id="lightbox" aria-labelledby="lb-title">
+    <dialog class="lightbox" id="lightbox" aria-labelledby="lb-title" tabindex="-1">
       <div class="lb-shell">
         <div class="lb-media" id="lb-media"></div>
         <div class="lb-side">

@@ -342,7 +342,7 @@ function openDemo(id: string, push = true) {
     d.links
       .map(
         (l) =>
-          `<a class="lb-link lb-link--${l.kind}" href="${esc(l.url)}" target="_blank" rel="noopener"><span class="lb-link-label">${l.kind === "repo" ? ICON.github : l.kind === "play" ? ICON.play : ""}${esc(l.label)}</span><span class="lb-link-host">${esc(l.host)}${ICON.arrow}</span></a>`,
+          `<a class="lb-link lb-link--${l.kind}" href="${esc(l.url)}" target="_blank" rel="noopener"><span class="lb-link-label">${l.kind === "repo" ? ICON.github : l.kind === "play" ? ICON.play : ""}${esc(l.label)}</span><span class="lb-link-host"><span>${esc(l.host)}</span>${ICON.arrow}</span></a>`,
       )
       .join("") +
     `<a class="lb-link lb-link--x" href="${esc(d.post)}" target="_blank" rel="noopener"><span class="lb-link-label">${ICON.x}View post</span><span class="lb-link-host">x.com${ICON.arrow}</span></a>`;
@@ -360,9 +360,11 @@ function openDemo(id: string, push = true) {
   renderMedia();
   if (!lightbox.open) {
     lightbox.showModal();
+    lightbox.focus();
     document.documentElement.classList.add("lb-open");
   }
   lb.text.parentElement?.scrollTo({ top: 0 });
+  $(".lb-shell", lightbox).scrollTo({ top: 0 });
   if (push) {
     const p = new URLSearchParams(location.search);
     p.set("demo", d.id);

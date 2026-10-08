@@ -473,7 +473,7 @@ em {
   align-items: baseline;
   justify-content: space-between;
   gap: 1rem;
-  flex-wrap: wrap-reverse;
+  flex-wrap: wrap;
   margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
   padding-bottom: 1rem;
   border-bottom: 1px solid var(--line);
@@ -675,6 +675,16 @@ em {
   background:
     linear-gradient(to top, rgba(9, 9, 11, 0.96) 0%, rgba(9, 9, 11, 0.7) 30%, rgba(9, 9, 11, 0) 65%),
     linear-gradient(to bottom, rgba(9, 9, 11, 0.45), transparent 25%);
+}
+.feat:not(.feat--lead) .feat-shade {
+  background:
+    linear-gradient(to top, rgba(9, 9, 11, 0.97) 0%, rgba(9, 9, 11, 0.86) 42%, rgba(9, 9, 11, 0.2) 75%, rgba(9, 9, 11, 0) 100%),
+    linear-gradient(to bottom, rgba(9, 9, 11, 0.5), transparent 30%);
+}
+.feat .card-meta,
+.feat-title,
+.feat .stats {
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.6);
 }
 .feat-body {
   position: absolute;
@@ -1404,9 +1414,17 @@ em {
   font-family: var(--mono);
   font-size: 0.72rem;
   opacity: 0.7;
+}
+.lb-link-host span {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+.lb-link-label {
+  flex: none;
+}
+.lightbox:focus-visible {
+  outline: none;
 }
 .lb-link--play,
 .lb-link--live {
@@ -1483,12 +1501,15 @@ em {
     border: 0;
   }
   .lb-shell {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr;
+    display: block;
     overflow-y: auto;
+    overscroll-behavior: contain;
   }
   .lb-media {
-    max-height: 62dvh;
+    min-height: auto;
+  }
+  .lb-placeholder {
+    min-height: 40dvh;
   }
   .lb-stage {
     aspect-ratio: 16 / 10;
@@ -1501,8 +1522,7 @@ em {
     padding-bottom: max(1rem, env(safe-area-inset-bottom));
   }
   .lb-top {
-    position: sticky;
-    top: 0;
+    padding-right: 3rem;
   }
   #lb-close {
     position: fixed;
