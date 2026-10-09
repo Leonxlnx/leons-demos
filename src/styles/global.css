@@ -98,6 +98,14 @@ video {
   letter-spacing: -0.01em;
 }
 
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
 .filters {
   display: flex;
   gap: 0.15rem;
@@ -119,6 +127,11 @@ video {
 }
 .filters button:hover {
   color: var(--text);
+}
+.filters button:disabled {
+  color: var(--muted);
+  opacity: 0.35;
+  cursor: default;
 }
 .filters button[aria-pressed="true"] {
   color: #000;
@@ -147,10 +160,10 @@ video {
   border-color: #fff;
 }
 
-@media (max-width: 720px) {
+@media (max-width: 900px) {
   .top {
     grid-template-columns: 1fr auto;
-    grid-template-areas: "title social" "filters filters";
+    grid-template-areas: "title social" "controls controls";
     row-gap: 1rem;
   }
   .site-title {
@@ -159,9 +172,11 @@ video {
   .social {
     grid-area: social;
   }
+  .controls {
+    grid-area: controls;
+    justify-content: flex-start;
+  }
   .filters {
-    grid-area: filters;
-    justify-self: start;
     max-width: 100%;
     overflow-x: auto;
     scrollbar-width: none;
@@ -272,11 +287,19 @@ video {
 
 .likes {
   display: inline-flex;
+  white-space: nowrap;
   align-items: center;
   gap: 0.35rem;
   font-size: 0.8rem;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
+}
+.tool {
+  margin-left: 0.3rem;
+  padding-left: 0.6rem;
+  border-left: 1px solid var(--line-2);
+  font-size: 0.75rem;
+  color: #6f6f6f;
 }
 
 .links {

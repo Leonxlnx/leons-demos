@@ -1,6 +1,7 @@
 import raw from "../../data/demos.json";
 
 export type Category = "Games" | "Animations/Videos" | "Web/Interactive" | "Other";
+export type Tool = "Claude" | "Codex" | "Other";
 
 export interface Media {
   type: "photo" | "video" | "animated_gif";
@@ -11,6 +12,7 @@ export interface Media {
 export interface Demo {
   id: string;
   category: Category;
+  tool: Tool;
   title: string;
   created_at: string;
   likes: number;
@@ -32,6 +34,7 @@ export interface DemoLink {
 export interface ViewDemo extends Demo {
   shortTitle: string;
   cat: string;
+  toolId: string;
   links_: DemoLink[];
   poster: string | null;
   video: string | null;
@@ -45,7 +48,15 @@ export const FILTERS: { id: string; label: string; category?: Category }[] = [
   { id: "other", label: "Other", category: "Other" },
 ];
 
+export const TOOL_FILTERS: { id: string; label: string; tool?: Tool }[] = [
+  { id: "all", label: "All" },
+  { id: "claude", label: "Claude", tool: "Claude" },
+  { id: "codex", label: "Codex", tool: "Codex" },
+  { id: "other", label: "Other", tool: "Other" },
+];
+
 const catId = (c: Category) => FILTERS.find((f) => f.category === c)?.id ?? "other";
+const toolId = (t: Tool) => TOOL_FILTERS.find((f) => f.tool === t)?.id ?? "other";
 
 /** Drops parenthetical notes such as "(GPT 6 Astra)" or "(screenshots)". */
 export function shortTitle(title: string): string {
@@ -101,6 +112,7 @@ export const DEMOS: ViewDemo[] = (raw as Demo[])
       ...d,
       shortTitle: shortTitle(d.title),
       cat: catId(d.category),
+      toolId: toolId(d.tool),
       links_,
       poster: primary?.image ?? null,
       video: primary?.video ?? null,
@@ -109,3 +121,4 @@ export const DEMOS: ViewDemo[] = (raw as Demo[])
 
 /** Filters with at least one demo; "All" is always first. */
 export const VISIBLE_FILTERS = FILTERS.filter((f) => !f.category || DEMOS.some((d) => d.category === f.category));
+export const VISIBLE_TOOL_FILTERS = TOOL_FILTERS.filter((f) => !f.tool || DEMOS.some((d) => d.tool === f.tool));

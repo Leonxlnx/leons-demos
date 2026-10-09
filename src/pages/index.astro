@@ -4,7 +4,7 @@ import "../styles/global.css";
 
 import Card from "../components/Card.astro";
 import Icon from "../components/Icon.astro";
-import { DEMOS, VISIBLE_FILTERS } from "../lib/demos";
+import { DEMOS, VISIBLE_FILTERS, VISIBLE_TOOL_FILTERS } from "../lib/demos";
 
 const description = "AI-built demos by Leon Lin, ranked by likes.";
 const ogImage = DEMOS[0]?.poster ?? undefined;
@@ -35,15 +35,26 @@ const ogImage = DEMOS[0]?.poster ?? undefined;
 
     <header class="top">
       <h1 class="site-title"><a href="/">Leon's demos</a></h1>
-      <nav class="filters" aria-label="Filter demos" hidden={VISIBLE_FILTERS.length < 3}>
-        {
-          VISIBLE_FILTERS.map((f) => (
-            <button type="button" data-filter={f.id} aria-pressed={f.id === "all" ? "true" : "false"}>
-              {f.label}
-            </button>
-          ))
-        }
-      </nav>
+      <div class="controls">
+        <nav class="filters" aria-label="Filter by type" hidden={VISIBLE_FILTERS.length < 3}>
+          {
+            VISIBLE_FILTERS.map((f) => (
+              <button type="button" data-group="cat" data-value={f.id} aria-pressed={f.id === "all" ? "true" : "false"}>
+                {f.label}
+              </button>
+            ))
+          }
+        </nav>
+        <nav class="filters" aria-label="Filter by tool" hidden={VISIBLE_TOOL_FILTERS.length < 3}>
+          {
+            VISIBLE_TOOL_FILTERS.map((f) => (
+              <button type="button" data-group="tool" data-value={f.id} aria-pressed={f.id === "all" ? "true" : "false"}>
+                {f.label}
+              </button>
+            ))
+          }
+        </nav>
+      </div>
       <div class="social">
         <a href="https://x.com/LexnLin" target="_blank" rel="noopener" aria-label="X: @LexnLin" title="@LexnLin on X">
           <Icon name="x" size={15} />

@@ -1,19 +1,43 @@
-const cards = Array.from(document.querySelectorAll<HTMLElement>(".card"));
-const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-filter]"));
+type Group = "cat" | "tool";
 
-function setFilter(id: string) {
-  if (!buttons.some((b) => b.dataset.filter === id)) id = "all";
-  for (const b of buttons) b.setAttribute("aria-pressed", String(b.dataset.filter === id));
-  for (const c of cards) c.hidden = id !== "all" && c.dataset.cat !== id;
+const cards = Array.from(document.querySelectorAll<HTMLElement>(".card"));
+const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-group]"));
+const state: Record<Group, string> = { cat: "all", tool: "all" };
+
+const matches = (card: HTMLElement, group: Group, value: string) => value === "all" || card.dataset[group] === value;
+const other = (group: Group): Group => (group === "cat" ? "tool" : "cat");
+
+function apply() {
+  for (const c of cards) c.hidden = !(matches(c, "cat", state.cat) && matches(c, "tool", state.tool));
+  for (const b of buttons) {
+    const group = b.dataset.group as Group;
+    const value = b.dataset.value!;
+    b.setAttribute("aria-pressed", String(state[group] === value));
+    // An option that would empty the grid given the other filter is disabled rather than hidden.
+    b.disabled = !cards.some((c) => matches(c, group, value) && matches(c, other(group), state[other(group)]));
+  }
   const url = new URL(location.href);
-  if (id === "all") url.searchParams.delete("cat");
-  else url.searchParams.set("cat", id);
+  for (const group of ["cat", "tool"] as Group[]) {
+    if (state[group] === "all") url.searchParams.delete(group);
+    else url.searchParams.set(group, state[group]);
+  }
   history.replaceState(null, "", url);
 }
 
-for (const b of buttons) b.addEventListener("click", () => setFilter(b.dataset.filter!));
-const initial = new URLSearchParams(location.search).get("cat");
-if (initial) setFilter(initial);
+for (const b of buttons) {
+  b.addEventListener("click", () => {
+    state[b.dataset.group as Group] = b.dataset.value!;
+    apply();
+  });
+}
+
+const params = new URLSearchParams(location.search);
+for (const group of ["cat", "tool"] as Group[]) {
+  const value = params.get(group);
+  if (value && buttons.some((b) => b.dataset.group === group && b.dataset.value === value)) state[group] = value;
+}
+if (!cards.some((c) => matches(c, "cat", state.cat) && matches(c, "tool", state.tool))) state.tool = "all";
+if (state.cat !== "all" || state.tool !== "all") apply();
 
 /*
  * Videos: only the ones on screen are loaded and playing. A video that leaves the

@@ -9,7 +9,7 @@ interface Props {
 const { demo, eager = false } = Astro.props;
 ---
 
-<article class="card" data-cat={demo.cat}>
+<article class="card" data-cat={demo.cat} data-tool={demo.toolId}>
   <div class="media">
     {
       demo.poster && (
@@ -33,6 +33,7 @@ const { demo, eager = false } = Astro.props;
     <div class="foot">
       <span class="likes" title={`${demo.likes.toLocaleString("en-US")} likes`}>
         <Icon name="heart" size={12} />{compact(demo.likes)}
+        {demo.tool !== "Other" && <span class="tool">{demo.tool}</span>}
       </span>
       <span class="links">
         {
