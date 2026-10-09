@@ -1,0 +1,86 @@
+[
+  {
+    "name": "taste-skill",
+    "description": "Taste-Skill - gives your AI good taste. stops the AI from generating boring, generic slop ",
+    "stars": 94092,
+    "url": "https://github.com/Leonxlnx/taste-skill"
+  },
+  {
+    "name": "unlazy",
+    "description": "Anti-laziness skill for AI agents. Core: the Depth Tree method, which splits a task N layers deep and gives every leaf the full time budget of the whole task, so effort multiplies with depth. Grounded in 2025-2026 research on model laziness, underthinking and premature completion.",
+    "stars": 3884,
+    "url": "https://github.com/Leonxlnx/unlazy"
+  },
+  {
+    "name": "lumenshaders",
+    "description": "LUMEN, a generative shader studio. 9 WebGL2 art modes plus synth style blending, perfect-loop animation, gradient sets, share codes and PNG/WebM/GIF export. Zero dependencies.",
+    "stars": 357,
+    "url": "https://github.com/Leonxlnx/lumenshaders"
+  },
+  {
+    "name": "tastecode",
+    "description": "Personal Harness - a beautiful, adaptive control panel for AI coding agents. Windows-first, design-agent powered.",
+    "stars": 322,
+    "url": "https://github.com/Leonxlnx/tastecode"
+  },
+  {
+    "name": "claude-launchvideo",
+    "description": "",
+    "stars": 145,
+    "url": "https://github.com/Leonxlnx/claude-launchvideo"
+  },
+  {
+    "name": "cinetic",
+    "description": "Cinematic launch films and motion design from code, directed by your coding agent.",
+    "stars": 104,
+    "url": "https://github.com/Leonxlnx/cinetic"
+  },
+  {
+    "name": "verdant-forest",
+    "description": "",
+    "stars": 51,
+    "url": "https://github.com/Leonxlnx/verdant-forest"
+  },
+  {
+    "name": "kimi-code-desktop",
+    "description": "Unofficial, open-source Windows desktop harness for Kimi Code CLI.",
+    "stars": 46,
+    "url": "https://github.com/Leonxlnx/kimi-code-desktop"
+  },
+  {
+    "name": "claude-of-duty",
+    "description": "Browser-native tactical FPS on three.js r180. One map, one match, no assets: every texture, sound and cloud is generated at runtime. Hand-built WebGL2 render graph, custom physics, procedural Web Audio.",
+    "stars": 46,
+    "url": "https://github.com/Leonxlnx/claude-of-duty"
+  },
+  {
+    "name": "motion-recreation",
+    "description": "Editable motion-design recreation built with Astra, JavaScript, Canvas and WebGL.",
+    "stars": 22,
+    "url": "https://github.com/Leonxlnx/motion-recreation"
+  },
+  {
+    "name": "sakura-realm",
+    "description": "Real-time procedural cherry blossom landscape in the browser. Volumetric sky, dynamic weather, endless wind-driven meadow, and a fully generated sakura tree. Zero art assets: every texture synthesised at runtime, every mesh built in code. three.js + WebGL2.",
+    "stars": 21,
+    "url": "https://github.com/Leonxlnx/sakura-realm"
+  },
+  {
+    "name": "SharpShot",
+    "description": "A tiny Windows region-capture utility with exact native pixels and lossless PNG output.",
+    "stars": 10,
+    "url": "https://github.com/Leonxlnx/SharpShot"
+  },
+  {
+    "name": "merge-conflict",
+    "description": "Clawd vs Codex: a cinematic 3D browser arena fighter with procedural visuals and synthesized audio.",
+    "stars": 7,
+    "url": "https://github.com/Leonxlnx/merge-conflict"
+  },
+  {
+    "name": "monolithwilds",
+    "description": "",
+    "stars": 0,
+    "url": "https://github.com/Leonxlnx/monolithwilds"
+  }
+]
