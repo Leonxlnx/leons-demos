@@ -4,6 +4,7 @@ import "../styles/global.css";
 
 import Card from "../components/Card.astro";
 import Icon from "../components/Icon.astro";
+import IconSprite from "../components/IconSprite.astro";
 import { DEMOS, TOOL_LOGOS, VISIBLE_FILTERS, VISIBLE_TOOL_FILTERS } from "../lib/demos";
 
 const description = "AI-built demos by Leon Lin, ranked by likes.";
@@ -22,6 +23,7 @@ const ogImage = DEMOS[0]?.poster ?? undefined;
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://pbs.twimg.com" />
+    <link rel="preconnect" href="https://video.twimg.com" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Leon's demos" />
     <meta property="og:description" content={description} />
@@ -31,6 +33,7 @@ const ogImage = DEMOS[0]?.poster ?? undefined;
     {ogImage && <meta name="twitter:image" content={ogImage} />}
   </head>
   <body>
+    <IconSprite />
     <canvas class="bg" aria-hidden="true"></canvas>
 
     <header class="top">
