@@ -279,9 +279,10 @@ video {
 
 .foot {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0.75rem;
+  gap: 0.5rem 0.75rem;
   margin-top: auto;
 }
 
@@ -306,7 +307,8 @@ video {
   position: relative;
   z-index: 1;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  margin-left: auto;
   justify-content: flex-end;
   gap: 0.35rem;
 }
