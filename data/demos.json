@@ -47,7 +47,7 @@
     "video": "https://video.twimg.com/amplify_video/2103281701275291649/vid/avc1/1152x1280/ovnFj3ZcUhgIw2cd.mp4"
    }
   ],
-  "tool": "Other"
+  "tool": "Both"
  },
  {
   "id": "2106101651010449796",
@@ -117,35 +117,6 @@
    }
   ],
   "tool": "Codex"
- },
- {
-  "id": "2100842256630534283",
-  "category": "Other",
-  "title": "TasteCode: open-source desktop app for coding agents with a Design Mode/Design Agent",
-  "created_at": "2026-09-18T07:00:00.000Z",
-  "likes": 1092,
-  "reposts": 69,
-  "views": 132965,
-  "post_url": "https://x.com/LexnLin/status/2100842256630534283",
-  "text": "We built TasteSkill to help people create better frontends with AI.\n\nToday we're introducing TasteCode \n\nA desktop app for your coding agents, with a dedicated Design Mode that avoids slop and instead produces good UI\n\nIt is opensource and you can use it with your existing AI subscriptions!",
-  "links": [
-   "https://github.com/Leonxlnx/tastecode"
-  ],
-  "related_posts": [
-   "https://x.com/i/status/2101755381265387824",
-   "https://x.com/i/status/2101466512204743148",
-   "https://x.com/i/status/2101430146238484731",
-   "https://x.com/i/status/2088927645354410199",
-   "https://x.com/i/status/2088798087024107733"
-  ],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2100761811473604608/img/_bteLXpgf69_rJG1.jpg",
-    "video": "https://video.twimg.com/amplify_video/2100761811473604608/vid/avc1/1662x1024/lT2eWiZA2urzdexq.mp4"
-   }
-  ],
-  "tool": "Other"
  },
  {
   "id": "2096518467105308782",
@@ -242,29 +213,6 @@
   "tool": "Codex"
  },
  {
-  "id": "2076655443691069927",
-  "category": "Web/Interactive",
-  "title": "3 examples using the UI skill GPT 5.6 Sol made for itself",
-  "created_at": "2026-07-13T13:10:14.000Z",
-  "likes": 785,
-  "reposts": 31,
-  "views": 64107,
-  "post_url": "https://x.com/LexnLin/status/2076655443691069927",
-  "text": "I'm ngl, it turned out WAY better than I thought. \n\nHere are 3 examples using the UI skill GPT 5.6 Sol made https://t.co/PET8aa8Goz https://t.co/9BppgzXMDA",
-  "links": [],
-  "related_posts": [
-   "https://x.com/i/status/2077529794011340824"
-  ],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2076655247078932480/img/qrI_QG7ajth25_Ye.jpg",
-    "video": "https://video.twimg.com/amplify_video/2076655247078932480/vid/avc1/1920x1128/Iok9R1qLA1vlC_f2.mp4"
-   }
-  ],
-  "tool": "Codex"
- },
- {
   "id": "2106493673425047896",
   "category": "Web/Interactive",
   "title": "Opus 5.5 3D world, keys 1-5 switch 5 rendering styles, no assets",
@@ -313,7 +261,7 @@
     "video": "https://video.twimg.com/amplify_video/2105699960960270336/vid/avc1/3840x2160/6Bip6noXGbc3Z4We.mp4"
    }
   ],
-  "tool": "Other"
+  "tool": "Both"
  },
  {
   "id": "2102133072585965759",
@@ -465,29 +413,6 @@
   "tool": "Codex"
  },
  {
-  "id": "2106463734336307362",
-  "category": "Web/Interactive",
-  "title": "Own 3D benchmark run with GPT 6 Astra in Codex (Brackenmere valley)",
-  "created_at": "2026-10-03T19:17:45.000Z",
-  "likes": 494,
-  "reposts": 19,
-  "views": 44697,
-  "post_url": "https://x.com/LexnLin/status/2106463734336307362",
-  "text": "what the fuck guys, I'm just running my own 3d benchmark with Astra rn, WHAT THE FUCK is codex doing\n\nhttps://t.co/d0vvEZcxGn https://t.co/iNbKvZLE30",
-  "links": [
-   "https://brackenmere-valley.leonl2.chatgpt.site/"
-  ],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2106461636189962240/img/k3BEOO6ig-Xox5-k.jpg",
-    "video": "https://video.twimg.com/amplify_video/2106461636189962240/vid/avc1/1680x1022/sJkuIKr2eBIFfVZ1.mp4"
-   }
-  ],
-  "tool": "Codex"
- },
- {
   "id": "2096045877760795063",
   "category": "Web/Interactive",
   "title": "Website from reference images in one prompt (GPT Astra)",
@@ -522,29 +447,6 @@
   "tool": "Codex"
  },
  {
-  "id": "2106891315371737480",
-  "category": "Animations/Videos",
-  "title": "Cinetic: skill that makes coding agents direct launch videos (demo film)",
-  "created_at": "2026-10-04T23:36:48.000Z",
-  "likes": 431,
-  "reposts": 14,
-  "views": 17974,
-  "post_url": "https://x.com/LexnLin/status/2106891315371737480",
-  "text": "Today I'm releasing a new skill\n\nOne that makes your coding agent direct a GOOD launch video/short film.\n\nThis video below was made with it in a quick short prompt!\n\nnpx skills add Leonxlnx/cinetic\nhttps://t.co/LiMwNhnJ8Y",
-  "links": [
-   "https://github.com/Leonxlnx/cinetic"
-  ],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2106887230614573056/img/_Gyeqv9wZ1e65At1.jpg",
-    "video": "https://video.twimg.com/amplify_video/2106887230614573056/vid/avc1/1920x1080/UrHReIXkZtsEpoEM.mp4"
-   }
-  ],
-  "tool": "Other"
- },
- {
   "id": "2095920966899728661",
   "category": "Web/Interactive",
   "title": "GPT Sol one-shot website from generated reference images (screenshots)",
@@ -575,32 +477,6 @@
    }
   ],
   "tool": "Codex"
- },
- {
-  "id": "2078663601963847935",
-  "category": "Other",
-  "title": "Kimi Code Desktop: unofficial open-source Windows app for Kimi Code CLI",
-  "created_at": "2026-07-19T02:09:57.000Z",
-  "likes": 294,
-  "reposts": 17,
-  "views": 20550,
-  "post_url": "https://x.com/LexnLin/status/2078663601963847935",
-  "text": "Introducing Kimi Code Desktop\n\nan unofficial open source Windows app for Kimi Code CLI :)\n\nuse your own account + quota with projects, chats, git, terminal, previews, skills, MCPs and subagents in one place.\n\nhttps://t.co/LXBKndpnDE https://t.co/EdLyZwGDhh",
-  "links": [
-   "https://github.com/Leonxlnx/kimi-code-desktop"
-  ],
-  "related_posts": [
-   "https://x.com/i/status/2078663619466703102",
-   "https://x.com/i/status/2078473909029015685",
-   "https://x.com/i/status/2078218724318802081"
-  ],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HNjknPAWoAAn5XY.jpg"
-   }
-  ],
-  "tool": "Other"
  },
  {
   "id": "2086540718235910272",
@@ -739,7 +615,7 @@
     "image": "https://pbs.twimg.com/media/HSGBNJOWgAY7BFZ.jpg"
    }
   ],
-  "tool": "Claude"
+  "tool": "Both"
  },
  {
   "id": "2081345526272803093",
@@ -891,7 +767,7 @@
     "image": "https://pbs.twimg.com/media/HTzSE31WIAAQqHt.png"
    }
   ],
-  "tool": "Other"
+  "tool": "Claude"
  },
  {
   "id": "2106843514772639995",
@@ -1034,27 +910,6 @@
    }
   ],
   "tool": "Claude"
- },
- {
-  "id": "2078808062769479860",
-  "category": "Other",
-  "title": "Productivity app built with Fable + Kimi K3",
-  "created_at": "2026-07-19T11:43:59.000Z",
-  "likes": 129,
-  "reposts": 1,
-  "views": 10788,
-  "post_url": "https://x.com/LexnLin/status/2078808062769479860",
-  "text": "Damnn Fable + Kimi K3 cooked up a really nice productivity app https://t.co/r3uy2BwkcL",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2078807968422805504/img/Lf-_A-xrWFkrooei.jpg",
-    "video": "https://video.twimg.com/amplify_video/2078807968422805504/vid/avc1/1220x2712/IIy0KQvNUW-nZ1kk.mp4"
-   }
-  ],
-  "tool": "Other"
  },
  {
   "id": "2096799556478357923",
@@ -1334,60 +1189,6 @@
   "tool": "Claude"
  },
  {
-  "id": "2100235062323110264",
-  "category": "Other",
-  "title": "Blender scene built by GPT 6 Astra via Blender MCP (screenshot)",
-  "created_at": "2026-09-16T14:47:13.000Z",
-  "likes": 100,
-  "reposts": 1,
-  "views": 5074,
-  "post_url": "https://x.com/LexnLin/status/2100235062323110264",
-  "text": "funny that I never touched blender myself (I didn't even install it, astra did)\n\nGPT 6 Astra is cooking so hard using blender mcp https://t.co/7g1gqrXV5t",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HSWIb0JXwAAiL9B.jpg"
-   }
-  ],
-  "tool": "Codex"
- },
- {
-  "id": "2089704858970673447",
-  "category": "Web/Interactive",
-  "title": "Landing page made for Artesiana (screenshots)",
-  "created_at": "2026-08-18T13:23:57.000Z",
-  "likes": 82,
-  "reposts": 3,
-  "views": 5688,
-  "post_url": "https://x.com/LexnLin/status/2089704858970673447",
-  "text": "Made a landingpage for Artesiana (https://t.co/bzgEZyzaPW) https://t.co/KkcILuvcNF",
-  "links": [
-   "https://www.artesiana.de/en"
-  ],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HQAfKkUaoAA6roD.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HQAfMc7aoAAEpHI.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HQAfPq7bMAAMrGI.jpg"
-   },
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HQAfUZQagAEc8re.jpg"
-   }
-  ],
-  "tool": "Other"
- },
- {
   "id": "2098346013085794698",
   "category": "Web/Interactive",
   "title": "Three.js waterfall by GPT 6 Astra (screenshots)",
@@ -1478,52 +1279,6 @@
     "type": "video",
     "image": "https://pbs.twimg.com/amplify_video_thumb/2079233171313373184/img/COl4o0DZjvK1Pcbf.jpg",
     "video": "https://video.twimg.com/amplify_video/2079233171313373184/vid/avc1/1650x1018/wNg0YavFjHQJSeus.mp4"
-   }
-  ],
-  "tool": "Other"
- },
- {
-  "id": "2108241023356825858",
-  "category": "Web/Interactive",
-  "title": "Fully procedural three.js sakura scene by Step 5 preview, no assets, under $2",
-  "created_at": "2026-10-08T17:00:03.000Z",
-  "likes": 55,
-  "reposts": 4,
-  "views": 3408,
-  "post_url": "https://x.com/LexnLin/status/2108241023356825858",
-  "text": "step 5 preview built this whole sakura scene from scratch for less than $2(!)\n\nfully procedural three.js, no assets were used, everything is code\n\nreally good for that price ngl https://t.co/E8lmkmaZMt https://t.co/pcWNcJStoZ",
-  "links": [],
-  "related_posts": [],
-  "media": [
-   {
-    "type": "video",
-    "image": "https://pbs.twimg.com/amplify_video_thumb/2108235360182444032/img/cptCxCs-7HXTsbwK.jpg",
-    "video": "https://video.twimg.com/amplify_video/2108235360182444032/vid/avc1/1920x1080/ht-BbqV9Yo27P6Op.mp4"
-   }
-  ],
-  "tool": "Other"
- },
- {
-  "id": "2086799319206592613",
-  "category": "Other",
-  "title": "SharpShot: tiny native Windows screenshot/recording tool",
-  "created_at": "2026-08-10T12:58:23.000Z",
-  "likes": 42,
-  "reposts": 3,
-  "views": 5194,
-  "post_url": "https://x.com/LexnLin/status/2086799319206592613",
-  "text": "I built SharpShot because taking and sharing a screen recording on Windows still feels wayyy too slow \n\nWin+Shift+D to screenshot\nWin+Shift+A to record any area\n\ninstantly copied, saved locally and ready to paste. native, open source and only ~81KB :)\n\nhttps://t.co/MHRGSA99ge https://t.co/N9eufDXVhg",
-  "links": [
-   "https://github.com/Leonxlnx/SharpShot/releases/tag/v1.5.0",
-   "https://github.com/Leonxlnx/SharpShot"
-  ],
-  "related_posts": [
-   "https://x.com/i/status/2086799325674242495"
-  ],
-  "media": [
-   {
-    "type": "photo",
-    "image": "https://pbs.twimg.com/media/HPXMTwvW0AAv8f8.jpg"
    }
   ],
   "tool": "Other"
