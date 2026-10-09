@@ -57,10 +57,26 @@ const MIN_RATIO = 0.5;
 const maxPlaying = () => (innerWidth >= 700 ? 4 : 2);
 const loaded = (v: HTMLVideoElement) => v.hasAttribute("src");
 
+// Spinning up several decoders at once stalls the main thread, so new videos start one
+// at a time: the next waits for the previous one's first frame (or a timeout).
+let starting: HTMLVideoElement | null = null;
+
 function play(v: HTMLVideoElement) {
   if (!loaded(v)) {
+    if (starting) return;
+    starting = v;
     v.src = v.dataset.src!;
-    const reveal = () => loaded(v) && v.parentElement?.classList.add("playing");
+    const next = () => {
+      clearTimeout(fallback);
+      if (starting !== v) return;
+      starting = null;
+      update();
+    };
+    const fallback = setTimeout(next, 1500);
+    const reveal = () => {
+      if (loaded(v)) v.parentElement?.classList.add("playing");
+      next();
+    };
     if (typeof v.requestVideoFrameCallback === "function") v.requestVideoFrameCallback(reveal);
     else (v as HTMLVideoElement).addEventListener("playing", reveal, { once: true });
   }
@@ -68,6 +84,7 @@ function play(v: HTMLVideoElement) {
 }
 
 function release(v: HTMLVideoElement) {
+  if (starting === v) starting = null;
   if (!loaded(v)) return;
   v.pause();
   v.parentElement?.classList.remove("playing");
@@ -124,6 +141,7 @@ if (autoplay && "IntersectionObserver" in window) {
     v.addEventListener("error", () => {
       broken.add(v);
       release(v);
+      schedule();
     });
     io.observe(v);
   }
