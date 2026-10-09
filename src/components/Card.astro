@@ -1,12 +1,14 @@
 ---
 import Icon from "./Icon.astro";
-import { compact, sizedImage, type ViewDemo } from "../lib/demos";
+import { compact, sizedImage, TOOL_FILTERS, TOOL_LOGOS, type ViewDemo } from "../lib/demos";
 
 interface Props {
   demo: ViewDemo;
   eager?: boolean;
 }
 const { demo, eager = false } = Astro.props;
+const logos = TOOL_LOGOS[demo.tool];
+const toolLabel = TOOL_FILTERS.find((f) => f.tool === demo.tool)?.label;
 ---
 
 <article class="card" data-cat={demo.cat} data-tool={demo.toolId}>
@@ -33,7 +35,15 @@ const { demo, eager = false } = Astro.props;
     <div class="foot">
       <span class="likes" title={`${demo.likes.toLocaleString("en-US")} likes`}>
         <Icon name="heart" size={12} />{compact(demo.likes)}
-        {demo.tool !== "Other" && <span class="tool">{demo.tool}</span>}
+        {
+          logos.length > 0 && (
+            <span class="tool" role="img" aria-label={toolLabel} title={toolLabel}>
+              {logos.map((l) => (
+                <Icon name={l} size={12} />
+              ))}
+            </span>
+          )
+        }
       </span>
       <span class="links">
         {

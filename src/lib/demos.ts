@@ -1,7 +1,8 @@
 import raw from "../../data/demos.json";
 
 export type Category = "Games" | "Animations/Videos" | "Web/Interactive" | "Other";
-export type Tool = "Claude" | "Codex" | "Other";
+export type Tool = "Claude" | "Codex" | "Both" | "Other";
+export type Logo = "claude" | "openai";
 
 export interface Media {
   type: "photo" | "video" | "animated_gif";
@@ -52,8 +53,16 @@ export const TOOL_FILTERS: { id: string; label: string; tool?: Tool }[] = [
   { id: "all", label: "All" },
   { id: "claude", label: "Claude", tool: "Claude" },
   { id: "codex", label: "Codex", tool: "Codex" },
+  { id: "both", label: "Claude and Codex", tool: "Both" },
   { id: "other", label: "Other", tool: "Other" },
 ];
+
+export const TOOL_LOGOS: Record<Tool, Logo[]> = {
+  Claude: ["claude"],
+  Codex: ["openai"],
+  Both: ["claude", "openai"],
+  Other: [],
+};
 
 const catId = (c: Category) => FILTERS.find((f) => f.category === c)?.id ?? "other";
 const toolId = (t: Tool) => TOOL_FILTERS.find((f) => f.tool === t)?.id ?? "other";
@@ -85,9 +94,9 @@ export function compact(n: number): string {
   return String(n);
 }
 
-/** Smaller pbs.twimg.com variant for thumbnails (video thumbs ignore the param). */
+/** Resized WebP from pbs.twimg.com; `small` fits within 680x680. */
 export function sizedImage(url: string, size: "small" | "medium"): string {
-  return url.includes("/media/") ? `${url}?name=${size}` : url;
+  return url.startsWith("https://pbs.twimg.com/") ? `${url.replace(/\?.*$/, "")}?format=webp&name=${size}` : url;
 }
 
 export const DEMOS: ViewDemo[] = (raw as Demo[])

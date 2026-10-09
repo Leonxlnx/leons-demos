@@ -125,6 +125,12 @@ video {
   white-space: nowrap;
   transition: color 0.2s, background 0.2s;
 }
+.filters .logo-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0 0.75rem;
+}
 .filters button:hover {
   color: var(--text);
 }
@@ -296,11 +302,13 @@ video {
   font-variant-numeric: tabular-nums;
 }
 .tool {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
   margin-left: 0.3rem;
   padding-left: 0.6rem;
   border-left: 1px solid var(--line-2);
-  font-size: 0.75rem;
-  color: #6f6f6f;
+  color: #7a7a7a;
 }
 
 .links {
