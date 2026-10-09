@@ -72,8 +72,6 @@ video {
   pointer-events: none;
   opacity: 0;
   transition: opacity 1.2s ease;
-  -webkit-mask-image: radial-gradient(140% 100% at 50% 0%, #000 25%, rgba(0, 0, 0, 0.35) 75%);
-  mask-image: radial-gradient(140% 100% at 50% 0%, #000 25%, rgba(0, 0, 0, 0.35) 75%);
 }
 .bg.ready {
   opacity: 1;

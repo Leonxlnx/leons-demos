@@ -9,12 +9,16 @@
  *
  * The canvas is rendered at one pixel per dither cell and scaled up with
  * `image-rendering: pixelated`, so a full-screen frame is a few hundred thousand
- * fragments. It is capped at 30 fps, stops when the tab is hidden, and draws a single
- * still frame for prefers-reduced-motion.
+ * fragments. The radial fade is applied in the shader rather than with a CSS mask, which
+ * would cost an extra composited layer every frame. The noise drifts slowly, so it runs at
+ * 20 fps (10 while videos play), holds still while the page scrolls, stops when the tab
+ * is hidden, and draws a single still frame for prefers-reduced-motion. Context creation
+ * and shader linking are synchronous and can take hundreds of milliseconds on slow GPUs,
+ * which is why this normally runs in a worker (see background.ts).
  */
 
-const CELL = 3;
-const FPS = 30;
+const FPS = 20;
+const FPS_WITH_VIDEO = 10;
 
 const props = {
   scale: 0.55,
@@ -116,7 +120,10 @@ void main() {
   float lum = dot(src, vec3(0.299, 0.587, 0.114));
   float d = 0.5 + (bayer4(cell) - 0.5) * uSpread;
   float ink = step(d, lum + (uThreshold - 0.5));
-  outColor = vec4(linearToSrgb(mix(uInkA, uInkB, ink)), 1.0);
+
+  // Radial fade from the top centre over the black page, (140% 100% at 50% 0%): 1 -> 0.35.
+  float fade = mix(1.0, 0.35, clamp((length(vec2((uv.x - 0.5) / 1.4, uv.y)) - 0.25) / 0.5, 0.0, 1.0));
+  outColor = vec4(linearToSrgb(mix(uInkA, uInkB, ink)) * fade, 1.0);
 }`;
 
 function hexToLinear(hex: string): [number, number, number] {
@@ -127,7 +134,25 @@ function hexToLinear(hex: string): [number, number, number] {
   }) as [number, number, number];
 }
 
-function start(canvas: HTMLCanvasElement) {
+export interface BgState {
+  scrolling: boolean;
+  videos: number;
+  hidden: boolean;
+}
+
+export interface BgRenderer {
+  resize(w: number, h: number): void;
+  setState(state: BgState): void;
+}
+
+/** Runs in the background worker, or on the main thread where OffscreenCanvas is missing. */
+export function createRenderer(
+  canvas: HTMLCanvasElement | OffscreenCanvas,
+  cells: { w: number; h: number },
+  state: BgState,
+  reducedMotion: boolean,
+  onReady: () => void,
+): BgRenderer | null {
   const gl = canvas.getContext("webgl2", {
     alpha: false,
     antialias: false,
@@ -135,8 +160,8 @@ function start(canvas: HTMLCanvasElement) {
     stencil: false,
     powerPreference: "low-power",
     preserveDrawingBuffer: false,
-  });
-  if (!gl) return;
+  }) as WebGL2RenderingContext | null;
+  if (!gl) return null;
 
   const shader = (type: number, src: string) => {
     const s = gl.createShader(type)!;
@@ -148,7 +173,7 @@ function start(canvas: HTMLCanvasElement) {
   gl.attachShader(prog, shader(gl.VERTEX_SHADER, VERT));
   gl.attachShader(prog, shader(gl.FRAGMENT_SHADER, FRAG));
   gl.linkProgram(prog);
-  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+  if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return null;
   gl.useProgram(prog);
 
   gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
@@ -171,55 +196,42 @@ function start(canvas: HTMLCanvasElement) {
   const uCells = u("uCells");
   const uAnimTime = u("uAnimTime");
 
-  const resize = () => {
-    const w = Math.ceil(window.innerWidth / CELL);
-    const h = Math.ceil(Math.max(window.innerHeight, document.documentElement.clientHeight) / CELL);
-    if (canvas.width === w && canvas.height === h) return;
-    canvas.width = w;
-    canvas.height = h;
-    canvas.style.width = `${w * CELL}px`;
-    canvas.style.height = `${h * CELL}px`;
-    gl.viewport(0, 0, w, h);
-    gl.uniform2f(uCells, w, h);
-  };
-
   const t0 = performance.now();
   const draw = (now: number) => {
     gl.uniform1f(uAnimTime, ((now - t0) / 1000) * props.speed);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
+  const resize = (w: number, h: number) => {
+    if (canvas.width === w && canvas.height === h) return;
+    canvas.width = w;
+    canvas.height = h;
+    gl.viewport(0, 0, w, h);
+    gl.uniform2f(uCells, w, h);
+    draw(performance.now());
+  };
 
-  resize();
-  draw(t0);
-  canvas.classList.add("ready");
+  resize(cells.w, cells.h);
+  onReady();
 
-  if (matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    window.addEventListener("resize", () => {
-      resize();
-      draw(performance.now());
-    });
-    return;
-  }
-
-  let raf = 0;
+  const raf = (cb: FrameRequestCallback) =>
+    typeof requestAnimationFrame === "function" ? requestAnimationFrame(cb) : setTimeout(() => cb(performance.now()), 16);
+  const cancel = (id: number) => (typeof cancelAnimationFrame === "function" ? cancelAnimationFrame(id) : clearTimeout(id));
+  let frame = 0;
   let last = 0;
   const loop = (now: number) => {
-    raf = requestAnimationFrame(loop);
-    if (now - last < 1000 / FPS - 2) return;
+    frame = raf(loop);
+    if (state.scrolling) return;
+    const fps = state.videos > 0 ? FPS_WITH_VIDEO : FPS;
+    if (now - last < 1000 / fps - 2) return;
     last = now;
     draw(now);
   };
-  const run = () => {
-    cancelAnimationFrame(raf);
-    raf = document.hidden ? 0 : requestAnimationFrame(loop);
+  const setState = (next: BgState) => {
+    state = next;
+    cancel(frame);
+    frame = state.hidden || reducedMotion ? 0 : raf(loop);
   };
-  window.addEventListener("resize", () => {
-    resize();
-    draw(performance.now());
-  });
-  document.addEventListener("visibilitychange", run);
-  run();
-}
+  setState(state);
 
-const canvas = document.querySelector<HTMLCanvasElement>("canvas.bg");
-if (canvas) start(canvas);
+  return { resize, setState };
+}
