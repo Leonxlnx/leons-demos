@@ -1,3 +1,5 @@
+import { activity, setActivity } from "./activity";
+
 type Group = "cat" | "tool";
 
 const cards = Array.from(document.querySelectorAll<HTMLElement>(".card"));
@@ -40,17 +42,25 @@ if (!cards.some((c) => matches(c, "cat", state.cat) && matches(c, "tool", state.
 if (state.cat !== "all" || state.tool !== "all") apply();
 
 /*
- * Videos: only the ones on screen are loaded and playing. A video that leaves the
- * viewport is paused and its source released, so the browser never holds more than
- * a handful of decoders. Reduced-motion users keep the static thumbnails.
+ * Videos: at most a few play at once, picked by how much of each is on screen (ties go
+ * to the higher-ranked card, then to whatever is already playing). Every other video is
+ * released back to its poster, so the page never holds more decoders than that. Stopping
+ * is immediate; starting waits for the page to load and for scrolling to settle, so fast
+ * scrolls don't kick off downloads. Reduced-motion users keep the static thumbnails.
  */
 const autoplay = !matchMedia("(prefers-reduced-motion: reduce)").matches;
-const inView = new Set<HTMLVideoElement>();
+const videos = Array.from(document.querySelectorAll<HTMLVideoElement>(".media video"));
+const order = new Map(videos.map((v, i) => [v, i]));
+const ratio = new Map<HTMLVideoElement, number>();
+const broken = new WeakSet<HTMLVideoElement>();
+const MIN_RATIO = 0.5;
+const maxPlaying = () => (innerWidth >= 700 ? 4 : 2);
+const loaded = (v: HTMLVideoElement) => v.hasAttribute("src");
 
 function play(v: HTMLVideoElement) {
-  if (!v.getAttribute("src")) {
+  if (!loaded(v)) {
     v.src = v.dataset.src!;
-    const reveal = () => v.parentElement?.classList.add("playing");
+    const reveal = () => loaded(v) && v.parentElement?.classList.add("playing");
     if (typeof v.requestVideoFrameCallback === "function") v.requestVideoFrameCallback(reveal);
     else (v as HTMLVideoElement).addEventListener("playing", reveal, { once: true });
   }
@@ -58,12 +68,42 @@ function play(v: HTMLVideoElement) {
 }
 
 function release(v: HTMLVideoElement) {
+  if (!loaded(v)) return;
   v.pause();
-  if (v.getAttribute("src")) {
-    v.parentElement?.classList.remove("playing");
-    v.removeAttribute("src");
-    v.load();
+  v.parentElement?.classList.remove("playing");
+  v.removeAttribute("src");
+  v.load();
+}
+
+let ready = false;
+let timer = 0;
+
+function update() {
+  if (!ready) return;
+  if (activity.scrolling) return schedule();
+  if (document.hidden) {
+    for (const v of videos) if (loaded(v)) v.pause();
+    return;
   }
+  const wanted = new Set(
+    videos
+      .filter((v) => (ratio.get(v) ?? 0) >= MIN_RATIO && !broken.has(v))
+      .sort(
+        (a, b) =>
+          ratio.get(b)! - ratio.get(a)! ||
+          Number(loaded(b)) - Number(loaded(a)) ||
+          order.get(a)! - order.get(b)!,
+      )
+      .slice(0, maxPlaying()),
+  );
+  for (const v of videos) if (!wanted.has(v)) release(v);
+  for (const v of wanted) play(v);
+  setActivity({ videos: wanted.size });
+}
+
+function schedule() {
+  clearTimeout(timer);
+  timer = window.setTimeout(update, 200);
 }
 
 if (autoplay && "IntersectionObserver" in window) {
@@ -71,26 +111,31 @@ if (autoplay && "IntersectionObserver" in window) {
     (entries) => {
       for (const e of entries) {
         const v = e.target as HTMLVideoElement;
-        if (e.intersectionRatio >= 0.4) {
-          inView.add(v);
-          if (!document.hidden) play(v);
-        } else if (!e.isIntersecting) {
-          inView.delete(v);
-          release(v);
-        } else {
-          inView.delete(v);
-          v.pause();
-        }
+        const r = e.isIntersecting ? e.intersectionRatio : 0;
+        ratio.set(v, r);
+        if (r < MIN_RATIO) release(v);
       }
+      setActivity({ videos: videos.filter(loaded).length });
+      schedule();
     },
-    { threshold: [0, 0.4] },
+    { threshold: [0, 0.25, 0.5, 0.75, 1] },
   );
-  document.querySelectorAll<HTMLVideoElement>(".media video").forEach((v) => {
-    v.addEventListener("error", () => release(v));
+  for (const v of videos) {
+    v.addEventListener("error", () => {
+      broken.add(v);
+      release(v);
+    });
     io.observe(v);
-  });
+  }
 
-  document.addEventListener("visibilitychange", () => {
-    for (const v of inView) document.hidden ? v.pause() : play(v);
-  });
+  const start = () => {
+    ready = true;
+    update();
+  };
+  const idle = () => ("requestIdleCallback" in window ? requestIdleCallback(start, { timeout: 1500 }) : setTimeout(start, 300));
+  if (document.readyState === "complete") idle();
+  else addEventListener("load", idle, { once: true });
+
+  document.addEventListener("visibilitychange", update);
+  addEventListener("resize", schedule);
 }
