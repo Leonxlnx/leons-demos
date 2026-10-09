@@ -1,0 +1,91 @@
+---
+import "@fontsource-variable/geist";
+import "../styles/global.css";
+
+import Icon from "../components/Icon.astro";
+import IconSprite from "../components/IconSprite.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  /** Hotlinks media from Twitter's CDN. */
+  twimg?: boolean;
+}
+const { title, description, twimg = false } = Astro.props;
+const path = Astro.url.pathname.replace(/\/$/, "") || "/";
+const canonical = Astro.site ? new URL(path, Astro.site).href : undefined;
+const ogImage = Astro.site ? new URL("/og.png", Astro.site).href : "/og.png";
+const nav = [
+  { href: "/", label: "Work" },
+  { href: "/demos", label: "Demos" },
+];
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    {twimg && <meta name="referrer" content="no-referrer" />}
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#000000" />
+    <meta name="color-scheme" content="dark" />
+    {canonical && <link rel="canonical" href={canonical} />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    {twimg && <link rel="preconnect" href="https://pbs.twimg.com" />}
+    {twimg && <link rel="preconnect" href="https://video.twimg.com" />}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Leon Lin" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:creator" content="@LexnLin" />
+    <meta name="twitter:image" content={ogImage} />
+  </head>
+  <body>
+    <IconSprite />
+    <canvas class="bg" aria-hidden="true"></canvas>
+
+    <header class="top">
+      {
+        path === "/" ? (
+          <h1 class="site-title">
+            <a href="/">Leon Lin</a>
+          </h1>
+        ) : (
+          <a class="site-title" href="/">
+            Leon Lin
+          </a>
+        )
+      }
+      <nav class="filters nav" aria-label="Main">
+        {
+          nav.map((n) => (
+            <a href={n.href} aria-current={n.href === path ? "page" : undefined}>
+              {n.label}
+            </a>
+          ))
+        }
+      </nav>
+      <div class="social">
+        <a href="https://x.com/LexnLin" target="_blank" rel="noopener" aria-label="X: @LexnLin" title="@LexnLin on X">
+          <Icon name="x" size={15} />
+        </a>
+        <a href="https://github.com/Leonxlnx" target="_blank" rel="noopener" aria-label="GitHub: Leonxlnx" title="Leonxlnx on GitHub">
+          <Icon name="github" size={17} />
+        </a>
+      </div>
+    </header>
+
+    <slot />
+
+    <script>
+      import "../scripts/background";
+    </script>
+  </body>
+</html>

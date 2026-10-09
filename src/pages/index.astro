@@ -1,0 +1,31 @@
+---
+import Icon from "../components/Icon.astro";
+import Base from "../layouts/Base.astro";
+import { compact } from "../lib/demos";
+import { PROJECTS } from "../lib/projects";
+---
+
+<Base title="Leon Lin" description="Leon Lin builds things with AI. Based in Munich.">
+  <main class="home">
+    <p class="intro">Builds things with AI. Based in Munich.</p>
+    <h2 class="label">Projects</h2>
+    <ul class="projects">
+      {
+        PROJECTS.map((p) => (
+          <li>
+            <a class="project" href={p.url} target="_blank" rel="noopener">
+              <span class="project-head">
+                <span class="project-name">{p.name}</span>
+                <span class="stars" title={`${p.stars.toLocaleString("en-US")} stars`}>
+                  <Icon name="star" size={12} />
+                  {compact(p.stars)}
+                </span>
+              </span>
+              {p.description && <span class="project-desc">{p.description}</span>}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </main>
+</Base>

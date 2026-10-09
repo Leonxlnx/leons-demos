@@ -1,94 +1,52 @@
 ---
-import "@fontsource-variable/geist";
-import "../styles/global.css";
-
 import Card from "../components/Card.astro";
 import Icon from "../components/Icon.astro";
-import IconSprite from "../components/IconSprite.astro";
+import Base from "../layouts/Base.astro";
 import { DEMOS, VISIBLE_FILTERS, VISIBLE_TOOL_FILTERS } from "../lib/demos";
-
-const description = "AI-built demos by Leon Lin, ranked by likes.";
-const ogImage = DEMOS[0]?.poster ?? undefined;
 ---
 
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-    <meta name="referrer" content="no-referrer" />
-    <title>Leon's demos</title>
-    <meta name="description" content={description} />
-    <meta name="theme-color" content="#000000" />
-    <meta name="color-scheme" content="dark" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="preconnect" href="https://pbs.twimg.com" />
-    <link rel="preconnect" href="https://video.twimg.com" />
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="Leon's demos" />
-    <meta property="og:description" content={description} />
-    {ogImage && <meta property="og:image" content={ogImage} />}
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:creator" content="@LexnLin" />
-    {ogImage && <meta name="twitter:image" content={ogImage} />}
-  </head>
-  <body>
-    <IconSprite />
-    <canvas class="bg" aria-hidden="true"></canvas>
+<Base title="Demos · Leon Lin" description="AI-built demos by Leon Lin, ranked by likes." twimg>
+  <h1 class="sr-only">Demos</h1>
+  <div class="toolbar">
+    <nav class="filters" aria-label="Filter by type" hidden={VISIBLE_FILTERS.length < 3}>
+      {
+        VISIBLE_FILTERS.map((f) => (
+          <button type="button" data-group="cat" data-value={f.id} aria-pressed={f.id === "all" ? "true" : "false"}>
+            {f.label}
+          </button>
+        ))
+      }
+    </nav>
+    <nav class="filters" aria-label="Filter by tool" hidden={VISIBLE_TOOL_FILTERS.length < 3}>
+      {
+        VISIBLE_TOOL_FILTERS.map((f) =>
+          f.logo ? (
+            <button
+              type="button"
+              class="logo-btn"
+              data-group="tool"
+              data-value={f.id}
+              aria-pressed="false"
+              aria-label={f.label}
+              title={f.label}
+            >
+              <Icon name={f.logo} size={14} />
+            </button>
+          ) : (
+            <button type="button" data-group="tool" data-value={f.id} aria-pressed={f.id === "all" ? "true" : "false"}>
+              {f.label}
+            </button>
+          ),
+        )
+      }
+    </nav>
+  </div>
 
-    <header class="top">
-      <h1 class="site-title"><a href="/">Leon's demos</a></h1>
-      <div class="controls">
-        <nav class="filters" aria-label="Filter by type" hidden={VISIBLE_FILTERS.length < 3}>
-          {
-            VISIBLE_FILTERS.map((f) => (
-              <button type="button" data-group="cat" data-value={f.id} aria-pressed={f.id === "all" ? "true" : "false"}>
-                {f.label}
-              </button>
-            ))
-          }
-        </nav>
-        <nav class="filters" aria-label="Filter by tool" hidden={VISIBLE_TOOL_FILTERS.length < 3}>
-          {
-            VISIBLE_TOOL_FILTERS.map((f) =>
-              f.logo ? (
-                <button
-                  type="button"
-                  class="logo-btn"
-                  data-group="tool"
-                  data-value={f.id}
-                  aria-pressed="false"
-                  aria-label={f.label}
-                  title={f.label}
-                >
-                  <Icon name={f.logo} size={14} />
-                </button>
-              ) : (
-                <button type="button" data-group="tool" data-value={f.id} aria-pressed={f.id === "all" ? "true" : "false"}>
-                  {f.label}
-                </button>
-              ),
-            )
-          }
-        </nav>
-      </div>
-      <div class="social">
-        <a href="https://x.com/LexnLin" target="_blank" rel="noopener" aria-label="X: @LexnLin" title="@LexnLin on X">
-          <Icon name="x" size={15} />
-        </a>
-        <a href="https://github.com/Leonxlnx" target="_blank" rel="noopener" aria-label="GitHub: Leonxlnx" title="Leonxlnx on GitHub">
-          <Icon name="github" size={17} />
-        </a>
-      </div>
-    </header>
+  <main class="grid">
+    {DEMOS.map((d, i) => <Card demo={d} eager={i < 4} />)}
+  </main>
 
-    <main class="grid">
-      {DEMOS.map((d, i) => <Card demo={d} eager={i < 4} />)}
-    </main>
-
-    <script>
-      import "../scripts/app";
-      import "../scripts/background";
-    </script>
-  </body>
-</html>
+  <script>
+    import "../scripts/app";
+  </script>
+</Base>
