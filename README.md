@@ -4,15 +4,21 @@ Every demo I've shared on X, ranked by likes.
 
 Leon Lin's AI-built demos ([@LexnLin](https://x.com/LexnLin) · [GitHub](https://github.com/Leonxlnx)) as one
 minimal grid, most liked first. Each card shows the video or thumbnail, the title, likes, and links to the X post and
-any live demo or repo. Videos autoplay muted while on screen and are paused and unloaded when they scroll away.
+any live demo or repo, plus a small Claude / OpenAI logo for the tool it was made with. The grid can be filtered by
+category and by tool (Claude, Codex, both, other); the filter state lives in the URL (`?cat=games&tool=claude`).
 
-Built with [Astro](https://astro.build) as a fully static page. The only client JS is the category filter, the video
-observer and the background.
+Videos autoplay muted, but at most four at a time (two on narrow screens): the most visible ones, started one after
+another once the page has loaded and scrolling has settled. Every other video is unloaded back to its poster. Posters
+are requested as resized WebP from `pbs.twimg.com`.
+
+Built with [Astro](https://astro.build) as a fully static page. The only client JS is the filters, the video
+scheduler and the background.
 
 The background is a WebGL2 port of two effects from
 [shader-effects-inc/shaders](https://github.com/shader-effects-inc/shaders) (MIT): `SimplexNoise` feeding `Dither`
 (Bayer 4×4), in black and grey. The library itself needs WebGPU and adds ~700 KB gzipped, so the two effects are
-inlined in `src/scripts/background.ts`. It renders at one pixel per dither cell, is capped at 30 fps, stops when the tab
+inlined in `src/scripts/bg-renderer.ts`. It runs in a worker through `OffscreenCanvas` (main thread as a fallback),
+renders at one pixel per dither cell at 20 fps (10 while videos play), holds still while scrolling, stops when the tab
 is hidden, and shows a still frame for `prefers-reduced-motion`.
 
 ## Develop
@@ -34,6 +40,7 @@ All content comes from [`data/demos.json`](data/demos.json), an array of demos:
 {
   "id": "2096263046918197609",          // X post id (unique)
   "category": "Web/Interactive",         // Games | Animations/Videos | Web/Interactive | Other
+  "tool": "Codex",                       // Claude | Codex | Both | Other
   "title": "Verdant forest: …",          // trailing "(…)" is dropped on the card
   "created_at": "2026-09-05T15:43:51.000Z",
   "likes": 3969, "reposts": 277, "views": 1081412,
