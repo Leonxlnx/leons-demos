@@ -5,7 +5,7 @@ import "../styles/global.css";
 import Card from "../components/Card.astro";
 import Icon from "../components/Icon.astro";
 import IconSprite from "../components/IconSprite.astro";
-import { DEMOS, TOOL_LOGOS, VISIBLE_FILTERS, VISIBLE_TOOL_FILTERS } from "../lib/demos";
+import { DEMOS, VISIBLE_FILTERS, VISIBLE_TOOL_FILTERS } from "../lib/demos";
 
 const description = "AI-built demos by Leon Lin, ranked by likes.";
 const ogImage = DEMOS[0]?.poster ?? undefined;
@@ -50,9 +50,8 @@ const ogImage = DEMOS[0]?.poster ?? undefined;
         </nav>
         <nav class="filters" aria-label="Filter by tool" hidden={VISIBLE_TOOL_FILTERS.length < 3}>
           {
-            VISIBLE_TOOL_FILTERS.map((f) => {
-              const logos = f.tool ? TOOL_LOGOS[f.tool] : [];
-              return logos.length ? (
+            VISIBLE_TOOL_FILTERS.map((f) =>
+              f.logo ? (
                 <button
                   type="button"
                   class="logo-btn"
@@ -62,16 +61,14 @@ const ogImage = DEMOS[0]?.poster ?? undefined;
                   aria-label={f.label}
                   title={f.label}
                 >
-                  {logos.map((l) => (
-                    <Icon name={l} size={14} />
-                  ))}
+                  <Icon name={f.logo} size={14} />
                 </button>
               ) : (
                 <button type="button" data-group="tool" data-value={f.id} aria-pressed={f.id === "all" ? "true" : "false"}>
                   {f.label}
                 </button>
-              );
-            })
+              ),
+            )
           }
         </nav>
       </div>

@@ -6,7 +6,9 @@ const cards = Array.from(document.querySelectorAll<HTMLElement>(".card"));
 const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>("[data-group]"));
 const state: Record<Group, string> = { cat: "all", tool: "all" };
 
-const matches = (card: HTMLElement, group: Group, value: string) => value === "all" || card.dataset[group] === value;
+// data-tool can list several tools ("claude codex"); a card matches each of them.
+const matches = (card: HTMLElement, group: Group, value: string) =>
+  value === "all" || card.dataset[group]!.split(" ").includes(value);
 const other = (group: Group): Group => (group === "cat" ? "tool" : "cat");
 
 function apply() {

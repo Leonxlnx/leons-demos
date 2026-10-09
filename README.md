@@ -4,8 +4,8 @@ Every demo I've shared on X, ranked by likes.
 
 Leon Lin's AI-built demos ([@LexnLin](https://x.com/LexnLin) · [GitHub](https://github.com/Leonxlnx)) as one
 minimal grid, most liked first. Each card shows the video or thumbnail, the title, likes, and links to the X post and
-any live demo or repo, plus a small Claude / OpenAI logo for the tool it was made with. The grid can be filtered by
-category and by tool (Claude, Codex, both, other); the filter state lives in the URL (`?cat=games&tool=claude`).
+any live demo or repo, plus a small Claude / OpenAI / Kimi logo for each tool it was made with. The grid can be filtered
+by category and by tool (Claude, Codex, Kimi; a demo made with two tools shows under both); the filter state lives in the URL (`?cat=games&tool=claude`).
 
 Videos autoplay muted, but at most four at a time (two on narrow screens): the most visible ones, started one after
 another once the page has loaded and scrolling has settled. Every other video is unloaded back to its poster. Posters
@@ -40,7 +40,7 @@ All content comes from [`data/demos.json`](data/demos.json), an array of demos:
 {
   "id": "2096263046918197609",          // X post id (unique)
   "category": "Web/Interactive",         // Games | Animations/Videos | Web/Interactive | Other
-  "tool": "Codex",                       // Claude | Codex | Both | Other
+  "tools": ["Claude", "Codex"],          // any of Claude | Codex | Kimi
   "title": "Verdant forest: …",          // trailing "(…)" is dropped on the card
   "created_at": "2026-09-05T15:43:51.000Z",
   "likes": 3969, "reposts": 277, "views": 1081412,
@@ -54,7 +54,7 @@ All content comes from [`data/demos.json`](data/demos.json), an array of demos:
 
 To add a demo or refresh stats, edit that file and push to `main`. The page sorts by likes at build time, so the order
 in the file doesn't matter. Link labels come from the URL: `github.com` becomes **Repo**, other links become **Play**
-for games and **Live** for everything else. The card uses the first video in `media` (or the first image if there is
+for games and **Live** for everything else; links to prompt files are not shown. The card uses the first video in `media` (or the first image if there is
 no video).
 
 Media is hotlinked from Twitter's CDN. The page sets `referrer: no-referrer`, because `video.twimg.com` rejects

@@ -1,8 +1,8 @@
 import raw from "../../data/demos.json";
 
 export type Category = "Games" | "Animations/Videos" | "Web/Interactive" | "Other";
-export type Tool = "Claude" | "Codex" | "Both" | "Other";
-export type Logo = "claude" | "openai";
+export type Tool = "Claude" | "Codex" | "Kimi";
+export type Logo = "claude" | "openai" | "kimi";
 
 export interface Media {
   type: "photo" | "video" | "animated_gif";
@@ -13,7 +13,7 @@ export interface Media {
 export interface Demo {
   id: string;
   category: Category;
-  tool: Tool;
+  tools: Tool[];
   title: string;
   created_at: string;
   likes: number;
@@ -35,7 +35,7 @@ export interface DemoLink {
 export interface ViewDemo extends Demo {
   shortTitle: string;
   cat: string;
-  toolId: string;
+  toolIds: string;
   links_: DemoLink[];
   poster: string | null;
   video: string | null;
@@ -49,37 +49,30 @@ export const FILTERS: { id: string; label: string; category?: Category }[] = [
   { id: "other", label: "Other", category: "Other" },
 ];
 
-export const TOOL_FILTERS: { id: string; label: string; tool?: Tool }[] = [
+export const TOOL_FILTERS: { id: string; label: string; tool?: Tool; logo?: Logo }[] = [
   { id: "all", label: "All" },
-  { id: "claude", label: "Claude", tool: "Claude" },
-  { id: "codex", label: "Codex", tool: "Codex" },
-  { id: "both", label: "Claude and Codex", tool: "Both" },
-  { id: "other", label: "Other", tool: "Other" },
+  { id: "claude", label: "Claude", tool: "Claude", logo: "claude" },
+  { id: "codex", label: "Codex", tool: "Codex", logo: "openai" },
+  { id: "kimi", label: "Kimi", tool: "Kimi", logo: "kimi" },
 ];
 
-export const TOOL_LOGOS: Record<Tool, Logo[]> = {
-  Claude: ["claude"],
-  Codex: ["openai"],
-  Both: ["claude", "openai"],
-  Other: [],
-};
-
 const catId = (c: Category) => FILTERS.find((f) => f.category === c)?.id ?? "other";
-const toolId = (t: Tool) => TOOL_FILTERS.find((f) => f.tool === t)?.id ?? "other";
+export const toolFilter = (t: Tool) => TOOL_FILTERS.find((f) => f.tool === t)!;
 
 /** Drops parenthetical notes such as "(GPT 6 Astra)" or "(screenshots)". */
 export function shortTitle(title: string): string {
   return title.replace(/\s*\([^()]*\)/g, "").replace(/\s+([,:])/g, "$1").trim() || title;
 }
 
-export function describeLink(url: string, category: Category): DemoLink {
+/** Returns null for links that aren't shown (prompt files). */
+export function describeLink(url: string, category: Category): DemoLink | null {
   const u = new URL(url);
   const host = u.hostname.replace(/^www\./, "");
   if (host === "github.com") {
     if (u.pathname.includes("/releases")) return { url, label: "Download", primary: false };
     if (u.pathname.includes("/blob/")) {
       const file = u.pathname.split("/").pop() ?? "";
-      return { url, label: /prompt/i.test(file) ? "Prompt" : "Source", primary: false };
+      return /prompt/i.test(file) ? null : { url, label: "Source", primary: false };
     }
     return { url, label: "Repo", primary: false };
   }
@@ -107,7 +100,8 @@ export const DEMOS: ViewDemo[] = (raw as Demo[])
     const seen = new Set<string>();
     const links_ = d.links
       .map((l) => describeLink(l, d.category))
-      .filter((l) => {
+      .filter((l): l is DemoLink => {
+        if (!l) return false;
         const key = l.url.replace(/\/$/, "");
         if (seen.has(key)) return false;
         seen.add(key);
@@ -121,7 +115,7 @@ export const DEMOS: ViewDemo[] = (raw as Demo[])
       ...d,
       shortTitle: shortTitle(d.title),
       cat: catId(d.category),
-      toolId: toolId(d.tool),
+      toolIds: d.tools.map((t) => toolFilter(t).id).join(" "),
       links_,
       poster: primary?.image ?? null,
       video: primary?.video ?? null,
@@ -130,4 +124,4 @@ export const DEMOS: ViewDemo[] = (raw as Demo[])
 
 /** Filters with at least one demo; "All" is always first. */
 export const VISIBLE_FILTERS = FILTERS.filter((f) => !f.category || DEMOS.some((d) => d.category === f.category));
-export const VISIBLE_TOOL_FILTERS = TOOL_FILTERS.filter((f) => !f.tool || DEMOS.some((d) => d.tool === f.tool));
+export const VISIBLE_TOOL_FILTERS = TOOL_FILTERS.filter((f) => !f.tool || DEMOS.some((d) => d.tools.includes(f.tool!)));
