@@ -3,29 +3,68 @@ import Icon from "../components/Icon.astro";
 import Base from "../layouts/Base.astro";
 import { compact } from "../lib/demos";
 import { PROJECTS } from "../lib/projects";
+
+const awards = [
+  ["IChO 2025", "German selection, round 2"],
+  ["Pangea Mathematics", "Bronze"],
+  ["European Statistics Competition", "3rd nationwide"],
+  ["Landeswettbewerb Mathematik Bayern", "Landessieger"],
+  ["Náboj Mathematics Junior", "Rank 21, Germany"],
+  ["Bolyai Team Math", "3rd of 121 teams"],
+];
 ---
 
-<Base title="Leon Lin" description="Leon Lin builds things with AI. Based in Munich.">
+<Base title="Leon Lin" description="Design engineer building tools for AI coding agents. Based in Munich.">
   <main class="home">
-    <p class="intro">Builds things with AI. Based in Munich.</p>
-    <h2 class="label">Projects</h2>
-    <ul class="projects">
-      {
-        PROJECTS.map((p) => (
-          <li>
-            <a class="project" href={p.url} target="_blank" rel="noopener">
-              <span class="project-head">
-                <span class="project-name">{p.name}</span>
-                <span class="stars" title={`${p.stars.toLocaleString("en-US")} stars`}>
-                  <Icon name="star" size={12} />
-                  {compact(p.stars)}
+    <section class="hero">
+      <p class="intro">Design engineer building tools for AI coding agents.</p>
+      <p class="sub">Student in Munich. Maintainer of Taste Skill. Open to internships until August 2026.</p>
+      <div class="cta">
+        <a class="pill pill--primary" href="https://x.com/LexnLin" target="_blank" rel="noopener"><Icon name="x" size={14} />@LexnLin</a>
+        <a class="pill" href="https://github.com/Leonxlnx" target="_blank" rel="noopener"><Icon name="github" size={15} />Leonxlnx</a>
+        <a class="pill" href="/demos">Demos</a>
+      </div>
+    </section>
+
+    <section class="block">
+      <h2 class="label">Taste Skill</h2>
+      <p class="lead">A rulebook coding agents read before they generate UI. Works with Cursor, Claude Code, Codex, Gemini CLI and more.</p>
+      <code class="install">npx skills add Leonxlnx/taste-skill</code>
+    </section>
+
+    <section class="block">
+      <h2 class="label">Projects</h2>
+      <ul class="projects">
+        {
+          PROJECTS.map((p) => (
+            <li>
+              <a class="project" href={p.url} target="_blank" rel="noopener">
+                <span class="project-head">
+                  <span class="project-name">{p.name}</span>
+                  <span class="stars" title={`${p.stars.toLocaleString("en-US")} stars`}>
+                    <Icon name="star" size={12} />
+                    {compact(p.stars)}
+                  </span>
                 </span>
-              </span>
-              {p.description && <span class="project-desc">{p.description}</span>}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
+                {p.description && <span class="project-desc">{p.description}</span>}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <a class="more" href="/demos">See all demos →</a>
+    </section>
+
+    <section class="block">
+      <h2 class="label">Awards</h2>
+      <ul class="awards">
+        {awards.map(([n, r]) => (<li><span>{n}</span><span class="muted">{r}</span></li>))}
+      </ul>
+    </section>
+
+    <footer class="block contact">
+      <a href="mailto:leon@learn2vibecode.dev">leon@learn2vibecode.dev</a>
+      <span class="muted">Munich, Germany</span>
+    </footer>
   </main>
 </Base>
