@@ -1,18 +1,21 @@
-# leons-demos
+# leonlin.de
 
-Every demo I've shared on X, ranked by likes.
+Leon Lin's personal site ([@LexnLin](https://x.com/LexnLin) · [GitHub](https://github.com/Leonxlnx)).
 
-Leon Lin's AI-built demos ([@LexnLin](https://x.com/LexnLin) · [GitHub](https://github.com/Leonxlnx)) as one
-minimal grid, most liked first. Each card shows the video or thumbnail, the title, likes, and links to the X post and
-any live demo or repo, plus a small Claude / OpenAI / Kimi logo for each tool it was made with. The grid can be filtered
-by category and by tool (Claude, Codex, Kimi; a demo made with two tools shows under both); the filter state lives in the URL (`?cat=games&tool=claude`).
+- `/` lists his open-source projects from [`data/projects.json`](data/projects.json), sorted by stars.
+- `/demos` shows every demo he has shared on X as one minimal grid, most liked first. Each card shows the video or
+  thumbnail, the title, likes, and links to the X post and any live demo or repo, plus a small Claude / OpenAI / Kimi
+  logo for each tool it was made with. The grid can be filtered by category and by tool (Claude, Codex, Kimi; a demo
+  made with two tools shows under both); the filter state lives in the URL (`/demos?cat=games&tool=claude`).
+
+The site URL (canonical links, Open Graph) is set once as `site` in `astro.config.mjs`.
 
 Videos autoplay muted, but at most four at a time (two on narrow screens): the most visible ones, started one after
 another once the page has loaded and scrolling has settled. Every other video is unloaded back to its poster. Posters
 are requested as resized WebP from `pbs.twimg.com`.
 
-Built with [Astro](https://astro.build) as a fully static page. The only client JS is the filters, the video
-scheduler and the background.
+Built with [Astro](https://astro.build) as a fully static site. The only client JS is the background and, on
+`/demos`, the filters and the video scheduler.
 
 The background is a WebGL2 port of two effects from
 [shader-effects-inc/shaders](https://github.com/shader-effects-inc/shaders) (MIT): `SimplexNoise` feeding `Dither`
@@ -32,7 +35,13 @@ npm run preview  # serve the production build
 
 Requires Node 22.12+. Vercel detects Astro automatically and needs no config (build `npm run build`, output `dist`).
 
-## Updating the data
+## Updating the projects
+
+`data/projects.json` holds each repo's name, GitHub description, stars and URL. To refresh it (or change which repos
+are listed, see `REPOS` in the script), run `node scripts/projects.mjs` and commit the result. Set `GITHUB_TOKEN` to
+avoid GitHub's unauthenticated rate limit.
+
+## Updating the demos
 
 All content comes from [`data/demos.json`](data/demos.json), an array of demos:
 
