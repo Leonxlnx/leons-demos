@@ -23,7 +23,6 @@
   --step-lead: clamp(1.375rem, 1.15rem + 0.8vw, 1.75rem);
   --step-index: clamp(2.25rem, 1rem + 3.6vw, 4.25rem);
   --step-display: clamp(4.5rem, 1rem + 15vw, 10.5rem);
-  --step-figure: clamp(6.5rem, 17vw, 19rem);
   font-family: "Geist Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   color-scheme: dark;
 }

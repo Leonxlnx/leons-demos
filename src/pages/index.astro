@@ -714,29 +714,34 @@ const jsonLd = {
   .specimens {
     margin-top: clamp(9rem, 16svh, 10rem);
   }
+  /* Each figure is sized by its own column, so the figure and its caption always fit beside
+     each other: --fig is resolved inside the .specimen container. */
   .specimen {
+    --fig: min(19rem, 36cqi);
     display: flex;
     grid-column: span 6;
     align-items: flex-start;
     gap: clamp(0.75rem, 1.5vw, 1.5rem);
     margin: 0;
+    container-type: inline-size;
   }
   .specimen figcaption {
+    max-width: 12ch;
     padding-top: 0.35rem;
     color: var(--paper-muted);
     font-size: var(--step-body);
-    white-space: nowrap;
+    line-height: 1.35;
   }
   /* Ends on the figures' baseline, so the section edge reads as the line they stand on.
      Only the bottom is cut: the optically aligned left side bearing stays whole. */
   .cut {
-    height: calc(var(--step-figure) * 0.762);
+    height: calc(var(--fig) * 0.762);
     overflow: hidden;
     overflow: visible clip;
   }
   .figure {
     margin: 0 0 0 -0.06em;
-    font-size: var(--step-figure);
+    font-size: var(--fig);
     font-weight: 500;
     line-height: 0.8;
     letter-spacing: -0.065em;
@@ -749,18 +754,32 @@ const jsonLd = {
     padding-top: var(--section);
   }
   /* A typographic index: names on the margin, notes on the middle line, stars on the right.
-     Pointing at one entry sets the others back to the soft ink. */
+     Pointing at an entry lays a filled band behind its row and brings its note up to full ink. */
   .index {
     margin: 2rem 0 0;
     padding: 0;
     list-style: none;
   }
   .entry {
+    position: relative;
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
     column-gap: var(--gutter);
     align-items: baseline;
     padding-block: clamp(0.55rem, 1.1vw, 0.9rem);
+    isolation: isolate;
+  }
+  .entry::before {
+    content: "";
+    position: absolute;
+    inset: 0 -1rem;
+    z-index: -1;
+    background: var(--surface);
+    opacity: 0;
+    transition: opacity var(--t-hover) ease;
+  }
+  .entry:focus-visible {
+    outline-offset: 0;
   }
   .entry-name {
     grid-column: 1 / 7;
@@ -769,9 +788,6 @@ const jsonLd = {
     line-height: 1;
     letter-spacing: -0.045em;
     white-space: nowrap;
-    transition:
-      color var(--t-hover) ease,
-      transform 0.5s var(--ease);
   }
   .entry-note {
     grid-column: 7 / 12;
@@ -792,19 +808,19 @@ const jsonLd = {
     font-variant-numeric: tabular-nums;
     transition: color var(--t-hover) ease;
   }
+  .entry:focus-visible::before {
+    opacity: 1;
+  }
+  .entry:focus-visible .entry-note,
+  .entry:focus-visible .entry-stars {
+    color: var(--text);
+  }
   @media (hover: hover) and (pointer: fine) {
-    .index:hover .entry:not(:hover) .entry-name,
-    .index:focus-within .entry:not(:focus-visible) .entry-name {
-      color: var(--muted);
-    }
-    .entry:hover .entry-name,
-    .entry:focus-visible .entry-name {
-      transform: translateX(0.12em);
+    .entry:hover::before {
+      opacity: 1;
     }
     .entry:hover .entry-note,
-    .entry:hover .entry-stars,
-    .entry:focus-visible .entry-note,
-    .entry:focus-visible .entry-stars {
+    .entry:hover .entry-stars {
       color: var(--text);
     }
   }
@@ -1059,20 +1075,40 @@ const jsonLd = {
     .entry-stars {
       grid-column: 10 / -1;
     }
-    .specimen {
-      grid-column: 1 / -1;
+    /* On a phone the proof comes straight after the name: heading, the two figures side by
+       side with their captions underneath, then the text. Nothing is cut. */
+    .taste {
+      display: flex;
+      flex-direction: column;
+      padding-bottom: var(--section);
     }
-    /* Stacked, the first figure keeps its caption underneath and only the last one stands on the edge. */
-    .specimen:first-child {
+    .taste-head {
+      display: contents;
+    }
+    .taste-head > .h2 {
+      order: 1;
+      padding-inline: var(--pad);
+    }
+    .specimens {
+      order: 2;
+      margin-top: 1.75rem;
+    }
+    .taste-head > .taste-copy {
+      order: 3;
+      margin-top: 2.75rem;
+      padding-inline: var(--pad);
+    }
+    .specimen {
+      --fig: min(19rem, 40cqi);
       flex-direction: column;
       gap: 0.6rem;
     }
-    .specimen:first-child .cut {
+    .cut {
       height: auto;
       overflow: visible;
     }
-    .specimen + .specimen {
-      margin-top: 3.5rem;
+    .specimen figcaption {
+      padding-top: 0;
     }
     /* On a phone each row is a two-line block; the groups are told apart by space, not fills. */
     .table,
