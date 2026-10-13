@@ -50,6 +50,14 @@ each list line is the first sentence of the GitHub description unless `NOTES` in
 The Taste Skill install count (`TASTE_INSTALLS` in `src/pages/index.astro`, from skills.sh) and the recognition table
 are written by hand in that file.
 
+## Strip previews
+
+The homepage strip plays smaller encodes of each clip (about 360p, or 720p on large high-density screens) instead of
+the full video in `data/demos.json`. They live in `data/previews.json`, keyed by the media id in the video URL. After
+adding demos, run `node scripts/previews.mjs` (it reads the variants X serves for each post from the public FxTwitter
+API) and commit the result; a demo without an entry plays its full video. The strip never autoplays for
+reduced-motion, Save-Data or 2G/3G visitors, and a button under it pauses the clip and the closing reel.
+
 ## Updating the demos
 
 All content comes from [`data/demos.json`](data/demos.json), an array of demos:

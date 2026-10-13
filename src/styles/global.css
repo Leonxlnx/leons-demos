@@ -11,6 +11,7 @@
   --paper-ink: #0a0a0a;
   --paper-muted: #5c5c5c;
   --pad: clamp(1rem, 3vw, 2.5rem);
+  --gutter: clamp(0.75rem, 1.4vw, 1.5rem);
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
   --ease-soft: cubic-bezier(0.33, 1, 0.68, 1);
@@ -39,6 +40,7 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -121,6 +123,12 @@ video {
   gap: clamp(1rem, 2vw, 1.75rem);
   font-size: var(--step-body);
 }
+/* The padding gives each link a 44px touch target without moving it. */
+.nav a,
+.site-title {
+  padding: 0.65rem 0.4rem;
+  margin: -0.65rem -0.4rem;
+}
 .nav a {
   color: var(--muted);
   text-decoration: underline;
@@ -131,6 +139,7 @@ video {
 }
 .nav a[aria-current="page"] {
   color: var(--text);
+  text-decoration-color: currentColor;
 }
 @media (hover: hover) and (pointer: fine) {
   .nav a:hover {

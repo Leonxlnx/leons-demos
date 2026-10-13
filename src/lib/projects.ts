@@ -16,6 +16,9 @@ export interface ViewProject extends Project {
 const NOTES: Record<string, string> = {
   tastecode: "Desktop workspace for coding agents, with a built-in design agent",
   "level-devil": "Level Devil fan recreation in plain HTML, CSS and JS",
+  "prompt-library": "Desktop app to organize your AI prompts",
+  "kimi-code-desktop": "Unofficial Windows desktop app for Kimi Code CLI",
+  "motion-recreation": "Motion-design recreation in JS, Canvas and WebGL, by GPT 6 Astra",
 };
 
 /** The first sentence of a GitHub description, without a trailing full stop. */

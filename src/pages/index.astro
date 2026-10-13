@@ -1,4 +1,5 @@
 ---
+import previews from "../../data/previews.json";
 import Icon from "../components/Icon.astro";
 import Nav from "../components/Nav.astro";
 import Base from "../layouts/Base.astro";
@@ -18,12 +19,25 @@ const WEAK_POSTERS = new Set([
   "2091550626421338325",
   "2081438372447350957",
 ]);
+// White-ground posters, which vanish into the light closing section.
+const LIGHT_POSTERS = new Set(["2106101651010449796"]);
 
-/** Width / height of a demo's video, read from the twimg URL (".../vid/avc1/1440x900/..."). */
-const ratio = (d: ViewDemo) => {
+/** Pixel size of a demo's video, read from the twimg URL (".../vid/avc1/1440x900/..."). */
+const size = (d: ViewDemo) => {
   const m = d.video?.match(/\/(\d{3,4})x(\d{3,4})\//);
-  return m ? Number(m[1]) / Number(m[2]) : 16 / 9;
+  return m ? { w: Number(m[1]), h: Number(m[2]) } : { w: 1600, h: 900 };
 };
+const ratio = (d: ViewDemo) => size(d).w / size(d).h;
+
+/** twimg fits posters inside a square box, so a portrait poster is narrower than the box. */
+const posterSrcset = (d: ViewDemo) => {
+  const r = ratio(d);
+  const width = (box: number) => Math.min(Math.round(r >= 1 ? box : box * r), size(d).w);
+  return `${sizedImage(d.poster!, "small")} ${width(680)}w, ${sizedImage(d.poster!, "medium")} ${width(1200)}w`;
+};
+
+/** Smaller encodes for the strip (data/previews.json); falls back to the full video. */
+const preview = (d: ViewDemo) => (previews as Record<string, { sd: string; hd: string }>)[d.video?.match(/_video\/(\d+)\//)?.[1] ?? ""];
 
 // The hero strip holds every demo with a usable video, most liked in the middle and the
 // rest alternating right and left of it, so the first screen shows the strongest work.
@@ -36,13 +50,19 @@ const FRAME_H = 425;
 const taste = PROJECTS.find((p) => p.name === "taste-skill");
 const projects = PROJECTS.filter((p) => p !== taste);
 
-const recognition: { group: string; rows: { what: string; url?: string; result: string }[] }[] = [
+interface Row {
+  what: string;
+  url?: string;
+  result: string;
+  lang?: string;
+}
+const recognition: { group: string; rows: Row[] }[] = [
   {
-    group: "Open source",
+    group: "Taste Skill",
     rows: [
-      { what: "Vercel Open Source Program", url: "https://vercel.com/blog/vercel-open-source-program-spring-2026-cohort", result: "Taste Skill, Spring 2026" },
+      { what: "Vercel Open Source Program", url: "https://vercel.com/blog/vercel-open-source-program-spring-2026-cohort", result: "Spring 2026 cohort" },
       { what: "Google Labs Stitch Skills", url: "https://github.com/google-labs-code/stitch-skills/pull/38", result: "taste-design merged" },
-      { what: "Abduzeedo", url: "https://abduzeedo.com/stop-slop-taste-skill-better-ai-design", result: "Taste Skill feature" },
+      { what: "Abduzeedo", url: "https://abduzeedo.com/stop-slop-taste-skill-better-ai-design", result: "Feature" },
     ],
   },
   {
@@ -50,12 +70,16 @@ const recognition: { group: string; rows: { what: string; url?: string; result: 
     rows: [
       { what: "LovHack Season 1", result: "2nd place" },
       { what: "CREAO community campaign", result: "Winner, $500 prize" },
-      { what: "Landeswettbewerb Mathematik Bayern", result: "Landessieger" },
+      { what: "Landeswettbewerb Mathematik Bayern", result: "Landessieger", lang: "de" },
       { what: "European Statistics Competition", result: "3rd nationwide" },
       { what: "Pangea Mathematics Final 2024", result: "Gold" },
     ],
   },
 ];
+
+// Rows alternate a fill across the whole table, not per group.
+let row = 0;
+const groups = recognition.map((g) => ({ ...g, rows: g.rows.map((r) => ({ ...r, alt: row++ % 2 === 0 })) }));
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -87,22 +111,31 @@ const jsonLd = {
           {
             strip.map((d) => {
               const r = ratio(d);
-              const top = rank.get(d)! < 6;
+              const p = preview(d);
               return (
                 <li class="frame" style={`--r:${r.toFixed(4)}`} data-start={rank.get(d) === 0 ? "" : undefined}>
                   <a href={d.post_url} target="_blank" rel="noopener" aria-label={`${d.shortTitle}, ${compact(d.likes)} likes`}>
                     <img
                       src={sizedImage(d.poster!, "small")}
-                      srcset={`${sizedImage(d.poster!, "small")} 680w, ${sizedImage(d.poster!, "medium")} 1200w`}
-                      sizes={`(max-width: 700px) calc(${r.toFixed(3)} * 56vw), calc(${r.toFixed(3)} * min(42svh, 30rem))`}
+                      srcset={posterSrcset(d)}
+                      sizes={`(max-width: 700px) calc(${r.toFixed(3)} * 56vw), calc(${r.toFixed(3)} * min(42vh, 30rem))`}
                       alt=""
                       width={Math.round(FRAME_H * r)}
                       height={FRAME_H}
-                      loading={top ? "eager" : "lazy"}
+                      loading={rank.get(d)! < 6 ? "eager" : "lazy"}
                       fetchpriority={rank.get(d) === 0 ? "high" : "auto"}
                       decoding="async"
                     />
-                    <video data-src={d.video} muted loop playsinline preload="none" aria-hidden="true" />
+                    <video
+                      data-src={d.video}
+                      data-sd={p?.sd}
+                      data-hd={p?.hd}
+                      muted
+                      loop
+                      playsinline
+                      preload="none"
+                      aria-hidden="true"
+                    />
                   </a>
                   <p class="cap" aria-hidden="true">
                     <span class="cap-title">{d.shortTitle}</span>
@@ -117,15 +150,19 @@ const jsonLd = {
           (function () {
             var s = document.currentScript.previousElementSibling;
             var f = s.querySelector("[data-start]");
+            s.setAttribute("data-ready", "");
             if (f) s.scrollLeft = f.offsetLeft + f.offsetWidth / 2 - s.clientWidth / 2;
           })();
         </script>
+        <button class="motion" type="button" aria-pressed="false" hidden>
+          <Icon name="pause" size={14} />
+          <span class="sr-only">Pause clips and moving pictures</span>
+        </button>
       </div>
 
       <div class="hero-foot wrap">
         <p class="lede" style="--i:0">
-          I build tools that give AI good taste
-          <span>Creator of Taste Skill, student in Munich</span>
+          I build tools that give AI good taste<br /><span>Creator of Taste Skill, student in Munich</span>
         </p>
         <a class="button" style="--i:1" href={`mailto:${EMAIL}`}>Email me</a>
       </div>
@@ -148,6 +185,7 @@ const jsonLd = {
                 <button class="copy" type="button" data-copy={TASTE_INSTALL}>
                   Copy
                 </button>
+                <span class="sr-only" role="status" aria-live="polite" />
               </div>
               <p class="taste-links" data-reveal style="--i:3">
                 <a href="https://www.tasteskill.dev" target="_blank" rel="noopener">
@@ -162,19 +200,20 @@ const jsonLd = {
           <div class="wrap grid12 specimens" data-reveal-group>
             <figure class="specimen">
               <div class="cut">
-                <p class="figure" aria-label={`${taste.stars.toLocaleString("en-US")} GitHub stars`}>
-                  {compact(taste.stars)}
+                <p class="figure">
+                  <span aria-hidden="true">{compact(taste.stars)}</span>
+                  <span class="sr-only">{taste.stars.toLocaleString("en-US")}</span>
                 </p>
               </div>
               <figcaption>GitHub stars</figcaption>
             </figure>
             <figure class="specimen">
               <div class="cut">
-                <p class="figure" style="--i:1" aria-label={`${TASTE_INSTALLS} installs`}>
+                <p class="figure" style="--i:1">
                   {TASTE_INSTALLS}
                 </p>
               </div>
-              <figcaption>Installs</figcaption>
+              <figcaption>Installs on skills.sh</figcaption>
             </figure>
           </div>
         </section>
@@ -189,9 +228,10 @@ const jsonLd = {
             <li data-reveal style={`--i:${Math.min(i, 8)}`}>
               <a class="repo" href={p.url} target="_blank" rel="noopener">
                 <span class="repo-name">{p.name}</span>
-                <span class="repo-stars" title={`${p.stars.toLocaleString("en-US")} stars`}>
+                <span class="repo-stars">
                   <Icon name="star" size={12} />
                   {compact(p.stars)}
+                  <span class="sr-only">stars</span>
                 </span>
                 <span class="repo-note">{p.note}</span>
               </a>
@@ -204,12 +244,14 @@ const jsonLd = {
     <section class="recog wrap" aria-labelledby="recog-h">
       <h2 id="recog-h" class="h2" data-reveal>Recognition</h2>
       <table class="table" aria-labelledby="recog-h">
-        <tbody>
-          {
-            recognition.map((g) =>
-              g.rows.map((r, i) => (
-                <tr data-reveal style={`--i:${i}`}>
-                  <td class="grp">{i === 0 ? g.group : ""}</td>
+        {
+          groups.map((g) => (
+            <tbody>
+              {g.rows.map((r, i) => (
+                <tr class:list={[r.alt && "alt"]} data-reveal style={`--i:${i}`}>
+                  <td class:list={["grp", i === 0 && "first"]}>
+                    <span class:list={[i > 0 && "sr-only"]}>{g.group}</span>
+                  </td>
                   <th scope="row">
                     {r.url ? (
                       <a href={r.url} target="_blank" rel="noopener">
@@ -219,12 +261,14 @@ const jsonLd = {
                       r.what
                     )}
                   </th>
-                  <td class="res">{r.result}</td>
+                  <td class="res" lang={r.lang}>
+                    {r.result}
+                  </td>
                 </tr>
-              )),
-            )
-          }
-        </tbody>
+              ))}
+            </tbody>
+          ))
+        }
       </table>
     </section>
   </main>
@@ -234,23 +278,28 @@ const jsonLd = {
       <div class="reel-track">
         {
           [0, 1].map(() =>
-            reel.slice(0, 14).map((d) => (
-              <img
-                src={sizedImage(d.poster!, "small")}
-                alt=""
-                width={Math.round(150 * ratio(d))}
-                height="150"
-                loading="lazy"
-                decoding="async"
-              />
-            )),
+            reel
+              .filter((d) => !LIGHT_POSTERS.has(d.id))
+              .slice(0, 14)
+              .map((d) => (
+                <img
+                  src={sizedImage(d.poster!, "small")}
+                  srcset={`${d.poster!.replace(/\?.*$/, "")}?format=webp&name=360x360 360w, ${sizedImage(d.poster!, "small")} 680w`}
+                  sizes={`${Math.round(150 * ratio(d))}px`}
+                  alt=""
+                  width={Math.round(150 * ratio(d))}
+                  height="150"
+                  loading="lazy"
+                  decoding="async"
+                />
+              )),
           )
         }
       </div>
     </div>
     <div class="wrap">
       <h2 id="close-h" class="email" data-reveal>
-        <a href={`mailto:${EMAIL}`}>lexn.lin@<br />gmail.com</a>
+        <a href={`mailto:${EMAIL}`} aria-label={EMAIL}>lexn.lin@<span>gmail.com</span></a>
       </h2>
       <ul class="cells">
         <li data-reveal style="--i:1">
@@ -258,9 +307,6 @@ const jsonLd = {
         </li>
         <li data-reveal style="--i:2">
           <a href="https://github.com/Leonxlnx" target="_blank" rel="noopener">Leonxlnx on GitHub</a>
-        </li>
-        <li data-reveal style="--i:3">
-          <a class="primary" href={`mailto:${EMAIL}`}>Email me</a>
         </li>
       </ul>
       <p class="fine">Munich, Germany</p>
@@ -282,7 +328,7 @@ const jsonLd = {
   .grid12 {
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
-    column-gap: clamp(0.75rem, 1.4vw, 1.5rem);
+    column-gap: var(--gutter);
   }
   main {
     --section: clamp(5rem, 11vw, 11rem);
@@ -344,23 +390,34 @@ const jsonLd = {
   }
 
   .strip-wrap {
+    position: relative;
+    min-height: calc(var(--h) + 2.75rem);
     margin-block: auto;
+    --h: clamp(13.75rem, 42vh, 30rem);
+  }
+  @supports (height: 1svh) {
+    .strip-wrap {
+      --h: clamp(13.75rem, 42svh, 30rem);
+    }
   }
   .strip {
-    --h: clamp(13.75rem, 42svh, 30rem);
     position: relative;
     display: flex;
     align-items: flex-start;
     gap: 10px;
     margin: 0;
-    padding: 0 calc(50% - 12rem) 3.25rem;
+    padding: 0 calc(50% - 12rem) 2.75rem;
     list-style: none;
-    overflow-x: auto;
+    overflow: auto hidden;
     overscroll-behavior-x: contain;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
   }
   .strip::-webkit-scrollbar {
+    display: none;
+  }
+  /* Kept out of layout until the inline script has centred it, so nothing lazy-loads at the wrong end. */
+  :global(.js) .strip:not([data-ready]) {
     display: none;
   }
   .strip.is-dragging {
@@ -373,15 +430,25 @@ const jsonLd = {
     width: calc(var(--h) * var(--r));
     scroll-snap-align: center;
   }
-  .frame[data-start] {
-    scroll-initial-target: nearest;
-  }
   .frame a {
     position: relative;
     display: block;
     height: var(--h);
     overflow: hidden;
     background: var(--surface);
+  }
+  .frame a:focus-visible {
+    outline: none;
+  }
+  /* The focus ring sits inside the frame, where the scroller cannot clip it. */
+  .frame a:focus-visible::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border: 3px solid #fff;
+    outline: 2px solid #000;
+    outline-offset: -5px;
   }
   .frame img,
   .frame video {
@@ -400,49 +467,82 @@ const jsonLd = {
   }
   .cap {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem 0.75rem;
+    gap: 0.75rem;
     justify-content: space-between;
     margin: 0.75rem 0 0;
     font-size: var(--step-body);
     line-height: 1.4;
+    white-space: nowrap;
+  }
+  .cap-title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .cap-likes {
     display: inline-flex;
+    flex: none;
     align-items: center;
     gap: 0.35rem;
     color: var(--muted);
     font-variant-numeric: tabular-nums;
   }
-  :global(.js) .strip {
+  .strip.is-live {
     cursor: grab;
   }
-  :global(.js) .frame a {
+  .is-live .frame a {
     filter: brightness(0.42);
     transition: filter 0.6s var(--ease);
   }
-  :global(.js) .frame.is-lit a {
+  .is-live .frame.is-lit a,
+  .is-live .frame a:focus-visible {
     filter: none;
   }
-  :global(.js) .cap {
+  .is-live .cap {
     position: absolute;
     top: var(--h);
     left: 0;
     width: max(100%, 24rem);
-    max-width: calc(100vw - 2 * var(--pad));
+    max-width: calc(100vw - 2 * var(--pad) - 3.5rem);
     opacity: 0;
     transition: opacity 0.3s ease;
     pointer-events: none;
   }
-  :global(.js) .frame.is-lit .cap {
+  .is-live .frame.is-lit .cap {
     opacity: 1;
   }
   @media (hover: hover) and (pointer: fine) {
-    :global(.js) .frame:not(.is-lit) a:hover {
+    .is-live .frame:not(.is-lit) a:hover {
       filter: brightness(0.7);
     }
   }
 
+  .motion {
+    position: absolute;
+    top: calc(var(--h) + 0.35rem);
+    right: var(--pad);
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--text);
+    transition:
+      transform var(--t-press) var(--ease),
+      background-color var(--t-hover) ease;
+  }
+  .motion[hidden] {
+    display: none;
+  }
+  .motion:active {
+    transform: scale(0.94);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .motion:hover {
+      background: #262626;
+    }
+  }
   .hero-foot {
     display: flex;
     align-items: flex-end;
@@ -578,7 +678,7 @@ const jsonLd = {
   }
 
   .specimens {
-    margin-top: clamp(10rem, 20svh, 13rem);
+    margin-top: clamp(9rem, 16svh, 10rem);
   }
   .specimen {
     display: flex;
@@ -593,10 +693,12 @@ const jsonLd = {
     font-size: var(--step-body);
     white-space: nowrap;
   }
-  /* Ends on the figures' baseline, so the section edge reads as the line they stand on. */
+  /* Ends on the figures' baseline, so the section edge reads as the line they stand on.
+     Only the bottom is cut: the optically aligned left side bearing stays whole. */
   .cut {
     height: calc(var(--step-figure) * 0.762);
     overflow: hidden;
+    overflow: visible clip;
   }
   .figure {
     margin: 0 0 0 -0.06em;
@@ -613,19 +715,21 @@ const jsonLd = {
     row-gap: 2rem;
     padding-top: var(--section);
   }
+  /* Two columns on the page's two text lines: the margin and the middle (column 7). */
   .repos {
     display: grid;
-    grid-column: 5 / -1;
+    grid-column: 1 / -1;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: clamp(1.5rem, 3vw, 3.5rem);
+    column-gap: var(--gutter);
     margin: 0;
     padding: 0;
     list-style: none;
   }
   .repo {
     display: grid;
-    grid-template-columns: 1fr auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     column-gap: 1.5rem;
+    max-width: 40rem;
     padding-block: 0.7rem;
     font-size: var(--step-body);
     line-height: 1.45;
@@ -658,10 +762,12 @@ const jsonLd = {
   .recog {
     padding-block: var(--section);
   }
+  /* The row fills bleed 1rem past the text, so the text keeps the page's two lines. */
   .table {
-    width: 100%;
-    margin-top: 2.5rem;
+    width: calc(100% + 2rem);
+    margin: 2.5rem -1rem 0;
     border-collapse: collapse;
+    table-layout: fixed;
     font-size: var(--step-body);
     line-height: 1.4;
   }
@@ -672,17 +778,17 @@ const jsonLd = {
     vertical-align: baseline;
   }
   .table th {
-    width: 50%;
     font-weight: 500;
   }
-  .table tr:nth-child(odd) {
+  .table tr.alt {
     background: var(--surface);
   }
   .grp {
-    width: 16.66%;
+    width: calc(50% - 1rem + var(--gutter) / 2);
     color: var(--muted);
   }
   .res {
+    width: 30%;
     text-align: right !important;
     color: var(--muted);
   }
@@ -722,6 +828,9 @@ const jsonLd = {
     line-height: 0.86;
     letter-spacing: -0.055em;
   }
+  .email span {
+    display: block;
+  }
   .email a {
     transition: color var(--t-hover) ease;
   }
@@ -732,8 +841,8 @@ const jsonLd = {
   }
   .cells {
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 8px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--gutter);
     margin: clamp(2rem, 5svh, 3rem) 0 0;
     padding: 0;
     list-style: none;
@@ -748,16 +857,9 @@ const jsonLd = {
     font-size: var(--step-lead);
     letter-spacing: -0.015em;
   }
-  .cells a.primary {
-    background: var(--paper-ink);
-    color: var(--paper);
-  }
   @media (hover: hover) and (pointer: fine) {
     .cells a:hover {
       background: #d0d0d0;
-    }
-    .cells a.primary:hover {
-      background: #333;
     }
   }
   .fine {
@@ -774,22 +876,22 @@ const jsonLd = {
       animation: line-up 1s var(--ease) 0.12s forwards;
     }
     :global(.js) .hero-top :global(.nav),
-    :global(.js) .strip-wrap,
     :global(.js) .hero-foot > * {
       opacity: 0;
       animation: rise 0.9s var(--ease) forwards;
     }
+    /* The strip only travels: its poster is the largest paint and is never held invisible. */
+    :global(.js) .strip-wrap {
+      animation: travel 0.9s var(--ease) 0.2s backwards;
+    }
     :global(.js) .hero-top :global(.nav) {
       animation-delay: 0.3s;
     }
-    :global(.js) .strip-wrap {
-      animation-delay: 0.38s;
-    }
     :global(.js) .hero-foot > * {
-      animation-delay: calc(0.56s + var(--i, 0) * 90ms);
+      animation-delay: calc(0.5s + var(--i, 0) * 90ms);
     }
 
-    :global(.js) [data-reveal] {
+    :global(.reveal) [data-reveal] {
       opacity: 0;
       transform: translateY(24px);
       transition:
@@ -797,16 +899,17 @@ const jsonLd = {
         transform 0.9s var(--ease);
       transition-delay: calc(var(--i, 0) * 70ms);
     }
-    :global(.js) [data-reveal].is-in {
+    :global(.reveal) [data-reveal].is-in,
+    :global(.reveal) [data-reveal]:focus-within {
       opacity: 1;
       transform: none;
     }
-    :global(.js) .figure {
+    :global(.reveal) .figure {
       transform: translateY(45%);
       transition: transform 1.3s var(--ease);
       transition-delay: calc(var(--i, 0) * 120ms);
     }
-    :global(.js) .is-in .figure {
+    :global(.reveal) .is-in .figure {
       transform: none;
     }
 
@@ -814,7 +917,9 @@ const jsonLd = {
       animation: reel 90s linear infinite;
     }
     .reel:hover .reel-track,
-    .reel.is-paused .reel-track {
+    .close:focus-within .reel-track,
+    .reel.is-paused .reel-track,
+    :global(.motion-paused) .reel-track {
       animation-play-state: paused;
     }
   }
@@ -832,17 +937,32 @@ const jsonLd = {
       transform: none;
     }
   }
+  @keyframes travel {
+    from {
+      transform: translateY(28px);
+    }
+  }
   @keyframes reel {
     to {
       transform: translateX(calc(-50% - 4px));
     }
   }
 
-  /* ------------------------------------------------------------ phone */
+  /* ------------------------------------------------------------ narrower */
 
   @media (max-width: 1100px) {
     .repos {
       grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .install {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 1rem 1.25rem;
+      border-radius: 1.75rem;
     }
   }
 
@@ -852,10 +972,13 @@ const jsonLd = {
       gap: 1.75rem;
     }
     .hero-top :global(.nav) {
+      align-self: flex-end;
       padding-top: 0;
     }
-    .strip {
+    .strip-wrap {
       --h: 56vw;
+    }
+    .strip {
       gap: 6px;
       padding-inline: calc(50% - 8rem);
     }
@@ -864,19 +987,8 @@ const jsonLd = {
       align-items: flex-start;
     }
     .h2,
-    .taste-copy,
-    .repos {
+    .taste-copy {
       grid-column: 1 / -1;
-    }
-    .repos {
-      grid-template-columns: 1fr;
-    }
-    .install {
-      flex-direction: column;
-      align-items: flex-start;
-      gap: 0.75rem;
-      padding: 1rem 1.25rem;
-      border-radius: 1.75rem;
     }
     .specimen {
       grid-column: 1 / -1;
@@ -893,6 +1005,7 @@ const jsonLd = {
     .specimen + .specimen {
       margin-top: 3.5rem;
     }
+    /* On a phone each row is a two-line block; the groups are told apart by space, not fills. */
     .table,
     .table tbody,
     .table tr,
@@ -901,18 +1014,27 @@ const jsonLd = {
       display: block;
       width: auto;
     }
+    .table {
+      margin-inline: 0;
+    }
+    .table tbody + tbody {
+      margin-top: 2.5rem;
+    }
     .table tr {
-      padding: 0.9rem 1rem;
+      padding-block: 0.7rem;
+    }
+    .table tr.alt {
+      background: none;
     }
     .table th,
     .table td {
       padding: 0;
     }
-    .grp:empty {
+    .table td.grp:not(.first) {
       display: none;
     }
-    .grp {
-      margin: 0 0 0.6rem;
+    .table td.grp {
+      margin: 0 0 0.5rem;
     }
     .res {
       text-align: left !important;
