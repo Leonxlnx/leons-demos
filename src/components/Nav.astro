@@ -1,0 +1,27 @@
+---
+interface Props {
+  path: string;
+}
+const { path } = Astro.props;
+const links = [
+  { href: "/demos", label: "Demos" },
+  { href: "https://github.com/Leonxlnx", label: "GitHub", title: "Leonxlnx on GitHub" },
+  { href: "https://x.com/LexnLin", label: "X", title: "@LexnLin on X" },
+];
+---
+
+<nav class="nav" aria-label="Main">
+  {
+    links.map((l) =>
+      l.href.startsWith("/") ? (
+        <a href={l.href} aria-current={l.href === path ? "page" : undefined}>
+          {l.label}
+        </a>
+      ) : (
+        <a href={l.href} target="_blank" rel="noopener" title={l.title}>
+          {l.label}
+        </a>
+      ),
+    )
+  }
+</nav>

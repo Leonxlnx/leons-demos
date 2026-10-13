@@ -2,23 +2,23 @@
 import "@fontsource-variable/geist";
 import "../styles/global.css";
 
-import Icon from "../components/Icon.astro";
 import IconSprite from "../components/IconSprite.astro";
+import Nav from "../components/Nav.astro";
 
 interface Props {
   title: string;
   description: string;
   /** Hotlinks media from Twitter's CDN. */
   twimg?: boolean;
+  /** Renders the shared header. The homepage draws its own inside the hero. */
+  header?: boolean;
+  /** Structured data for search engines, emitted as JSON-LD. */
+  jsonLd?: Record<string, unknown>;
 }
-const { title, description, twimg = false } = Astro.props;
+const { title, description, twimg = false, header = true, jsonLd } = Astro.props;
 const path = Astro.url.pathname.replace(/\/$/, "") || "/";
 const canonical = Astro.site ? new URL(path, Astro.site).href : undefined;
 const ogImage = Astro.site ? new URL("/og.png", Astro.site).href : "/og.png";
-const nav = [
-  { href: "/", label: "Work" },
-  { href: "/demos", label: "Demos" },
-];
 ---
 
 <!doctype html>
@@ -26,6 +26,7 @@ const nav = [
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <script is:inline>document.documentElement.classList.add("js");</script>
     {twimg && <meta name="referrer" content="no-referrer" />}
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -46,41 +47,22 @@ const nav = [
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:creator" content="@LexnLin" />
     <meta name="twitter:image" content={ogImage} />
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
   </head>
   <body>
     <IconSprite />
     <canvas class="bg" aria-hidden="true"></canvas>
 
-    <header class="top">
-      {
-        path === "/" ? (
-          <h1 class="site-title">
-            <a href="/">Leon Lin</a>
-          </h1>
-        ) : (
+    {
+      header && (
+        <header class="top">
           <a class="site-title" href="/">
             Leon Lin
           </a>
-        )
-      }
-      <nav class="filters nav" aria-label="Main">
-        {
-          nav.map((n) => (
-            <a href={n.href} aria-current={n.href === path ? "page" : undefined}>
-              {n.label}
-            </a>
-          ))
-        }
-      </nav>
-      <div class="social">
-        <a href="https://x.com/LexnLin" target="_blank" rel="noopener" aria-label="X: @LexnLin" title="@LexnLin on X">
-          <Icon name="x" size={15} />
-        </a>
-        <a href="https://github.com/Leonxlnx" target="_blank" rel="noopener" aria-label="GitHub: Leonxlnx" title="Leonxlnx on GitHub">
-          <Icon name="github" size={17} />
-        </a>
-      </div>
-    </header>
+          <Nav path={path} />
+        </header>
+      )
+    }
 
     <slot />
 

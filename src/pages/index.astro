@@ -1,69 +1,927 @@
 ---
 import Icon from "../components/Icon.astro";
+import Nav from "../components/Nav.astro";
 import Base from "../layouts/Base.astro";
-import { compact } from "../lib/demos";
+import { DEMOS, compact, sizedImage, type ViewDemo } from "../lib/demos";
 import { PROJECTS } from "../lib/projects";
 
-const awards = [
-  ["CREAO community campaign", "Winner, $500 prize"],
-  ["LovHack Season 1", "2nd place"],
-  ["Landeswettbewerb Mathematik Bayern", "Landessieger"],
-  ["European Statistics Competition", "3rd nationwide"],
-  ["Pangea Mathematics Final 2024", "Gold"],
+const EMAIL = "lexn.lin@gmail.com";
+const TASTE_INSTALL = "npx skills add Leonxlnx/taste-skill";
+/** Total installs across the Taste Skill skills, from skills.sh (October 2026). Update by hand. */
+const TASTE_INSTALLS = "5.1M";
+
+// Demos whose first video frame is black, blank or blurred. They stay on /demos.
+const WEAK_POSTERS = new Set([
+  "2104148233106723099",
+  "2103194052850241739",
+  "2103069626473341273",
+  "2091550626421338325",
+  "2081438372447350957",
+]);
+
+/** Width / height of a demo's video, read from the twimg URL (".../vid/avc1/1440x900/..."). */
+const ratio = (d: ViewDemo) => {
+  const m = d.video?.match(/\/(\d{3,4})x(\d{3,4})\//);
+  return m ? Number(m[1]) / Number(m[2]) : 16 / 9;
+};
+
+// The hero strip holds every demo with a usable video, most liked in the middle and the
+// rest alternating right and left of it, so the first screen shows the strongest work.
+const reel = DEMOS.filter((d) => d.video && d.poster && !WEAK_POSTERS.has(d.id));
+const strip: ViewDemo[] = [];
+reel.forEach((d, i) => (i % 2 ? strip.push(d) : strip.unshift(d)));
+const rank = new Map(reel.map((d, i) => [d, i]));
+const FRAME_H = 425;
+
+const taste = PROJECTS.find((p) => p.name === "taste-skill");
+const projects = PROJECTS.filter((p) => p !== taste);
+
+const recognition: { group: string; rows: { what: string; url?: string; result: string }[] }[] = [
+  {
+    group: "Open source",
+    rows: [
+      { what: "Vercel Open Source Program", url: "https://vercel.com/blog/vercel-open-source-program-spring-2026-cohort", result: "Taste Skill, Spring 2026" },
+      { what: "Google Labs Stitch Skills", url: "https://github.com/google-labs-code/stitch-skills/pull/38", result: "taste-design merged" },
+      { what: "Abduzeedo", url: "https://abduzeedo.com/stop-slop-taste-skill-better-ai-design", result: "Taste Skill feature" },
+    ],
+  },
+  {
+    group: "Competitions",
+    rows: [
+      { what: "LovHack Season 1", result: "2nd place" },
+      { what: "CREAO community campaign", result: "Winner, $500 prize" },
+      { what: "Landeswettbewerb Mathematik Bayern", result: "Landessieger" },
+      { what: "European Statistics Competition", result: "3rd nationwide" },
+      { what: "Pangea Mathematics Final 2024", result: "Gold" },
+    ],
+  },
 ];
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Person",
+  name: "Leon Lin",
+  url: "https://leonlin.de",
+  email: `mailto:${EMAIL}`,
+  address: { "@type": "PostalAddress", addressLocality: "Munich", addressCountry: "DE" },
+  sameAs: ["https://x.com/LexnLin", "https://github.com/Leonxlnx", "https://www.tasteskill.dev"],
+};
 ---
 
-<Base title="Leon Lin" description="Design engineer building tools for AI coding agents. Based in Munich.">
-  <main class="home">
-    <section class="hero">
-      <p class="intro">Design engineer building tools for AI coding agents.</p>
-      <p class="sub">Student in Munich. Maintainer of Taste Skill. Open to internships until August 2026.</p>
-      <div class="cta">
-        <a class="pill pill--primary" href="https://x.com/LexnLin" target="_blank" rel="noopener"><Icon name="x" size={14} />@LexnLin</a>
-        <a class="pill" href="https://github.com/Leonxlnx" target="_blank" rel="noopener"><Icon name="github" size={15} />Leonxlnx</a>
-        <a class="pill" href="/demos">Demos</a>
+<Base
+  title="Leon Lin"
+  description="I build tools that give AI good taste. Creator of Taste Skill, student in Munich."
+  twimg
+  header={false}
+  jsonLd={jsonLd}
+>
+  <main>
+    <section class="hero" aria-labelledby="name">
+      <div class="hero-top wrap">
+        <h1 id="name" class="name"><span class="line"><span>Leon Lin</span></span></h1>
+        <Nav path="/" />
+      </div>
+
+      <div class="strip-wrap">
+        <ul class="strip" aria-label="Demos, most liked in the middle">
+          {
+            strip.map((d) => {
+              const r = ratio(d);
+              const top = rank.get(d)! < 6;
+              return (
+                <li class="frame" style={`--r:${r.toFixed(4)}`} data-start={rank.get(d) === 0 ? "" : undefined}>
+                  <a href={d.post_url} target="_blank" rel="noopener" aria-label={`${d.shortTitle}, ${compact(d.likes)} likes`}>
+                    <img
+                      src={sizedImage(d.poster!, "small")}
+                      srcset={`${sizedImage(d.poster!, "small")} 680w, ${sizedImage(d.poster!, "medium")} 1200w`}
+                      sizes={`(max-width: 700px) calc(${r.toFixed(3)} * 56vw), calc(${r.toFixed(3)} * min(42svh, 30rem))`}
+                      alt=""
+                      width={Math.round(FRAME_H * r)}
+                      height={FRAME_H}
+                      loading={top ? "eager" : "lazy"}
+                      fetchpriority={rank.get(d) === 0 ? "high" : "auto"}
+                      decoding="async"
+                    />
+                    <video data-src={d.video} muted loop playsinline preload="none" aria-hidden="true" />
+                  </a>
+                  <p class="cap" aria-hidden="true">
+                    <span class="cap-title">{d.shortTitle}</span>
+                    <span class="cap-likes"><Icon name="heart" size={12} />{compact(d.likes)}</span>
+                  </p>
+                </li>
+              );
+            })
+          }
+        </ul>
+        <script is:inline>
+          (function () {
+            var s = document.currentScript.previousElementSibling;
+            var f = s.querySelector("[data-start]");
+            if (f) s.scrollLeft = f.offsetLeft + f.offsetWidth / 2 - s.clientWidth / 2;
+          })();
+        </script>
+      </div>
+
+      <div class="hero-foot wrap">
+        <p class="lede" style="--i:0">
+          I build tools that give AI good taste
+          <span>Creator of Taste Skill, student in Munich</span>
+        </p>
+        <a class="button" style="--i:1" href={`mailto:${EMAIL}`}>Email me</a>
       </div>
     </section>
 
-    <section class="block">
-      <h2 class="label">Taste Skill</h2>
-      <p class="lead">A rulebook coding agents read before they generate UI. Works with Cursor, Claude Code, Codex, Gemini CLI and more.</p>
-      <code class="install">npx skills add Leonxlnx/taste-skill</code>
-    </section>
+    {
+      taste && (
+        <section class="taste paper" aria-labelledby="taste-h">
+          <div class="wrap grid12 taste-head">
+            <h2 id="taste-h" class="h2" data-reveal style="--i:0">
+              Taste Skill
+            </h2>
+            <div class="taste-copy">
+              <p data-reveal style="--i:1">
+                A rulebook coding agents read before they write frontend, so what they build stops looking generated.
+                Works with Claude Code, Codex, Cursor, Gemini CLI and more.
+              </p>
+              <div class="install" data-reveal style="--i:2">
+                <code>{TASTE_INSTALL}</code>
+                <button class="copy" type="button" data-copy={TASTE_INSTALL}>
+                  Copy
+                </button>
+              </div>
+              <p class="taste-links" data-reveal style="--i:3">
+                <a href="https://www.tasteskill.dev" target="_blank" rel="noopener">
+                  tasteskill.dev
+                </a>
+                <a href={taste.url} target="_blank" rel="noopener">
+                  Repository
+                </a>
+              </p>
+            </div>
+          </div>
+          <div class="wrap grid12 specimens" data-reveal-group>
+            <figure class="specimen">
+              <div class="cut">
+                <p class="figure" aria-label={`${taste.stars.toLocaleString("en-US")} GitHub stars`}>
+                  {compact(taste.stars)}
+                </p>
+              </div>
+              <figcaption>GitHub stars</figcaption>
+            </figure>
+            <figure class="specimen">
+              <div class="cut">
+                <p class="figure" style="--i:1" aria-label={`${TASTE_INSTALLS} installs`}>
+                  {TASTE_INSTALLS}
+                </p>
+              </div>
+              <figcaption>Installs</figcaption>
+            </figure>
+          </div>
+        </section>
+      )
+    }
 
-    <section class="block">
-      <h2 class="label">Projects</h2>
-      <ul class="projects">
+    <section class="oss wrap grid12" aria-labelledby="oss-h">
+      <h2 id="oss-h" class="h2" data-reveal>Open source</h2>
+      <ul class="repos">
         {
-          PROJECTS.map((p) => (
-            <li>
-              <a class="project" href={p.url} target="_blank" rel="noopener">
-                <span class="project-head">
-                  <span class="project-name">{p.name}</span>
-                  <span class="stars" title={`${p.stars.toLocaleString("en-US")} stars`}>
-                    <Icon name="star" size={12} />
-                    {compact(p.stars)}
-                  </span>
+          projects.map((p, i) => (
+            <li data-reveal style={`--i:${Math.min(i, 8)}`}>
+              <a class="repo" href={p.url} target="_blank" rel="noopener">
+                <span class="repo-name">{p.name}</span>
+                <span class="repo-stars" title={`${p.stars.toLocaleString("en-US")} stars`}>
+                  <Icon name="star" size={12} />
+                  {compact(p.stars)}
                 </span>
-                {p.description && <span class="project-desc">{p.description}</span>}
+                <span class="repo-note">{p.note}</span>
               </a>
             </li>
           ))
         }
       </ul>
-      <a class="more" href="/demos">See all demos →</a>
     </section>
 
-    <section class="block">
-      <h2 class="label">Awards</h2>
-      <ul class="awards">
-        {awards.map(([n, r]) => (<li><span>{n}</span><span class="muted">{r}</span></li>))}
-      </ul>
+    <section class="recog wrap" aria-labelledby="recog-h">
+      <h2 id="recog-h" class="h2" data-reveal>Recognition</h2>
+      <table class="table" aria-labelledby="recog-h">
+        <tbody>
+          {
+            recognition.map((g) =>
+              g.rows.map((r, i) => (
+                <tr data-reveal style={`--i:${i}`}>
+                  <td class="grp">{i === 0 ? g.group : ""}</td>
+                  <th scope="row">
+                    {r.url ? (
+                      <a href={r.url} target="_blank" rel="noopener">
+                        {r.what}
+                      </a>
+                    ) : (
+                      r.what
+                    )}
+                  </th>
+                  <td class="res">{r.result}</td>
+                </tr>
+              )),
+            )
+          }
+        </tbody>
+      </table>
     </section>
-
-    <footer class="block contact">
-      <a href="mailto:lexn.lin@gmail.com">lexn.lin@gmail.com</a>
-      <span class="muted">Munich, Germany</span>
-    </footer>
   </main>
+
+  <footer class="close paper" aria-labelledby="close-h">
+    <div class="reel" aria-hidden="true">
+      <div class="reel-track">
+        {
+          [0, 1].map(() =>
+            reel.slice(0, 14).map((d) => (
+              <img
+                src={sizedImage(d.poster!, "small")}
+                alt=""
+                width={Math.round(150 * ratio(d))}
+                height="150"
+                loading="lazy"
+                decoding="async"
+              />
+            )),
+          )
+        }
+      </div>
+    </div>
+    <div class="wrap">
+      <h2 id="close-h" class="email" data-reveal>
+        <a href={`mailto:${EMAIL}`}>lexn.lin@<br />gmail.com</a>
+      </h2>
+      <ul class="cells">
+        <li data-reveal style="--i:1">
+          <a href="https://x.com/LexnLin" target="_blank" rel="noopener">@LexnLin on X</a>
+        </li>
+        <li data-reveal style="--i:2">
+          <a href="https://github.com/Leonxlnx" target="_blank" rel="noopener">Leonxlnx on GitHub</a>
+        </li>
+        <li data-reveal style="--i:3">
+          <a class="primary" href={`mailto:${EMAIL}`}>Email me</a>
+        </li>
+      </ul>
+      <p class="fine">Munich, Germany</p>
+    </div>
+  </footer>
+
+  <script>
+    import "../scripts/home";
+  </script>
 </Base>
+
+<style>
+  .wrap {
+    width: 100%;
+    max-width: 1680px;
+    margin-inline: auto;
+    padding-inline: var(--pad);
+  }
+  .grid12 {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: clamp(0.75rem, 1.4vw, 1.5rem);
+  }
+  main {
+    --section: clamp(5rem, 11vw, 11rem);
+  }
+  .h2 {
+    grid-column: 1 / span 5;
+    margin: 0;
+    font-size: var(--step-lead);
+    font-weight: 500;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
+  }
+  .paper {
+    background: var(--paper);
+    color: var(--paper-ink);
+    color-scheme: light;
+  }
+  .paper :focus-visible {
+    outline-color: var(--paper-ink);
+  }
+  .paper ::selection {
+    background: var(--paper-ink);
+    color: var(--paper);
+  }
+
+  /* ------------------------------------------------------------ hero */
+
+  .hero {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.5rem, 3.5svh, 2.5rem);
+    min-height: 100svh;
+    padding-block: clamp(1.25rem, 3vw, 2rem);
+  }
+  .hero-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .name {
+    margin: 0 0 0 -0.045em;
+    font-size: var(--step-display);
+    font-weight: 500;
+    line-height: 0.8;
+    letter-spacing: -0.055em;
+  }
+  .line {
+    display: block;
+    overflow: hidden;
+    padding-block: 0.06em;
+    margin-block: -0.06em;
+  }
+  .line > span {
+    display: block;
+  }
+  .hero-top :global(.nav) {
+    padding-top: 0.25rem;
+  }
+
+  .strip-wrap {
+    margin-block: auto;
+  }
+  .strip {
+    --h: clamp(13.75rem, 42svh, 30rem);
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 0;
+    padding: 0 calc(50% - 12rem) 3.25rem;
+    list-style: none;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+  .strip::-webkit-scrollbar {
+    display: none;
+  }
+  .strip.is-dragging {
+    scroll-snap-type: none;
+    cursor: grabbing;
+  }
+  .frame {
+    position: relative;
+    flex: none;
+    width: calc(var(--h) * var(--r));
+    scroll-snap-align: center;
+  }
+  .frame[data-start] {
+    scroll-initial-target: nearest;
+  }
+  .frame a {
+    position: relative;
+    display: block;
+    height: var(--h);
+    overflow: hidden;
+    background: var(--surface);
+  }
+  .frame img,
+  .frame video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .frame video {
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .frame.playing video {
+    opacity: 1;
+  }
+  .cap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.75rem;
+    justify-content: space-between;
+    margin: 0.75rem 0 0;
+    font-size: var(--step-body);
+    line-height: 1.4;
+  }
+  .cap-likes {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+  }
+  :global(.js) .strip {
+    cursor: grab;
+  }
+  :global(.js) .frame a {
+    filter: brightness(0.42);
+    transition: filter 0.6s var(--ease);
+  }
+  :global(.js) .frame.is-lit a {
+    filter: none;
+  }
+  :global(.js) .cap {
+    position: absolute;
+    top: var(--h);
+    left: 0;
+    width: max(100%, 24rem);
+    max-width: calc(100vw - 2 * var(--pad));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  :global(.js) .frame.is-lit .cap {
+    opacity: 1;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    :global(.js) .frame:not(.is-lit) a:hover {
+      filter: brightness(0.7);
+    }
+  }
+
+  .hero-foot {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1.5rem;
+  }
+  .lede {
+    margin: 0;
+    max-width: 32ch;
+    font-size: var(--step-lead);
+    line-height: 1.25;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  .lede span {
+    display: block;
+    color: var(--muted);
+  }
+  .button,
+  .copy,
+  .cells a {
+    transition:
+      transform var(--t-press) var(--ease),
+      background-color var(--t-hover) ease,
+      color var(--t-hover) ease;
+  }
+  .button:active,
+  .copy:active,
+  .cells a:active {
+    transform: scale(0.97);
+  }
+  .button {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    min-height: 3rem;
+    padding: 0 1.6rem;
+    border-radius: 999px;
+    background: #fff;
+    color: #000;
+    font-size: var(--step-body);
+    font-weight: 500;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .button:hover {
+      background: #d4d4d4;
+    }
+  }
+
+  /* ------------------------------------------------------------ taste skill */
+
+  .taste {
+    margin-top: var(--section);
+    padding-top: var(--section);
+    overflow: hidden;
+  }
+  .taste-head {
+    row-gap: 1.5rem;
+  }
+  .taste-copy {
+    grid-column: 7 / -1;
+  }
+  .taste-copy > p:first-child {
+    margin: 0;
+    max-width: 30ch;
+    font-size: var(--step-lead);
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+    text-wrap: pretty;
+  }
+  .install {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    margin-top: 1.75rem;
+    padding: 0.375rem 0.375rem 0.375rem 1.25rem;
+    border-radius: 999px;
+    background: var(--paper-2);
+  }
+  .install code {
+    font: inherit;
+    font-size: var(--step-body);
+    user-select: all;
+  }
+  .copy {
+    display: none;
+    min-height: 2.5rem;
+    padding: 0 1.1rem;
+    border-radius: 999px;
+    background: var(--paper-ink);
+    color: var(--paper);
+    font-size: var(--step-small);
+    font-weight: 500;
+  }
+  :global(.js) .copy {
+    display: inline-flex;
+    align-items: center;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .copy:hover {
+      background: #333;
+    }
+  }
+  .taste-links {
+    display: flex;
+    gap: 1.5rem;
+    margin: 1.5rem 0 0;
+    font-size: var(--step-body);
+  }
+  .taste-links a,
+  .table a,
+  .repo-name {
+    text-decoration: underline;
+    text-decoration-thickness: 0.07em;
+    text-underline-offset: 0.22em;
+    text-decoration-color: currentColor;
+    transition: text-decoration-color var(--t-hover) ease;
+  }
+  .repo-name,
+  .table a {
+    text-decoration-color: transparent;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .taste-links a:hover {
+      text-decoration-color: transparent;
+    }
+    .repo:hover .repo-name,
+    .table a:hover {
+      text-decoration-color: currentColor;
+    }
+  }
+
+  .specimens {
+    margin-top: clamp(10rem, 20svh, 13rem);
+  }
+  .specimen {
+    display: flex;
+    grid-column: span 6;
+    align-items: flex-start;
+    gap: clamp(0.75rem, 1.5vw, 1.5rem);
+    margin: 0;
+  }
+  .specimen figcaption {
+    padding-top: 0.35rem;
+    color: var(--paper-muted);
+    font-size: var(--step-body);
+    white-space: nowrap;
+  }
+  /* Ends on the figures' baseline, so the section edge reads as the line they stand on. */
+  .cut {
+    height: calc(var(--step-figure) * 0.762);
+    overflow: hidden;
+  }
+  .figure {
+    margin: 0 0 0 -0.06em;
+    font-size: var(--step-figure);
+    font-weight: 500;
+    line-height: 0.8;
+    letter-spacing: -0.065em;
+    white-space: nowrap;
+  }
+
+  /* ------------------------------------------------------------ open source */
+
+  .oss {
+    row-gap: 2rem;
+    padding-top: var(--section);
+  }
+  .repos {
+    display: grid;
+    grid-column: 5 / -1;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(1.5rem, 3vw, 3.5rem);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .repo {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    column-gap: 1.5rem;
+    padding-block: 0.7rem;
+    font-size: var(--step-body);
+    line-height: 1.45;
+  }
+  .repo-name {
+    font-weight: 500;
+  }
+  .repo-note {
+    grid-column: 1;
+    color: var(--muted);
+    text-wrap: pretty;
+  }
+  .repo-stars {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--muted);
+    font-size: var(--step-small);
+    font-variant-numeric: tabular-nums;
+    transition: color var(--t-hover) ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .repo:hover .repo-stars {
+      color: var(--text);
+    }
+  }
+
+  /* ------------------------------------------------------------ recognition */
+
+  .recog {
+    padding-block: var(--section);
+  }
+  .table {
+    width: 100%;
+    margin-top: 2.5rem;
+    border-collapse: collapse;
+    font-size: var(--step-body);
+    line-height: 1.4;
+  }
+  .table th,
+  .table td {
+    padding: 0.95rem 1rem;
+    text-align: left;
+    vertical-align: baseline;
+  }
+  .table th {
+    width: 50%;
+    font-weight: 500;
+  }
+  .table tr:nth-child(odd) {
+    background: var(--surface);
+  }
+  .grp {
+    width: 16.66%;
+    color: var(--muted);
+  }
+  .res {
+    text-align: right !important;
+    color: var(--muted);
+  }
+
+  /* ------------------------------------------------------------ close */
+
+  .close {
+    display: flex;
+    flex-direction: column;
+    min-height: 88svh;
+    padding-block: 3rem clamp(1.5rem, 3vw, 2.5rem);
+  }
+  .reel {
+    overflow: hidden;
+  }
+  .reel-track {
+    display: flex;
+    gap: 8px;
+    width: max-content;
+  }
+  .reel img {
+    display: block;
+    height: 150px;
+    width: auto;
+  }
+  .close > .wrap {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: flex-end;
+    margin-top: clamp(3rem, 10svh, 6rem);
+  }
+  .email {
+    margin: 0 0 0 -0.045em;
+    font-size: var(--step-display);
+    font-weight: 500;
+    line-height: 0.86;
+    letter-spacing: -0.055em;
+  }
+  .email a {
+    transition: color var(--t-hover) ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .email a:hover {
+      color: var(--paper-muted);
+    }
+  }
+  .cells {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    margin: clamp(2rem, 5svh, 3rem) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .cells a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 6rem;
+    border-radius: 999px;
+    background: var(--paper-2);
+    font-size: var(--step-lead);
+    letter-spacing: -0.015em;
+  }
+  .cells a.primary {
+    background: var(--paper-ink);
+    color: var(--paper);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .cells a:hover {
+      background: #d0d0d0;
+    }
+    .cells a.primary:hover {
+      background: #333;
+    }
+  }
+  .fine {
+    margin: 1.25rem 0 0;
+    color: var(--paper-muted);
+    font-size: var(--step-small);
+  }
+
+  /* ------------------------------------------------------------ motion */
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.js) .line > span {
+      transform: translateY(105%);
+      animation: line-up 1s var(--ease) 0.12s forwards;
+    }
+    :global(.js) .hero-top :global(.nav),
+    :global(.js) .strip-wrap,
+    :global(.js) .hero-foot > * {
+      opacity: 0;
+      animation: rise 0.9s var(--ease) forwards;
+    }
+    :global(.js) .hero-top :global(.nav) {
+      animation-delay: 0.3s;
+    }
+    :global(.js) .strip-wrap {
+      animation-delay: 0.38s;
+    }
+    :global(.js) .hero-foot > * {
+      animation-delay: calc(0.56s + var(--i, 0) * 90ms);
+    }
+
+    :global(.js) [data-reveal] {
+      opacity: 0;
+      transform: translateY(24px);
+      transition:
+        opacity 0.7s var(--ease),
+        transform 0.9s var(--ease);
+      transition-delay: calc(var(--i, 0) * 70ms);
+    }
+    :global(.js) [data-reveal].is-in {
+      opacity: 1;
+      transform: none;
+    }
+    :global(.js) .figure {
+      transform: translateY(45%);
+      transition: transform 1.3s var(--ease);
+      transition-delay: calc(var(--i, 0) * 120ms);
+    }
+    :global(.js) .is-in .figure {
+      transform: none;
+    }
+
+    .reel-track {
+      animation: reel 90s linear infinite;
+    }
+    .reel:hover .reel-track,
+    .reel.is-paused .reel-track {
+      animation-play-state: paused;
+    }
+  }
+  @keyframes line-up {
+    to {
+      transform: none;
+    }
+  }
+  @keyframes rise {
+    from {
+      transform: translateY(18px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes reel {
+    to {
+      transform: translateX(calc(-50% - 4px));
+    }
+  }
+
+  /* ------------------------------------------------------------ phone */
+
+  @media (max-width: 1100px) {
+    .repos {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .hero-top {
+      flex-direction: column-reverse;
+      gap: 1.75rem;
+    }
+    .hero-top :global(.nav) {
+      padding-top: 0;
+    }
+    .strip {
+      --h: 56vw;
+      gap: 6px;
+      padding-inline: calc(50% - 8rem);
+    }
+    .hero-foot {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .h2,
+    .taste-copy,
+    .repos {
+      grid-column: 1 / -1;
+    }
+    .repos {
+      grid-template-columns: 1fr;
+    }
+    .install {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 1rem 1.25rem;
+      border-radius: 1.75rem;
+    }
+    .specimen {
+      grid-column: 1 / -1;
+    }
+    /* Stacked, the first figure keeps its caption underneath and only the last one stands on the edge. */
+    .specimen:first-child {
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .specimen:first-child .cut {
+      height: auto;
+      overflow: visible;
+    }
+    .specimen + .specimen {
+      margin-top: 3.5rem;
+    }
+    .table,
+    .table tbody,
+    .table tr,
+    .table th,
+    .table td {
+      display: block;
+      width: auto;
+    }
+    .table tr {
+      padding: 0.9rem 1rem;
+    }
+    .table th,
+    .table td {
+      padding: 0;
+    }
+    .grp:empty {
+      display: none;
+    }
+    .grp {
+      margin: 0 0 0.6rem;
+    }
+    .res {
+      text-align: left !important;
+    }
+    .cells {
+      grid-template-columns: 1fr;
+    }
+    .cells a {
+      min-height: 3.75rem;
+    }
+  }
+</style>
