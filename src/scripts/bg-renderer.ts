@@ -11,14 +11,17 @@
  * `image-rendering: pixelated`, so a full-screen frame is a few hundred thousand
  * fragments. The radial fade is applied in the shader rather than with a CSS mask, which
  * would cost an extra composited layer every frame. The noise drifts slowly, so it runs at
- * 20 fps (10 while videos play), holds still while the page scrolls, stops when the tab
- * is hidden, and draws a single still frame for prefers-reduced-motion. Context creation
+ * 20 fps (10 while videos play, 30 while the light under the mouse moves), holds still while
+ * the page scrolls, stops when the tab is hidden, and draws a single still frame for
+ * prefers-reduced-motion. Context creation
  * and shader linking are synchronous and can take hundreds of milliseconds on slow GPUs,
  * which is why this normally runs in a worker (see background.ts).
  */
 
 const FPS = 20;
 const FPS_WITH_VIDEO = 10;
+/** While the pointer light is moving, so it follows the hand smoothly. */
+const FPS_WITH_LIGHT = 30;
 
 const props = {
   scale: 0.55,
@@ -32,6 +35,8 @@ const props = {
   spread: 1,
   inkA: "#000000",
   inkB: "#262626",
+  /** Ink of the lit cells right under the mouse pointer. */
+  inkLight: "#3d3d3d",
 };
 
 const VERT = `#version 300 es
@@ -45,7 +50,8 @@ precision highp int;
 uniform vec2 uCells;
 uniform float uAnimTime;
 uniform float uScale, uSeed, uContrast, uBalance, uThreshold, uSpread;
-uniform vec3 uNoiseA, uNoiseB, uInkA, uInkB;
+uniform vec3 uNoiseA, uNoiseB, uInkA, uInkB, uInkLight;
+uniform vec3 uPointer; // x, y in cells from the top left; z = strength, 0 to 1
 out vec4 outColor;
 
 float mxFade(float t) { return t * t * t * (t * (t * 6.0 - 15.0) + 10.0); }
@@ -119,11 +125,16 @@ void main() {
   // Dither (bayer4, custom colours)
   float lum = dot(src, vec3(0.299, 0.587, 0.114));
   float d = 0.5 + (bayer4(cell) - 0.5) * uSpread;
-  float ink = step(d, lum + (uThreshold - 0.5));
+
+  // Light under the mouse pointer: more cells lit, in a brighter grey, over about a quarter
+  // of the screen height.
+  float glow = uPointer.z * (1.0 - smoothstep(0.0, 0.26, length(cell - uPointer.xy) / uCells.y));
+  float ink = step(d, lum + (uThreshold - 0.5) + glow * 0.5);
 
   // Radial fade from the top centre over the black page, (140% 100% at 50% 0%): 1 -> 0.35.
   float fade = mix(1.0, 0.35, clamp((length(vec2((uv.x - 0.5) / 1.4, uv.y)) - 0.25) / 0.5, 0.0, 1.0));
-  outColor = vec4(linearToSrgb(mix(uInkA, uInkB, ink)) * fade, 1.0);
+  vec3 lit = mix(uInkB, uInkLight, glow);
+  outColor = vec4(linearToSrgb(mix(uInkA, lit, ink)) * max(fade, glow), 1.0);
 }`;
 
 function hexToLinear(hex: string): [number, number, number] {
@@ -143,6 +154,8 @@ export interface BgState {
 export interface BgRenderer {
   resize(w: number, h: number): void;
   setState(state: BgState): void;
+  /** Mouse position in cells from the top left; `on` is false once it leaves the page. */
+  setPointer(x: number, y: number, on: boolean): void;
 }
 
 /** Runs in the background worker, or on the main thread where OffscreenCanvas is missing. */
@@ -193,11 +206,25 @@ export function createRenderer(
   gl.uniform3fv(u("uNoiseB"), hexToLinear(props.noiseB));
   gl.uniform3fv(u("uInkA"), hexToLinear(props.inkA));
   gl.uniform3fv(u("uInkB"), hexToLinear(props.inkB));
+  gl.uniform3fv(u("uInkLight"), hexToLinear(props.inkLight));
   const uCells = u("uCells");
   const uAnimTime = u("uAnimTime");
+  const uPointer = u("uPointer");
+
+  // The light eases toward the pointer and fades in and out instead of jumping.
+  const pointer = { x: 0, y: 0, s: 0, tx: 0, ty: 0, ts: 0, movedAt: -Infinity };
+  const easePointer = () => {
+    pointer.x += (pointer.tx - pointer.x) * 0.3;
+    pointer.y += (pointer.ty - pointer.y) * 0.3;
+    pointer.s += (pointer.ts - pointer.s) * 0.15;
+    if (Math.abs(pointer.ts - pointer.s) < 0.005) pointer.s = pointer.ts;
+    gl.uniform3f(uPointer, pointer.x, pointer.y, pointer.s);
+  };
+  const lightMoving = (now: number) => now - pointer.movedAt < 700 || pointer.s !== pointer.ts;
 
   const t0 = performance.now();
   const draw = (now: number) => {
+    easePointer();
     gl.uniform1f(uAnimTime, ((now - t0) / 1000) * props.speed);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
   };
@@ -221,7 +248,7 @@ export function createRenderer(
   const loop = (now: number) => {
     frame = raf(loop);
     if (state.scrolling) return;
-    const fps = state.videos > 0 ? FPS_WITH_VIDEO : FPS;
+    const fps = lightMoving(now) ? FPS_WITH_LIGHT : state.videos > 0 ? FPS_WITH_VIDEO : FPS;
     if (now - last < 1000 / fps - 2) return;
     last = now;
     draw(now);
@@ -233,5 +260,12 @@ export function createRenderer(
   };
   setState(state);
 
-  return { resize, setState };
+  const setPointer = (x: number, y: number, on: boolean) => {
+    if (reducedMotion) return;
+    if (pointer.s === 0) [pointer.x, pointer.y] = [x, y];
+    [pointer.tx, pointer.ty, pointer.ts] = [x, y, on ? 1 : 0];
+    pointer.movedAt = performance.now();
+  };
+
+  return { resize, setState, setPointer };
 }

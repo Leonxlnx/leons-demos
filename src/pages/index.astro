@@ -8,8 +8,8 @@ import { PROJECTS } from "../lib/projects";
 
 const EMAIL = "lexn.lin@gmail.com";
 const TASTE_INSTALL = "npx skills add Leonxlnx/taste-skill";
-/** Total installs across the Taste Skill skills, from skills.sh (October 2026). Update by hand. */
-const TASTE_INSTALLS = "5.1M";
+/** Total installs across the Taste Skill skills, from skills.sh (13 October 2026). Update by hand. */
+const TASTE_INSTALLS = 5_200_000;
 
 // Demos whose first video frame is black, blank or blurred. They stay on /demos.
 const WEAK_POSTERS = new Set([
@@ -48,7 +48,9 @@ const rank = new Map(reel.map((d, i) => [d, i]));
 const FRAME_H = 425;
 
 const taste = PROJECTS.find((p) => p.name === "taste-skill");
-const projects = PROJECTS.filter((p) => p !== taste);
+// The open-source index, in this order. Every other repo stays on GitHub.
+const SHOWN = ["tastecode", "unlazy", "cinetic", "kimi-code-desktop", "lumenshaders", "todobar", "prompt-library"];
+const projects = SHOWN.map((name) => PROJECTS.find((p) => p.name === name)).filter((p) => p !== undefined);
 
 interface Row {
   what: string;
@@ -62,7 +64,6 @@ const recognition: { group: string; rows: Row[] }[] = [
     rows: [
       { what: "Vercel Open Source Program", url: "https://vercel.com/blog/vercel-open-source-program-spring-2026-cohort", result: "Spring 2026 cohort" },
       { what: "Google Labs Stitch Skills", url: "https://github.com/google-labs-code/stitch-skills/pull/38", result: "taste-design merged" },
-      { what: "Abduzeedo", url: "https://abduzeedo.com/stop-slop-taste-skill-better-ai-design", result: "Feature" },
     ],
   },
   {
@@ -93,7 +94,7 @@ const jsonLd = {
 
 <Base
   title="Leon Lin"
-  description="I build tools that give AI good taste. Creator of Taste Skill, student in Munich."
+  description="I build tools that give AI good taste. Creator of Taste Skill, high school student in Munich."
   twimg
   header={false}
   jsonLd={jsonLd}
@@ -161,7 +162,7 @@ const jsonLd = {
 
       <div class="hero-foot wrap">
         <p class="lede" style="--i:0">
-          I build tools that give AI good taste<br /><span>Creator of Taste Skill, student in Munich</span>
+          I build tools that give AI good taste<br /><span>Creator of Taste Skill, high school student in Munich</span>
         </p>
         <a class="button" style="--i:1" href={`mailto:${EMAIL}`}>Email me</a>
       </div>
@@ -200,7 +201,7 @@ const jsonLd = {
             <figure class="specimen">
               <div class="cut">
                 <p class="figure">
-                  <span aria-hidden="true">{compact(taste.stars)}</span>
+                  <span aria-hidden="true" data-count={taste.stars}>{compact(taste.stars)}</span>
                   <span class="sr-only">{taste.stars.toLocaleString("en-US")}</span>
                 </p>
               </div>
@@ -209,7 +210,8 @@ const jsonLd = {
             <figure class="specimen">
               <div class="cut">
                 <p class="figure" style="--i:1">
-                  {TASTE_INSTALLS}
+                  <span aria-hidden="true" data-count={TASTE_INSTALLS}>{compact(TASTE_INSTALLS)}</span>
+                  <span class="sr-only">{TASTE_INSTALLS.toLocaleString("en-US")}</span>
                 </p>
               </div>
               <figcaption>Installs on skills.sh</figcaption>
@@ -219,27 +221,26 @@ const jsonLd = {
       )
     }
 
-    <section class="oss wrap grid12" aria-labelledby="oss-h">
+    <section class="oss wrap" aria-labelledby="oss-h">
       <h2 id="oss-h" class="h2" data-reveal>Open source</h2>
-      <ul class="repos">
+      <ul class="index">
         {
           projects.map((p, i) => (
-            <li data-reveal style={`--i:${Math.min(i, 8)}`}>
-              <a class="repo" href={p.url} target="_blank" rel="noopener">
-                <span class="repo-name">{p.name}</span>
-                <span class="repo-stars">
-                  <Icon name="star" size={12} />
+            <li data-reveal style={`--i:${i}`}>
+              <a class="entry" href={p.url} target="_blank" rel="noopener">
+                <span class="entry-name">{p.name}</span>
+                <span class="entry-note">{p.note}</span>
+                <span class="entry-stars">
+                  <Icon name="star" size={14} />
                   {compact(p.stars)}
                   <span class="sr-only">stars</span>
                 </span>
-                <span class="repo-note">{p.note}</span>
               </a>
             </li>
           ))
         }
       </ul>
     </section>
-
     <section class="recog wrap" aria-labelledby="recog-h">
       <h2 id="recog-h" class="h2" data-reveal>Recognition</h2>
       <table class="table" aria-labelledby="recog-h">
@@ -516,6 +517,43 @@ const jsonLd = {
     }
   }
 
+  /* The lens: a frame grows and brightens as it reaches the middle of the strip, and its
+     picture drifts against the drag. Tied to the scroll position, so it follows the hand. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .is-live .frame a {
+        animation: lens linear both;
+        animation-timeline: view(inline);
+        animation-range: cover calc(50% - min(34vw, 30rem)) cover calc(50% + min(34vw, 30rem));
+      }
+      .is-live .frame img,
+      .is-live .frame video {
+        scale: 1.12;
+        animation: drift linear both;
+        animation-timeline: view(inline);
+      }
+    }
+  }
+  @keyframes lens {
+    0%,
+    100% {
+      transform: scale(0.86);
+      filter: brightness(0.4);
+    }
+    50% {
+      transform: none;
+      filter: none;
+    }
+  }
+  @keyframes drift {
+    from {
+      translate: 5% 0;
+    }
+    to {
+      translate: -5% 0;
+    }
+  }
+
   .motion {
     position: absolute;
     top: calc(var(--h) + 0.35rem);
@@ -635,7 +673,7 @@ const jsonLd = {
     border-radius: 999px;
     background: var(--paper-ink);
     color: var(--paper);
-    font-size: var(--step-small);
+    font-size: var(--step-body);
     font-weight: 500;
   }
   :global(.js) .copy {
@@ -654,15 +692,13 @@ const jsonLd = {
     font-size: var(--step-body);
   }
   .taste-links a,
-  .table a,
-  .repo-name {
+  .table a {
     text-decoration: underline;
     text-decoration-thickness: 0.07em;
     text-underline-offset: 0.22em;
     text-decoration-color: currentColor;
     transition: text-decoration-color var(--t-hover) ease;
   }
-  .repo-name,
   .table a {
     text-decoration-color: transparent;
   }
@@ -670,7 +706,6 @@ const jsonLd = {
     .taste-links a:hover {
       text-decoration-color: transparent;
     }
-    .repo:hover .repo-name,
     .table a:hover {
       text-decoration-color: currentColor;
     }
@@ -711,51 +746,68 @@ const jsonLd = {
   /* ------------------------------------------------------------ open source */
 
   .oss {
-    row-gap: 2rem;
     padding-top: var(--section);
   }
-  /* Two columns on the page's two text lines: the margin and the middle (column 7). */
-  .repos {
-    display: grid;
-    grid-column: 1 / -1;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    column-gap: var(--gutter);
-    margin: 0;
+  /* A typographic index: names on the margin, notes on the middle line, stars on the right.
+     Pointing at one entry sets the others back to the soft ink. */
+  .index {
+    margin: 2rem 0 0;
     padding: 0;
     list-style: none;
   }
-  .repo {
+  .entry {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    column-gap: 1.5rem;
-    max-width: 40rem;
-    padding-block: 0.7rem;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    align-items: baseline;
+    padding-block: clamp(0.55rem, 1.1vw, 0.9rem);
+  }
+  .entry-name {
+    grid-column: 1 / 7;
+    font-size: var(--step-index);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.045em;
+    white-space: nowrap;
+    transition:
+      color var(--t-hover) ease,
+      transform 0.5s var(--ease);
+  }
+  .entry-note {
+    grid-column: 7 / 12;
+    color: var(--muted);
     font-size: var(--step-body);
     line-height: 1.45;
-  }
-  .repo-name {
-    font-weight: 500;
-  }
-  .repo-note {
-    grid-column: 1;
-    color: var(--muted);
     text-wrap: pretty;
+    transition: color var(--t-hover) ease;
   }
-  .repo-stars {
+  .entry-stars {
     display: inline-flex;
+    grid-column: 12;
+    justify-self: end;
     align-items: center;
-    gap: 0.35rem;
+    gap: 0.4rem;
     color: var(--muted);
-    font-size: var(--step-small);
+    font-size: var(--step-body);
     font-variant-numeric: tabular-nums;
     transition: color var(--t-hover) ease;
   }
   @media (hover: hover) and (pointer: fine) {
-    .repo:hover .repo-stars {
+    .index:hover .entry:not(:hover) .entry-name,
+    .index:focus-within .entry:not(:focus-visible) .entry-name {
+      color: var(--muted);
+    }
+    .entry:hover .entry-name,
+    .entry:focus-visible .entry-name {
+      transform: translateX(0.12em);
+    }
+    .entry:hover .entry-note,
+    .entry:hover .entry-stars,
+    .entry:focus-visible .entry-note,
+    .entry:focus-visible .entry-stars {
       color: var(--text);
     }
   }
-
   /* ------------------------------------------------------------ recognition */
 
   .recog {
@@ -864,7 +916,7 @@ const jsonLd = {
   .fine {
     margin: 1.25rem 0 0;
     color: var(--paper-muted);
-    font-size: var(--step-small);
+    font-size: var(--step-body);
   }
 
   /* ------------------------------------------------------------ motion */
@@ -915,6 +967,11 @@ const jsonLd = {
     .reel-track {
       animation: reel 90s linear infinite;
     }
+    /* With the page script the reel is driven by hand: it speeds up with the scroll. */
+    .reel.is-js .reel-track {
+      animation: none;
+      will-change: transform;
+    }
     .reel:hover .reel-track,
     .close:focus-within .reel-track,
     .reel.is-paused .reel-track,
@@ -950,8 +1007,15 @@ const jsonLd = {
   /* ------------------------------------------------------------ narrower */
 
   @media (max-width: 1100px) {
-    .repos {
-      grid-template-columns: 1fr;
+    .entry-name {
+      grid-column: 1 / -1;
+    }
+    .entry-note {
+      grid-column: 1 / 11;
+      margin-top: 0.4rem;
+    }
+    .entry-stars {
+      grid-column: 11 / -1;
     }
   }
 
@@ -988,6 +1052,12 @@ const jsonLd = {
     .h2,
     .taste-copy {
       grid-column: 1 / -1;
+    }
+    .entry-note {
+      grid-column: 1 / 10;
+    }
+    .entry-stars {
+      grid-column: 10 / -1;
     }
     .specimen {
       grid-column: 1 / -1;

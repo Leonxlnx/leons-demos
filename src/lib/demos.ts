@@ -81,11 +81,7 @@ export function describeLink(url: string, category: Category): DemoLink | null {
   return { url, label: category === "Games" ? "Play" : "Live", primary: true };
 }
 
-export function compact(n: number): string {
-  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(1).replace(/\.0$/, "")}M`;
-  if (n >= 1_000) return `${(n / 1_000).toFixed(n >= 10_000 ? 0 : 1).replace(/\.0$/, "")}K`;
-  return String(n);
-}
+export { compact } from "./format";
 
 /** Resized WebP from pbs.twimg.com; `small` fits within 680x680. */
 export function sizedImage(url: string, size: "small" | "medium"): string {

@@ -39,7 +39,29 @@ async function start(canvas: HTMLCanvasElement) {
     const { createRenderer } = await import("./bg-renderer");
     const renderer = createRenderer(canvas, size, state(), reducedMotion, ready);
     if (!renderer) return;
-    post = (m) => (m.type === "size" ? renderer.resize(m.w, m.h) : m.type === "state" && renderer.setState(m.state));
+    post = (m) => {
+      if (m.type === "size") renderer.resize(m.w, m.h);
+      else if (m.type === "state") renderer.setState(m.state);
+      else if (m.type === "pointer") renderer.setPointer(m.x, m.y, m.on);
+    };
+  }
+
+  // A soft light in the dither follows the mouse (not touch), sent at most once a frame.
+  if (!reducedMotion && matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    let pending: PointerEvent | null = null;
+    addEventListener(
+      "pointermove",
+      (e) => {
+        if (e.pointerType !== "mouse") return;
+        if (!pending) requestAnimationFrame(() => {
+          post({ type: "pointer", x: pending!.clientX / CELL, y: pending!.clientY / CELL, on: true });
+          pending = null;
+        });
+        pending = e;
+      },
+      { passive: true },
+    );
+    document.documentElement.addEventListener("pointerleave", (e) => post({ type: "pointer", x: e.clientX / CELL, y: e.clientY / CELL, on: false }));
   }
 
   addEventListener("resize", () => {

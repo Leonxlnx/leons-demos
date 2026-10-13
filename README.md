@@ -5,7 +5,7 @@ Leon Lin's personal site ([@LexnLin](https://x.com/LexnLin) · [GitHub](https://
 - `/` is the portfolio. The first screen is his name over one strip of every demo with a usable video, most liked in
   the middle: the strip scrolls sideways (drag, swipe, arrow keys), the frame in the centre is lit and plays its clip,
   and clicking a dimmed frame brings it to the centre. Below it: Taste Skill with its install command, stars and
-  installs; his other open-source projects from [`data/projects.json`](data/projects.json), sorted by stars;
+  installs; an index of hand-picked open-source projects from [`data/projects.json`](data/projects.json);
   recognition; and contact. The page logic is in `src/scripts/home.ts`.
 - `/demos` shows every demo he has shared on X as one minimal grid, most liked first. Each card shows the video or
   thumbnail, the title, likes, and links to the X post and any live demo or repo, plus a small Claude / OpenAI / Kimi
@@ -44,8 +44,9 @@ Requires Node 22.12+. Vercel detects Astro automatically and needs no config (bu
 `data/projects.json` holds each repo's name, GitHub description, stars and URL. To refresh it, run
 `node scripts/projects.mjs` and commit the result. It lists every public repo of Leonxlnx that is not a fork or
 archived, has a description and at least 20 stars (change `MIN_STARS` or `SKIP` in the script). Set `GITHUB_TOKEN` to
-avoid GitHub's unauthenticated rate limit. The homepage shows taste-skill in its own section and the rest as a list;
-each list line is the first sentence of the GitHub description unless `NOTES` in `src/lib/projects.ts` overrides it.
+avoid GitHub's unauthenticated rate limit. The homepage shows taste-skill in its own section and an index of the repos named in `SHOWN` in
+`src/pages/index.astro`, in that order; each line is the first sentence of the GitHub description unless `NOTES` in
+`src/lib/projects.ts` overrides it.
 
 The Taste Skill install count (`TASTE_INSTALLS` in `src/pages/index.astro`, from skills.sh) and the recognition table
 are written by hand in that file.

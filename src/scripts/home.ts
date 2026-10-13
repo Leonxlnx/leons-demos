@@ -9,6 +9,7 @@
  * Reduced-motion and data-saving visitors keep the posters.
  */
 
+import { compact } from "../lib/format";
 import { setActivity } from "./activity";
 
 // Hidden-until-revealed states only apply once this module runs, so a failed or blocked
@@ -255,6 +256,22 @@ function initStrip(strip: HTMLElement) {
 
 /* ------------------------------------------------------------------ reveals */
 
+/** Counts a figure up from zero once, in the same short form it ends on (95K, 5.2M). */
+function countUp(el: HTMLElement) {
+  const to = Number(el.dataset.count);
+  if (!to || reducedMotion) return;
+  // Hold the final width so the caption beside it does not move while the digits change.
+  el.style.display = "inline-block";
+  el.style.minWidth = `${el.getBoundingClientRect().width}px`;
+  const start = performance.now();
+  const step = (now: number) => {
+    const p = Math.min(1, (now - start) / 1500);
+    el.textContent = compact(Math.round(to * (1 - Math.pow(1 - p, 4))));
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
 const revealed = document.querySelectorAll("[data-reveal], [data-reveal-group]");
 if ("IntersectionObserver" in window) {
   const io = new IntersectionObserver(
@@ -262,6 +279,7 @@ if ("IntersectionObserver" in window) {
       for (const e of entries) {
         if (!e.isIntersecting) continue;
         e.target.classList.add("is-in");
+        e.target.querySelectorAll<HTMLElement>("[data-count]").forEach(countUp);
         io.unobserve(e.target);
       }
     },
@@ -301,7 +319,50 @@ for (const b of document.querySelectorAll<HTMLButtonElement>("[data-copy]")) {
 
 /* ------------------------------------------------------------------ reel */
 
-const reel = document.querySelector(".reel");
-if (reel && "IntersectionObserver" in window) {
-  new IntersectionObserver(([e]) => reel.classList.toggle("is-paused", !e.isIntersecting)).observe(reel);
+// The closing reel drifts left on its own and picks up the page's scroll speed, in either
+// direction, then eases back. It stops under the mouse, with focus inside, when paused and
+// off screen. Without this script it runs as a plain CSS loop.
+const reel = document.querySelector<HTMLElement>(".reel");
+const track = reel?.querySelector<HTMLElement>(".reel-track");
+if (reel && track && !reducedMotion && "IntersectionObserver" in window) {
+  reel.classList.add("is-js");
+  const close = reel.closest("footer") ?? reel;
+  const BASE = 26; // px per second
+  let x = 0;
+  let boost = 0;
+  let lastY = scrollY;
+  let last = 0;
+  let raf = 0;
+  let hovering = false;
+  let onScreen = false;
+
+  addEventListener(
+    "scroll",
+    () => {
+      boost = Math.max(-2400, Math.min(2400, boost + (scrollY - lastY) * 1.5));
+      lastY = scrollY;
+    },
+    { passive: true },
+  );
+  reel.addEventListener("pointerenter", () => (hovering = true));
+  reel.addEventListener("pointerleave", () => (hovering = false));
+
+  const frame = (now: number) => {
+    const dt = Math.min(0.064, (now - last) / 1000);
+    last = now;
+    boost *= Math.pow(0.03, dt);
+    const held = hovering || paused || root.classList.contains("motion-paused") || close.matches(":focus-within");
+    x -= (held ? 0 : BASE + boost) * dt;
+    const period = (track.scrollWidth + 8) / 2;
+    if (period > 0) x = ((x % period) - period) % period;
+    track.style.transform = `translate3d(${x.toFixed(2)}px, 0, 0)`;
+    raf = onScreen ? requestAnimationFrame(frame) : 0;
+  };
+  new IntersectionObserver(([e]) => {
+    onScreen = e.isIntersecting;
+    if (onScreen && !raf) {
+      last = performance.now();
+      raf = requestAnimationFrame(frame);
+    }
+  }).observe(reel);
 }
