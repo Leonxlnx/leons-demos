@@ -1,16 +1,22 @@
 /*
- * Homepage: the demo strip, section reveals, the copy button and the closing reel.
+ * Homepage: the demo strip, section entrances, the copy button and the closing reel.
  *
  * The strip is a native horizontal scroller with scroll snapping. The frame nearest its
- * centre is lit and, once the page has loaded and the strip has settled, plays a preview
- * encode of its clip; every other clip is unloaded back to its poster, so at most one
- * decoder runs. Mouse users can drag it, clicking a dimmed frame brings it to the centre,
- * and the strip is one tab stop whose frames are stepped through with the arrow keys.
- * Reduced-motion and data-saving visitors keep the posters.
+ * centre is lit. While the strip moves, captions keep quiet and a clip you pass is only
+ * paused; once it rests, the lit frame's clip plays (a preview encode) and every other clip
+ * is unloaded back to its poster, so at most one decoder holds a source at rest. Mouse users
+ * can drag it, clicking a dim frame brings it to the centre, and the strip is one tab stop
+ * whose frames are stepped through with the arrow keys. Reduced-motion and data-saving
+ * visitors keep the posters.
  */
 
-import { compact } from "../lib/format";
 import { setActivity } from "./activity";
+
+// Arriving by a view transition, everything here waits until it has finished: the strip is
+// already in its resting state from the inline script, and setting up now would steal frames
+// from the morph. The head script in Base.astro leaves the transition's finished promise here.
+const transition = (window as { __vt?: unknown }).__vt;
+if (transition) await Promise.resolve(transition).catch(() => {});
 
 // Hidden-until-revealed states only apply once this module runs, so a failed or blocked
 // script never leaves the page blank.
@@ -22,6 +28,8 @@ const saveData =
   !!connection?.saveData ||
   /(^|-)2g$|^3g$/.test(connection?.effectiveType ?? "") ||
   matchMedia("(prefers-reduced-data: reduce)").matches;
+const finePointer = matchMedia("(hover: hover) and (pointer: fine)").matches;
+const scrollTimelines = CSS.supports("animation-timeline: view()");
 const behavior: ScrollBehavior = reducedMotion ? "auto" : "smooth";
 const root = document.documentElement;
 
@@ -56,11 +64,13 @@ function initStrip(strip: HTMLElement) {
   let lit: HTMLElement | null = null;
   let ready = false;
   let visible = true;
-  let playTimer = 0;
+  let moving = false;
+  let firstStart = 0;
 
   const centreOf = (f: HTMLElement) => f.offsetLeft + f.offsetWidth / 2;
   const targetFor = (f: HTMLElement) => centreOf(f) - strip.clientWidth / 2;
   const frameOf = (el: EventTarget | null) => (el instanceof Element ? el.closest<HTMLElement>(".frame") : null);
+  const videoOf = (f: HTMLElement | null) => f?.querySelector("video") ?? null;
 
   function nearest(c = strip.scrollLeft + strip.clientWidth / 2): HTMLElement {
     return frames.reduce((a, b) => (Math.abs(centreOf(b) - c) < Math.abs(centreOf(a) - c) ? b : a));
@@ -69,24 +79,23 @@ function initStrip(strip: HTMLElement) {
   /** The preview encode that fits the frame: about 360p on phones and at 1x, 720p above. */
   function source(v: HTMLVideoElement): string {
     const { sd, hd, src } = v.dataset;
-    const pixels = v.parentElement!.clientHeight * devicePixelRatio;
+    const pixels = (v.closest("a")?.clientHeight ?? 0) * devicePixelRatio;
     const big = innerWidth > 700 && pixels > 480;
     return (big ? hd : sd) || sd || hd || src!;
   }
 
-  function release(f: HTMLElement | null) {
-    const v = f?.querySelector("video");
-    if (!f || !v) return;
+  /** Unloads a clip back to its poster. */
+  function release(f: HTMLElement) {
+    const v = videoOf(f);
     f.classList.remove("playing");
-    if (!v.hasAttribute("src")) return;
+    if (!v || !v.hasAttribute("src")) return;
     v.pause();
     v.removeAttribute("src");
     v.load();
-    setActivity({ videos: 0 });
   }
 
   function play(f: HTMLElement) {
-    const v = f.querySelector("video");
+    const v = videoOf(f);
     if (!v || broken.has(v) || !ready || !visible || paused || saveData || reducedMotion || document.hidden) return;
     if (!v.hasAttribute("src")) {
       v.src = source(v);
@@ -98,31 +107,53 @@ function initStrip(strip: HTMLElement) {
         () => {
           broken.add(v);
           release(f);
+          setActivity({ videos: 0 });
         },
         { once: true },
       );
+    } else if (!f.classList.contains("playing")) {
+      // Its first frame arrived while another frame was lit, so `show` declined then.
+      if (v.readyState >= 2) f.classList.add("playing");
+      else v.addEventListener("playing", () => lit === f && f.classList.add("playing"), { once: true });
     }
     v.play().catch(() => {});
     setActivity({ videos: 1 });
   }
 
   function stop() {
-    clearTimeout(playTimer);
-    lit?.querySelector("video")?.pause();
+    clearTimeout(firstStart);
+    videoOf(lit)?.pause();
     setActivity({ videos: 0 });
   }
 
+  /** Moves the lit state. A clip passed on the way is paused, not unloaded. */
+  let developTimer = 0;
   function light(f: HTMLElement) {
-    if (lit !== f) {
-      release(lit);
-      lit?.classList.remove("is-lit");
-      lit?.querySelector("a")?.setAttribute("tabindex", "-1");
-      lit = f;
-      f.classList.add("is-lit");
-      f.querySelector("a")!.tabIndex = 0;
+    if (lit === f) return;
+    if (lit) {
+      videoOf(lit)?.pause();
+      lit.classList.remove("is-lit", "is-developing");
+      lit.querySelector("a")?.setAttribute("tabindex", "-1");
     }
-    clearTimeout(playTimer);
-    playTimer = window.setTimeout(() => lit === f && play(f), 450);
+    lit = f;
+    f.classList.add("is-lit");
+    f.querySelector("a")!.tabIndex = 0;
+    // Without scroll timelines the colour develops on a short clock instead of with the hand.
+    // Only the lit frame develops: a frame passed in a flick drops back to its print at once.
+    if (!scrollTimelines && !reducedMotion) {
+      clearTimeout(developTimer);
+      f.classList.add("is-developing");
+      developTimer = window.setTimeout(() => f.classList.remove("is-developing"), 260);
+    }
+  }
+
+  /** At rest: the lit clip plays and every other clip lets go of its source. */
+  function settle() {
+    moving = false;
+    strip.dataset.state = "settled";
+    if (!lit) return;
+    for (const f of frames) if (f !== lit) release(f);
+    if (ready) play(lit);
   }
 
   // One tab stop: only the lit frame is in the tab order; arrow keys move between frames.
@@ -131,17 +162,28 @@ function initStrip(strip: HTMLElement) {
   light(nearest());
 
   let raf = 0;
+  let settleTimer = 0;
+  const hasScrollEnd = "onscrollend" in window;
   strip.addEventListener(
     "scroll",
     () => {
+      if (!moving) {
+        moving = true;
+        strip.dataset.state = "moving";
+      }
       cancelAnimationFrame(raf);
       raf = requestAnimationFrame(() => light(nearest()));
+      if (!hasScrollEnd) {
+        clearTimeout(settleTimer);
+        settleTimer = window.setTimeout(() => !strip.classList.contains("is-dragging") && settle(), 140);
+      }
     },
     { passive: true },
   );
+  if (hasScrollEnd) strip.addEventListener("scrollend", () => !strip.classList.contains("is-dragging") && settle());
 
-  // A pointer click on a frame that was dimmed when the press began centres it; a click on
-  // the lit frame, or Enter on the focused one, opens its post.
+  // A pointer click on a frame that was dim when the press began centres it; a click on the
+  // lit frame, or Enter on the focused one, opens its post.
   let pressLit: HTMLElement | null = null;
   strip.addEventListener("pointerdown", () => (pressLit = lit), true);
   strip.addEventListener("click", (e) => {
@@ -172,6 +214,9 @@ function initStrip(strip: HTMLElement) {
 
   // Mouse drag. Touch and trackpads scroll natively.
   let dragged = false;
+  // The cleanup of a throw's glide still in flight; a new drag cancels it, or it would bring
+  // snapping back in the middle of that drag.
+  let cancelGlide: (() => void) | null = null;
   strip.addEventListener("pointerdown", (e) => {
     if (e.pointerType !== "mouse" || e.button !== 0) return;
     dragged = false;
@@ -185,6 +230,7 @@ function initStrip(strip: HTMLElement) {
       if (!dragged && Math.abs(dx) < 6) return;
       if (!dragged) {
         dragged = true;
+        cancelGlide?.();
         strip.classList.add("is-dragging");
       }
       velocity = (m.clientX - lastX) / Math.max(1, m.timeStamp - lastT);
@@ -202,13 +248,19 @@ function initStrip(strip: HTMLElement) {
       const f = nearest(strip.scrollLeft - velocity * 220 + strip.clientWidth / 2);
       strip.scrollTo({ left: targetFor(f), behavior });
       // Snapping comes back once the glide has finished, or it would cut the glide short.
-      const done = () => {
+      const cancel = () => {
         clearTimeout(fallback);
         strip.removeEventListener("scrollend", done);
+        if (cancelGlide === cancel) cancelGlide = null;
+      };
+      const done = () => {
+        cancel();
         strip.classList.remove("is-dragging");
+        settle();
       };
       const fallback = setTimeout(done, 900);
       strip.addEventListener("scrollend", done);
+      cancelGlide = cancel;
       setTimeout(() => (dragged = false), 0);
     };
     addEventListener("pointermove", move);
@@ -221,97 +273,93 @@ function initStrip(strip: HTMLElement) {
   new IntersectionObserver(
     ([entry]) => {
       visible = entry.isIntersecting;
-      if (visible && lit) light(lit);
+      if (visible && lit && !moving) play(lit);
       else stop();
     },
     { threshold: 0.35 },
   ).observe(strip);
-  document.addEventListener("visibilitychange", () => (document.hidden ? stop() : lit && light(lit)));
+  document.addEventListener("visibilitychange", () => (document.hidden ? stop() : lit && !moving && play(lit)));
 
-  // Nothing downloads before the page itself has loaded.
+  // Nothing downloads before the page itself has loaded; the first clip then starts a beat later.
   const start = () => {
     ready = true;
     light(nearest());
+    firstStart = window.setTimeout(() => !moving && lit && play(lit), 450);
   };
   const idle = () => ("requestIdleCallback" in window ? requestIdleCallback(start, { timeout: 1500 }) : setTimeout(start, 300));
   if (document.readyState === "complete") idle();
   else addEventListener("load", idle, { once: true });
 
-  // Pause button: stops the clip and the closing reel (WCAG 2.2.2).
+  // Pause button: stops the clip, the closing reel and the background (WCAG 2.2.2). Its name
+  // stays "Pause …" and aria-pressed carries the state, as a toggle button should.
   if (motionButton && !reducedMotion) {
     motionButton.hidden = false;
-    const label = motionButton.querySelector(".sr-only")!;
     const icon = motionButton.querySelector("use")!;
     motionButton.addEventListener("click", () => {
       paused = !paused;
       root.classList.toggle("motion-paused", paused);
+      setActivity({ paused });
       motionButton.setAttribute("aria-pressed", String(paused));
-      label.textContent = paused ? "Play clips and moving pictures" : "Pause clips and moving pictures";
       icon.setAttribute("href", paused ? "#i-play" : "#i-pause");
       if (paused) stop();
-      else if (lit) light(lit);
+      else if (lit && !moving) play(lit);
     });
   }
 }
 
-/* ------------------------------------------------------------------ reveals */
+/* ------------------------------------------------------------------ entrances */
 
-/** Counts a figure up from zero once, in the same short form it ends on (95K, 5.2M). */
-function countUp(el: HTMLElement) {
-  const to = Number(el.dataset.count);
-  if (!to || reducedMotion) return;
-  // Hold the final width so the caption beside it does not move while the digits change.
-  el.style.display = "inline-block";
-  el.style.minWidth = `${el.getBoundingClientRect().width}px`;
-  const start = performance.now();
-  const step = (now: number) => {
-    const p = Math.min(1, (now - start) / 1500);
-    el.textContent = compact(Math.round(to * (1 - Math.pow(1 - p, 4))));
-    if (p < 1) requestAnimationFrame(step);
-  };
-  requestAnimationFrame(step);
-}
-
-const revealed = document.querySelectorAll("[data-reveal], [data-reveal-group]");
+// Each block gets .is-in once, the first time it is on screen. A batch that arrives together
+// staggers through --b (at most four steps), so a fast scroll never queues a long cascade.
+const revealed = document.querySelectorAll<HTMLElement>("[data-reveal], [data-odo]");
 if ("IntersectionObserver" in window) {
-  const io = new IntersectionObserver(
-    (entries) => {
-      for (const e of entries) {
-        if (!e.isIntersecting) continue;
-        e.target.classList.add("is-in");
-        e.target.querySelectorAll<HTMLElement>("[data-count]").forEach(countUp);
-        io.unobserve(e.target);
-      }
-    },
-    { rootMargin: "0px 0px -8% 0px", threshold: 0.05 },
-  );
-  revealed.forEach((el) => io.observe(el));
+  const reveal = (threshold: number) => {
+    const io = new IntersectionObserver(
+      (entries) => {
+        let b = 0;
+        for (const e of entries) {
+          if (!e.isIntersecting) continue;
+          (e.target as HTMLElement).style.setProperty("--b", String(Math.min(b++, 3)));
+          e.target.classList.add("is-in");
+          io.unobserve(e.target);
+        }
+      },
+      { rootMargin: "0px 0px -8% 0px", threshold },
+    );
+    return io;
+  };
+  const blocks = reveal(0.05);
+  const figures = reveal(0.35);
+  revealed.forEach((el) => (el.hasAttribute("data-odo") ? figures : blocks).observe(el));
 } else {
   revealed.forEach((el) => el.classList.add("is-in"));
 }
 // Tabbing into a block that has not been revealed yet reveals it.
 document.addEventListener("focusin", (e) => {
-  (e.target as Element).closest?.("[data-reveal], [data-reveal-group]")?.classList.add("is-in");
+  (e.target as Element).closest?.("[data-reveal], [data-odo]")?.classList.add("is-in");
 });
 
 /* ------------------------------------------------------------------ copy */
 
 for (const b of document.querySelectorAll<HTMLButtonElement>("[data-copy]")) {
   const status = b.parentElement?.querySelector("[role=status]");
+  const after = b.querySelector<HTMLElement>(".roll > span + span");
   let reset = 0;
   b.addEventListener("click", async () => {
-    let text: string;
+    let ok = true;
     try {
       await navigator.clipboard.writeText(b.dataset.copy!);
-      text = "Copied";
     } catch {
-      text = "Select and copy";
+      ok = false;
     }
-    b.textContent = text;
-    if (status) status.textContent = text === "Copied" ? "Install command copied" : "Copy failed, select the command to copy it";
+    if (after) after.textContent = ok ? "Copied" : "Select and copy";
+    b.classList.add("is-done");
+    if (status) status.textContent = ok ? "Install command copied" : "Copy failed, select the command to copy it";
     clearTimeout(reset);
     reset = window.setTimeout(() => {
-      b.textContent = "Copy";
+      b.classList.remove("is-done");
+      // Back to the short label, so a failed copy does not leave the pill wide.
+      setTimeout(() => after && (after.textContent = "Copied"), 300);
       if (status) status.textContent = "";
     }, 1600);
   });
@@ -319,16 +367,31 @@ for (const b of document.querySelectorAll<HTMLButtonElement>("[data-copy]")) {
 
 /* ------------------------------------------------------------------ reel */
 
-// The closing reel drifts left on its own and picks up the page's scroll speed, in either
-// direction, then eases back. It stops under the mouse, with focus inside, when paused and
-// off screen. Without this script it runs as a plain CSS loop.
+// The closing reel is ink on paper: dithered prints whose colour develops under the mouse.
+// The colour posters are only requested on mouse devices, as the reel approaches the screen,
+// so they are there for the first hover and phones never download them. The reel drifts left
+// on its own and picks up the page's scroll speed, in either direction, with a little mass;
+// it stops under the mouse, with focus inside, when paused and off screen. Without this
+// script it runs as a plain CSS loop.
 const reel = document.querySelector<HTMLElement>(".reel");
 const track = reel?.querySelector<HTMLElement>(".reel-track");
+if (reel && finePointer && "IntersectionObserver" in window) {
+  const near = new IntersectionObserver(
+    ([e]) => {
+      if (!e.isIntersecting) return;
+      near.disconnect();
+      reel.querySelectorAll<HTMLImageElement>(".tint[data-src]").forEach((img) => (img.src = img.dataset.src!));
+    },
+    { rootMargin: "800px 0px" },
+  );
+  near.observe(reel);
+}
 if (reel && track && !reducedMotion && "IntersectionObserver" in window) {
   reel.classList.add("is-js");
   const close = reel.closest("footer") ?? reel;
   const BASE = 26; // px per second
   let x = 0;
+  let speed = BASE;
   let boost = 0;
   let lastY = scrollY;
   let last = 0;
@@ -339,7 +402,9 @@ if (reel && track && !reducedMotion && "IntersectionObserver" in window) {
   addEventListener(
     "scroll",
     () => {
-      boost = Math.max(-2400, Math.min(2400, boost + (scrollY - lastY) * 1.5));
+      // Only scroll seen while the reel is on screen counts, or a long scroll down the page
+      // would store up and send the reel racing in.
+      if (onScreen) boost = Math.max(-2400, Math.min(2400, boost + (scrollY - lastY) * 1.5));
       lastY = scrollY;
     },
     { passive: true },
@@ -352,7 +417,9 @@ if (reel && track && !reducedMotion && "IntersectionObserver" in window) {
     last = now;
     boost *= Math.pow(0.03, dt);
     const held = hovering || paused || root.classList.contains("motion-paused") || close.matches(":focus-within");
-    x -= (held ? 0 : BASE + boost) * dt;
+    const target = held ? 0 : BASE + boost;
+    speed += (target - speed) * (1 - Math.pow(1 - 0.08, dt * 60));
+    x -= speed * dt;
     const period = (track.scrollWidth + 8) / 2;
     if (period > 0) x = ((x % period) - period) % period;
     track.style.transform = `translate3d(${x.toFixed(2)}px, 0, 0)`;

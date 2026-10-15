@@ -1,5 +1,5 @@
-/** Page activity shared between the video player and the background shader. */
-export const activity = { videos: 0, scrolling: false };
+/** Page activity shared between the video player, the homepage and the background shader. */
+export const activity = { videos: 0, scrolling: false, paused: false };
 
 const listeners: (() => void)[] = [];
 export const onActivity = (fn: () => void) => listeners.push(fn);
@@ -18,5 +18,6 @@ addEventListener(
     clearTimeout(settle);
     settle = window.setTimeout(() => setActivity({ scrolling: false }), 150);
   },
-  { passive: true },
+  // Capture, so scrolling inside an element (the homepage strip) counts too.
+  { passive: true, capture: true },
 );

@@ -14,11 +14,62 @@ interface Props {
   header?: boolean;
   /** Structured data for search engines, emitted as JSON-LD. */
   jsonLd?: Record<string, unknown>;
+  /**
+   * Id of an element to hold the first render for (rel="expect"). The arriving page of a view
+   * transition is captured on its first frame, so anything named in pagereveal must be parsed
+   * by then.
+   */
+  expect?: string;
 }
-const { title, description, twimg = false, header = true, jsonLd } = Astro.props;
+const { title, description, twimg = false, header = true, jsonLd, expect } = Astro.props;
 const path = Astro.url.pathname.replace(/\/$/, "") || "/";
 const canonical = Astro.site ? new URL(path, Astro.site).href : undefined;
 const ogImage = Astro.site ? new URL("/og.png", Astro.site).href : "/og.png";
+
+/*
+ * View transitions between / and /demos. The shared elements are named by an inline classic
+ * script in <head>, because a deferred module can miss pagereveal. Names live for one
+ * transition: set on the leaving page in pageswap and on the arriving one in pagereveal, and
+ * cleared on finish so a bfcache restore starts clean. The clip ("demo") is the lit strip frame
+ * on home and its card on /demos; its id travels in sessionStorage "vt-demo", kept only when
+ * the page named it, so the way back names it only if the way there did (a side left without
+ * a partner is handled in the CSS below). The home name is paired only on one line; the
+ * two-line phone name develops with its page. The inline strip script marks the centred
+ * [data-start] frame lit while the page parses. Under the no-referrer policy a Back or Forward
+ * entry reports its URL as null, so an unknown destination counts as /demos; the arriving
+ * page still names the clip only if it has it. The arriving page gets html.vt, so its intro
+ * can stand down, and window.__vt = the transition's finished promise, so the page scripts and
+ * the ground wait for the transition instead of competing with it. Lines are joined to keep it
+ * small, so every statement ends in a semicolon and there are no line comments.
+ */
+const vtNames = String.raw`(() => {
+  const named = [];
+  const q = (s) => document.querySelector(s);
+  const clear = () => named.splice(0).forEach((el) => (el.style.viewTransitionName = ""));
+  const name = (el, v) => {
+    const r = el && el.getBoundingClientRect();
+    if (r?.bottom > 0 && r.top < innerHeight) return named.push(el), (el.style.viewTransitionName = v);
+  };
+  const run = (e, out) => {
+    clear();
+    const vt = e.viewTransition;
+    if (!vt) return;
+    vt.finished.then(clear);
+    if (!out) (window.__vt = vt.finished), document.documentElement.classList.add("vt");
+    const n = q(".name,.site-title");
+    if (!n?.matches(".name") || n.offsetHeight < parseFloat(getComputedStyle(n).fontSize)) name(n, "name");
+    name(q(".nav"), "nav");
+    try {
+      const f = q(".frame.is-lit") || q(".frame[data-start]");
+      let id = sessionStorage.getItem("vt-demo");
+      if (f && out) id = /\/demos\b/.test(e.activation.entry.url ?? "/demos") && f.dataset.id;
+      const clip = f ? f.dataset.id === id && f.querySelector("a") : q('.card[data-id="' + id + '"] .media');
+      sessionStorage.setItem("vt-demo", name(clip, "demo") ? id : "");
+    } catch {}
+  };
+  addEventListener("pageswap", (e) => run(e, 1));
+  addEventListener("pagereveal", run);
+})();`.replace(/\s*\n\s*/g, "");
 ---
 
 <!doctype html>
@@ -27,6 +78,17 @@ const ogImage = Astro.site ? new URL("/og.png", Astro.site).href : "/og.png";
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <script is:inline>document.documentElement.classList.add("js");</script>
+    <script is:inline set:html={vtNames} />
+    {
+      /* Hold the first render only when a view transition can run (a same-site arrival, not a
+         reload, motion allowed); every other load paints as soon as it can. */
+      expect && (
+        <script
+          is:inline
+          set:html={`(()=>{const a=window.navigation&&navigation.activation;if(a&&a.from&&a.navigationType!=="reload"&&matchMedia("(prefers-reduced-motion: no-preference)").matches){const l=document.createElement("link");l.rel="expect";l.href="#${expect}";l.setAttribute("blocking","render");document.head.append(l)}})()`}
+        />
+      )
+    }
     {twimg && <meta name="referrer" content="no-referrer" />}
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -71,3 +133,133 @@ const ogImage = Astro.site ? new URL("/og.png", Astro.site).href : "/og.png";
     </script>
   </body>
 </html>
+
+<style is:global>
+  /* Opt-in, so reduced motion and engines without cross-document transitions (Firefox)
+     navigate as before. */
+  @media (prefers-reduced-motion: no-preference) {
+    @view-transition {
+      navigation: auto;
+    }
+  }
+
+  /* The name, nav and clip are objects: they travel while visible, on the morph curve. */
+  ::view-transition-group(name),
+  ::view-transition-group(nav),
+  ::view-transition-group(demo) {
+    animation-duration: var(--t-page);
+    animation-timing-function: var(--ease-in-out);
+  }
+  /* The name is 264px on home and 17px on /demos, and a small snapshot blown up goes soft.
+     So the big one carries the morph and the small one shows only near its own size. The
+     pseudo-elements are styled by the arriving page, which tells the direction. The fades
+     inherit this from the pair, so a name without a partner still develops with the page. */
+  :root:has(.site-title)::view-transition-image-pair(name) {
+    animation-delay: calc(var(--t-page) * 0.65);
+    animation-duration: calc(var(--t-page) * 0.35);
+  }
+  :root:has(.name)::view-transition-image-pair(name) {
+    animation-duration: calc(var(--t-page) * 0.35);
+  }
+  /* While a transition runs, the small title is captured as its glyph box cut on the baseline,
+     like the home .name, so the two land on each other instead of double-exposing. The padding
+     is its touch target and comes back when the transition ends. On a phone the name is two
+     lines and is not paired at all (head script), so each side develops with its page. */
+  :active-view-transition .site-title {
+    height: 0.755em;
+    padding: 0;
+    margin: 0;
+    line-height: 0.8;
+  }
+
+  /* The strip frame and the card differ in shape; both crop to the box like the poster does. */
+  ::view-transition-old(demo),
+  ::view-transition-new(demo) {
+    height: 100%;
+    object-fit: cover;
+  }
+  /* On the first frame of /demos every card is still skipped by content-visibility, and a
+     skipped element is not captured. The named one renders for the length of the transition. */
+  .card:has(> .media[style*="view-transition-name"]) {
+    content-visibility: visible;
+  }
+
+  /* The page is material: the new one develops over the old through the Bayer tiles, one
+     threshold per step, instead of cross-fading. The old stays put underneath, so it must not
+     blend additively. A named element with no partner on the old page develops with it. */
+  ::view-transition-old(root) {
+    animation: none;
+    mix-blend-mode: normal;
+  }
+  ::view-transition-new(root),
+  ::view-transition-new(*):only-child {
+    animation: page-develop calc(var(--step-page) * 8) steps(1, jump-end) both;
+    mix-blend-mode: normal;
+    mask-size: 12px 12px;
+    mask-repeat: repeat;
+  }
+  @keyframes page-develop {
+    0% {
+      mask-image: var(--m1);
+    }
+    12.5% {
+      mask-image: var(--m2);
+    }
+    25% {
+      mask-image: var(--m3);
+    }
+    37.5% {
+      mask-image: var(--m4);
+    }
+    50% {
+      mask-image: var(--m5);
+    }
+    62.5% {
+      mask-image: var(--m6);
+    }
+    75% {
+      mask-image: var(--m7);
+    }
+    87.5%,
+    100% {
+      mask-image: none;
+    }
+  }
+  /* A named element with no partner on the new page (the clip's card below the fold, or a
+     strip that has moved since) leaves with the old page instead of fading over the new one:
+     at each step it keeps only the cells the new page has not taken yet (the full tile
+     excluding --mN). */
+  ::view-transition-old(*):only-child {
+    animation: page-develop-out calc(var(--step-page) * 8) steps(1, jump-end) both;
+    mask-size: 12px 12px;
+    mask-repeat: repeat;
+    mask-composite: exclude;
+  }
+  @keyframes page-develop-out {
+    0% {
+      mask-image: var(--m8), var(--m1);
+    }
+    12.5% {
+      mask-image: var(--m8), var(--m2);
+    }
+    25% {
+      mask-image: var(--m8), var(--m3);
+    }
+    37.5% {
+      mask-image: var(--m8), var(--m4);
+    }
+    50% {
+      mask-image: var(--m8), var(--m5);
+    }
+    62.5% {
+      mask-image: var(--m8), var(--m6);
+    }
+    75% {
+      mask-image: var(--m8), var(--m7);
+    }
+    87.5%,
+    100% {
+      mask-image: var(--m8), var(--m8);
+    }
+  }
+</style>

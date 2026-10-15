@@ -59,6 +59,13 @@ adding demos, run `node scripts/previews.mjs` (it reads the variants X serves fo
 API) and commit the result; a demo without an entry plays its full video. The strip never autoplays for
 reduced-motion, Save-Data or 2G/3G visitors, and a button under it pauses the clip and the closing reel.
 
+Strip frames away from the centre and the posters in the closing reel are shown as prints in four greys, dithered
+with the background's 4×4 Bayer matrix: `public/dither/{id}.png` for the strip and `{id}-paper.png` for the reel.
+After adding demos or when a poster changes, run `node scripts/dither.mjs` as well (it fetches every poster from
+`pbs.twimg.com`, rewrites all prints in about 40 seconds and uses `sharp`, which comes with Astro; it imports
+`src/lib/bayer.ts`, so it needs Node 22.18+ or `--experimental-strip-types`) and commit `public/dither`. A strip
+frame without a print shows its poster in dimmed grey.
+
 ## Updating the demos
 
 All content comes from [`data/demos.json`](data/demos.json), an array of demos:

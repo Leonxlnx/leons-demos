@@ -1,3 +1,14 @@
+/* Arial scaled to Geist's width (measured on "Leon Lin", the largest line on the site), so the
+   monument-size name and email do not jump when the web font arrives. */
+@font-face {
+  font-family: "Geist Fallback";
+  src: local("Arial");
+  size-adjust: 102%;
+  ascent-override: 98.5%;
+  descent-override: 28.9%;
+  line-gap-override: 0%;
+}
+
 :root {
   --bg: #000;
   --card: #0a0a0a;
@@ -12,18 +23,42 @@
   --paper-muted: #5c5c5c;
   --pad: clamp(1rem, 3vw, 2.5rem);
   --gutter: clamp(0.75rem, 1.4vw, 1.5rem);
-  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Motion has two voices on one clock. Objects (name, frames, digits, pills) travel on
+     curves; material (dither, tone, masks, typing) changes only in steps. */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease: var(--ease-out);
   --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
   --ease-soft: cubic-bezier(0.33, 1, 0.68, 1);
   --t-press: 140ms;
   --t-hover: 180ms;
+  --t-ui: 240ms;
+  --t-page: 420ms;
   --t-reveal: 800ms;
+  --t-hero: 900ms;
+  --stagger: 70ms;
+  --step-page: 45ms;
+  --step-fast: 70ms;
+  --step-ambient: 125ms;
   --step-small: 0.875rem;
   --step-body: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
   --step-lead: clamp(1.375rem, 1.15rem + 0.8vw, 1.75rem);
   --step-index: clamp(2.25rem, 1rem + 3.6vw, 4.25rem);
   --step-display: clamp(4.5rem, 1rem + 15vw, 10.5rem);
-  font-family: "Geist Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --step-monument: clamp(4.5rem, 18.4vw, 16.5rem);
+  /* Bayer mask tiles, written by scripts/bayer-css.mjs. Do not edit by hand. */
+  /* bayer:start */
+  /* --mN = tile(2N): 2N of 16 cells lit, in bayer4() order. */
+  --m0: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3C/svg%3E");
+  --m1: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3Cpath fill='%23000' d='M0 0h3v3H0zM6 6h3v3H6z'/%3E%3C/svg%3E");
+  --m2: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3Cpath fill='%23000' d='M0 0h3v3H0zM6 0h3v3H6zM0 6h3v3H0zM6 6h3v3H6z'/%3E%3C/svg%3E");
+  --m3: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3Cpath fill='%23000' d='M0 0h3v3H0zM6 0h3v3H6zM3 3h3v3H3zM0 6h3v3H0zM6 6h3v3H6zM9 9h3v3H9z'/%3E%3C/svg%3E");
+  --m4: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3Cpath fill='%23000' d='M0 0h3v3H0zM6 0h3v3H6zM3 3h3v3H3zM9 3h3v3H9zM0 6h3v3H0zM6 6h3v3H6zM3 9h3v3H3zM9 9h3v3H9z'/%3E%3C/svg%3E");
+  --m5: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3Cpath fill='%23000' d='M0 0h3v3H0zM3 0h3v3H3zM6 0h3v3H6zM3 3h3v3H3zM9 3h3v3H9zM0 6h3v3H0zM6 6h3v3H6zM9 6h3v3H9zM3 9h3v3H3zM9 9h3v3H9z'/%3E%3C/svg%3E");
+  --m6: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3Cpath fill='%23000' d='M0 0h3v3H0zM3 0h3v3H3zM6 0h3v3H6zM9 0h3v3H9zM3 3h3v3H3zM9 3h3v3H9zM0 6h3v3H0zM3 6h3v3H3zM6 6h3v3H6zM9 6h3v3H9zM3 9h3v3H3zM9 9h3v3H9z'/%3E%3C/svg%3E");
+  --m7: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3Cpath fill='%23000' d='M0 0h3v3H0zM3 0h3v3H3zM6 0h3v3H6zM9 0h3v3H9zM0 3h3v3H0zM3 3h3v3H3zM9 3h3v3H9zM0 6h3v3H0zM3 6h3v3H3zM6 6h3v3H6zM9 6h3v3H9zM3 9h3v3H3zM6 9h3v3H6zM9 9h3v3H9z'/%3E%3C/svg%3E");
+  --m8: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3Cpath fill='%23000' d='M0 0h3v3H0zM3 0h3v3H3zM6 0h3v3H6zM9 0h3v3H9zM0 3h3v3H0zM3 3h3v3H3zM6 3h3v3H6zM9 3h3v3H9zM0 6h3v3H0zM3 6h3v3H3zM6 6h3v3H6zM9 6h3v3H9zM0 9h3v3H0zM3 9h3v3H3zM6 9h3v3H6zM9 9h3v3H9z'/%3E%3C/svg%3E");
+  /* bayer:end */
+  font-family: "Geist Variable", "Geist Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   color-scheme: dark;
 }
 
@@ -93,7 +128,7 @@ video {
   image-rendering: pixelated;
   pointer-events: none;
   opacity: 0;
-  transition: opacity 1.2s ease;
+  transition: opacity 160ms linear;
 }
 .bg.ready {
   opacity: 1;

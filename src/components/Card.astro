@@ -11,7 +11,7 @@ const tools = demo.tools.map(toolFilter);
 const toolLabel = tools.map((t) => t.label).join(" and ");
 ---
 
-<article class="card" data-cat={demo.cat} data-tool={demo.toolIds}>
+<article class="card" data-id={demo.id} data-cat={demo.cat} data-tool={demo.toolIds}>
   <div class="media">
     {
       demo.poster && (
