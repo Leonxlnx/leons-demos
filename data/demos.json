@@ -29,6 +29,31 @@
   ]
  },
  {
+  "id": "2110389810258968965",
+  "category": "Animations/Videos",
+  "title": "Clawd animation made with Opus 5.5 Ultracode (~12h run)",
+  "created_at": "2026-10-14T15:18:34.000Z",
+  "likes": 2600,
+  "reposts": 126,
+  "views": 137944,
+  "post_url": "https://x.com/LexnLin/status/2110389810258968965",
+  "text": "You can really build anything now\n\nClawd animation made with Opus 5.5 Ultracode. \n\nimproved sfx! https://t.co/0rmaX1oWZ6",
+  "links": [],
+  "related_posts": [
+   "https://x.com/i/status/2110441438815101126"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2110389703232917504/img/6m7l19ZJz0CnOC8A.jpg",
+    "video": "https://video.twimg.com/amplify_video/2110389703232917504/vid/avc1/1920x1080/SZ0_M4RKeJZOeb2q.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
   "id": "2103282610948464811",
   "category": "Games",
   "title": "Zelda: Ocarina of Time area recreated from scratch, no engine (GPT 6 Astra, 500+ agent hours)",
@@ -152,6 +177,29 @@
   ],
   "tools": [
    "Codex"
+  ]
+ },
+ {
+  "id": "2109718604883370450",
+  "category": "Animations/Videos",
+  "title": "Motion video for an AI assistant app (\"boon\"), made by Opus 5.5 high",
+  "created_at": "2026-10-12T18:51:26.000Z",
+  "likes": 964,
+  "reposts": 19,
+  "views": 41580,
+  "post_url": "https://x.com/LexnLin/status/2109718604883370450",
+  "text": "This is made by Opus 5.5 high. \n\nsfx improved https://t.co/YElgm7agUx",
+  "links": [],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2109718241077526529/img/fato41ReEJyjDd6O.jpg",
+    "video": "https://video.twimg.com/amplify_video/2109718241077526529/vid/avc1/1920x1080/bnzMSlXRdPZnOtDd.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
   ]
  },
  {
@@ -474,6 +522,34 @@
   ]
  },
  {
+  "id": "2110657641831956870",
+  "category": "Web/Interactive",
+  "title": "Golden hour Japanese temple in three.js, all code (Opus 5.5)",
+  "created_at": "2026-10-15T09:02:50.000Z",
+  "likes": 520,
+  "reposts": 21,
+  "views": 19491,
+  "post_url": "https://x.com/LexnLin/status/2110657641831956870",
+  "text": "Opus 5.5 built a golden hour japanese temple in threejs https://t.co/uMlDMCtkXZ",
+  "links": [
+   "https://github.com/Leonxlnx/golden-temple"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2110657654808830313",
+   "https://x.com/i/status/2110657793376039323"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2110642835955318784/img/AarSkr4QOesHPDS_.jpg",
+    "video": "https://video.twimg.com/amplify_video/2110642835955318784/vid/avc1/1920x1080/XsGdLLIlLSnu_wGO.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
   "id": "2096045877760795063",
   "category": "Web/Interactive",
   "title": "Website from reference images in one prompt (GPT Astra)",
@@ -541,6 +617,31 @@
   ],
   "tools": [
    "Codex"
+  ]
+ },
+ {
+  "id": "2110013871532490973",
+  "category": "Animations/Videos",
+  "title": "Motion video about an AI product, every frame code (Opus 5.5, 3B tokens)",
+  "created_at": "2026-10-13T14:24:43.000Z",
+  "likes": 335,
+  "reposts": 2,
+  "views": 13313,
+  "post_url": "https://x.com/LexnLin/status/2110013871532490973",
+  "text": "This took 3B tokens to make\n\nOpus 5.5 is REALLY REALLY good for motion video designs, this one's about an AI product. \n\nsound on btw! ;) https://t.co/X0TiYFbJTd",
+  "links": [],
+  "related_posts": [
+   "https://x.com/i/status/2110013877039559071"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2110009219084689408/img/swIViM6ktpaHoH6m.jpg",
+    "video": "https://video.twimg.com/amplify_video/2110009219084689408/vid/avc1/1920x1080/wYL772CgErh_tCe_.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
   ]
  },
  {
@@ -1353,6 +1454,29 @@
     "type": "video",
     "image": "https://pbs.twimg.com/amplify_video_thumb/2093534525318119424/img/6MMiu_A7umfUxz9-.jpg",
     "video": "https://video.twimg.com/amplify_video/2093534525318119424/vid/avc1/1280x720/FPMvEIKRB6s_SEzN.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2110490842716672003",
+  "category": "Web/Interactive",
+  "title": "Tap-to-Fit pricing: pick features, cheapest plan is selected (Opus 5.5)",
+  "created_at": "2026-10-14T22:00:02.000Z",
+  "likes": 89,
+  "reposts": 1,
+  "views": 4942,
+  "post_url": "https://x.com/LexnLin/status/2110490842716672003",
+  "text": "I saw an opportunity for a BETTER pricing section. there has always been a few different plans and a long feature list and YOU had to figure out which subscribtion fits the best \n\nSo I thought, why not make a table and by selecting which features you need, it will always select the cheapest plan for you \n\nI'd call it Tap-to-Fit Pricing section and this little showcase below is made with opus 5.5",
+  "links": [],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2110464940066627584/img/jIUAg3nTQhM5TjpG.jpg",
+    "video": "https://video.twimg.com/amplify_video/2110464940066627584/vid/avc1/1920x1080/yhnCj67ImkuhSvjd.mp4"
    }
   ],
   "tools": [
