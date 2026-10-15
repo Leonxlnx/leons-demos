@@ -7,6 +7,7 @@ import Nav from "../components/Nav.astro";
 import DitherRamp from "../components/DitherRamp.astro";
 import Base from "../layouts/Base.astro";
 import { DEMOS, compact, sizedImage, type ViewDemo } from "../lib/demos";
+import { column, glyphs } from "../lib/odometer";
 import { PROJECTS } from "../lib/projects";
 
 const EMAIL = "lexn.lin@gmail.com";
@@ -48,14 +49,6 @@ const print = (id: string, variant = "") => {
   return existsSync(join(process.cwd(), "public", "dither", file)) ? `/dither/${file}` : null;
 };
 
-/** "95K" → digits that roll and units that rise, for the Taste Skill figures. */
-const glyphs = (s: string) => {
-  const chars = [...s];
-  let fromRight = chars.filter((c) => /\d/.test(c)).length;
-  return chars.map((c) => (/\d/.test(c) ? { digit: Number(c), order: --fromRight } : { unit: c }));
-};
-/** Each digit rolls through the three before it, as a CSS string of lines: "6\a 7\a 8\a 9". */
-const column = (d: number) => [3, 2, 1, 0].map((back) => (d - back + 10) % 10).join("\\a ");
 
 // The hero strip holds every demo with a usable video, most liked in the middle and the
 // rest alternating right and left of it, so the first screen shows the strongest work.
@@ -256,18 +249,18 @@ const jsonLd = {
           </div>
           <div class="wrap grid12 specimens" data-odo>
             {[
-              { value: taste.stars, caption: "GitHub stars", delay: 0 },
+              { value: taste.stars, caption: "GitHub stars", delay: 0, repo: taste.repo },
               { value: TASTE_INSTALLS, caption: "Installs on skills.sh", delay: 120 },
             ].map((f) => (
               <figure class="specimen" style={`--fd:${f.delay}ms`}>
                 <div class="cut">
-                  <p class="figure">
+                  <p class="figure" data-repo={f.repo}>
                     <span class="glyphs" aria-hidden="true">
                       {glyphs(compact(f.value)).map((g) =>
                         "digit" in g ? (
                           <span
                             class="odo"
-                            style={`--o:${g.order}; --col:"${column(g.digit!)}"`}
+                            style={`--o:${g.order}; --col:"${column(g.digit!).col}"`}
                           >
                             {g.digit}
                           </span>
@@ -302,9 +295,9 @@ const jsonLd = {
                   <span>{p.name}</span>
                 </span>
                 <span class="entry-note">{p.note}</span>
-                <span class="entry-stars">
+                <span class="entry-stars" data-repo={p.repo}>
                   <Icon name="star" size={14} />
-                  {compact(p.stars)}
+                  <span class="count">{compact(p.stars)}</span>
                   <span class="sr-only">stars</span>
                 </span>
               </a>
@@ -1470,7 +1463,9 @@ const jsonLd = {
         caret-end 1140ms steps(1, jump-end) calc(420ms + var(--chars) * 28ms) forwards;
     }
 
-    /* Odometer: digits roll right to left; the units rise out of the section's floor. */
+    /* Odometer: digits roll right to left; the units rise out of the section's floor. A live
+       count that arrives after the roll (home.ts) rewinds only the changed glyphs, and each
+       ticks from the old digit to the new one (--rows lines). */
     :global(.reveal) [data-odo] .odo {
       color: transparent;
     }
@@ -1482,16 +1477,22 @@ const jsonLd = {
       color: var(--paper-ink);
       line-height: inherit;
       white-space: pre;
-      transform: translateY(calc(-3 * 1lh));
+      transform: translateY(calc(var(--rows, 3) * -1lh));
     }
-    :global(.reveal) [data-odo]:not(.is-in) .odo::before {
+    :global(.reveal) [data-odo]:not(.is-in) .odo::before,
+    :global(.reveal) [data-odo] .odo.rewind::before {
       transform: none;
     }
     :global(.reveal) [data-odo].is-in .odo::before {
       transition: transform 800ms var(--ease-out) calc(var(--fd, 0ms) + var(--o, 0) * var(--stagger));
     }
-    :global(.reveal) [data-odo]:not(.is-in) .unit > span {
+    :global(.reveal) [data-odo]:not(.is-in) .unit > span,
+    :global(.reveal) [data-odo] .unit.rewind > span {
       transform: translateY(100%);
+    }
+    :global(.reveal) [data-odo] .rewind > span,
+    :global(.reveal) [data-odo] .rewind::before {
+      transition: none !important;
     }
     :global(.reveal) [data-odo].is-in .unit > span {
       transition: transform 900ms var(--ease-out) var(--fd, 0ms);

@@ -48,6 +48,10 @@ avoid GitHub's unauthenticated rate limit. The homepage shows taste-skill in its
 `src/pages/index.astro`, in that order; each line is the first sentence of the GitHub description unless `NOTES` in
 `src/lib/projects.ts` overrides it.
 
+Star counts are live: the build reads them from the GitHub API (falling back to the JSON offline or when rate
+limited; set `GITHUB_TOKEN` in the Vercel project to lift the limit), and the homepage refreshes them in the browser
+from GitHub's search API, at most once every ten minutes per visitor.
+
 The Taste Skill install count (`TASTE_INSTALLS` in `src/pages/index.astro`, from skills.sh) and the recognition table
 are written by hand in that file.
 

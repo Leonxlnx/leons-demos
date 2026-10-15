@@ -1,5 +1,6 @@
 /*
- * Homepage: the demo strip, section entrances, the copy button and the closing reel.
+ * Homepage: the demo strip, section entrances, the copy button, live star counts and the
+ * closing reel.
  *
  * The strip is a native horizontal scroller with scroll snapping. The frame nearest its
  * centre is lit. While the strip moves, captions keep quiet and a clip you pass is only
@@ -10,6 +11,8 @@
  * visitors keep the posters.
  */
 
+import { compact } from "../lib/format";
+import { column, glyphs } from "../lib/odometer";
 import { setActivity } from "./activity";
 
 // Arriving by a view transition, everything here waits until it has finished: the strip is
@@ -363,6 +366,141 @@ for (const b of document.querySelectorAll<HTMLButtonElement>("[data-copy]")) {
       if (status) status.textContent = "";
     }, 1600);
   });
+}
+
+/* ------------------------------------------------------------------ stars */
+
+// Star counts are baked in at build time and refreshed here from GitHub's search API: one
+// request for every repo on the page, at most once in ten minutes per visitor (a failure
+// waits as long), so a visitor stays far below its unauthenticated limits. It runs after load
+// and again when the tab comes back. A count that changes before its section is revealed is
+// simply swapped; the Taste Skill figure, once rolled, ticks the changed digits from the old
+// count to the new one.
+const STARS_KEY = "gh-stars";
+const STARS_TTL = 10 * 60_000;
+const starred = Array.from(document.querySelectorAll<HTMLElement>("[data-repo]"));
+
+type StarCache = { at: number; stars: Record<string, number> | null };
+
+function readStars(): StarCache | null {
+  try {
+    const c = JSON.parse(localStorage.getItem(STARS_KEY) ?? "null") as StarCache | null;
+    return c && Date.now() - c.at < STARS_TTL ? c : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeStars(stars: StarCache["stars"]) {
+  try {
+    localStorage.setItem(STARS_KEY, JSON.stringify({ at: Date.now(), stars }));
+  } catch {}
+}
+
+/** Rebuilds a figure's glyphs for a new count; once rolled, only the changed ones roll again. */
+function setFigure(fig: HTMLElement, value: number) {
+  const box = fig.querySelector<HTMLElement>(".glyphs");
+  const sr = fig.querySelector(".sr-only");
+  if (sr) sr.textContent = value.toLocaleString("en-US");
+  const text = compact(value);
+  if (!box || box.textContent!.replace(/\s/g, "") === text) return;
+  // Scoped styles match Astro's data-astro-cid-* attribute, so new glyphs take the box's.
+  const scope = Array.from(box.attributes).filter((a) => a.name.startsWith("data-astro-cid"));
+  const make = (cls?: string) => {
+    const el = document.createElement("span");
+    scope.forEach((a) => el.setAttribute(a.name, a.value));
+    if (cls) el.className = cls;
+    return el;
+  };
+  const rolled = !!fig.closest("[data-odo]")?.classList.contains("is-in");
+  const old = Array.from(box.children, (g) => g.textContent!.trim());
+  const next = glyphs(text);
+  // Glyphs line up only when the figure keeps its shape (95K → 97K); otherwise all roll.
+  const aligned = old.length === next.length;
+  const rewound: HTMLElement[] = [];
+  const nodes = next.map((g, i) => {
+    const was = aligned ? old[i] : undefined;
+    if ("digit" in g) {
+      const el = make("odo");
+      el.textContent = String(g.digit);
+      const from = was !== undefined && /^\d$/.test(was) ? Number(was) : undefined;
+      const { col, rows } = column(g.digit, rolled ? from : undefined);
+      el.style.setProperty("--o", String(g.order));
+      el.style.setProperty("--col", `"${col}"`);
+      el.style.setProperty("--rows", String(rows));
+      if (rolled && from !== g.digit) rewound.push(el);
+      return el;
+    }
+    const el = make("unit");
+    el.append(make());
+    el.firstElementChild!.textContent = g.unit;
+    if (rolled && was !== g.unit) rewound.push(el);
+    return el;
+  });
+  rewound.forEach((el) => el.classList.add("rewind"));
+  box.replaceChildren(...nodes);
+  if (!rewound.length) return;
+  // Paint the rewound glyphs at their start first, so letting go of .rewind rolls them.
+  void box.offsetWidth;
+  requestAnimationFrame(() => requestAnimationFrame(() => rewound.forEach((el) => el.classList.remove("rewind"))));
+}
+
+function showStars(stars: Record<string, number>) {
+  for (const el of starred) {
+    const n = stars[el.dataset.repo!.toLowerCase()];
+    if (!Number.isFinite(n)) continue;
+    if (el.matches(".figure")) setFigure(el, n);
+    else {
+      const count = el.querySelector(".count");
+      const text = compact(n);
+      if (count && count.textContent !== text) count.textContent = text;
+    }
+  }
+}
+
+async function fetchStars(repos: string[]): Promise<Record<string, number>> {
+  const q = repos.map((r) => `repo:${r}`).join(" ");
+  const res = await fetch(`https://api.github.com/search/repositories?${new URLSearchParams({ q, per_page: String(repos.length) })}`, {
+    headers: { Accept: "application/vnd.github+json" },
+  });
+  if (!res.ok) throw new Error(`${res.status}`);
+  const { items } = (await res.json()) as { items: { full_name: string; stargazers_count: number }[] };
+  return Object.fromEntries(items.map((r) => [r.full_name.toLowerCase(), r.stargazers_count]));
+}
+
+if (starred.length) {
+  const repos = [...new Set(starred.map((el) => el.dataset.repo!.toLowerCase()))];
+  const cached = readStars();
+  if (cached?.stars) showStars(cached.stars);
+  // The last attempt is kept in memory as well, for when storage is unavailable.
+  let tried = cached?.at ?? 0;
+  let busy = false;
+  const refresh = () => {
+    if (busy || Date.now() - tried < STARS_TTL) return;
+    // Another tab may have fetched since.
+    const c = readStars();
+    if (c) {
+      tried = c.at;
+      if (c.stars) showStars(c.stars);
+      return;
+    }
+    busy = true;
+    tried = Date.now();
+    fetchStars(repos)
+      .then(
+        (stars) => {
+          writeStars(stars);
+          showStars(stars);
+        },
+        () => writeStars(null),
+      )
+      .finally(() => (busy = false));
+  };
+  // After load and idle, so the request never competes with the strip's first clip.
+  const idle = () => ("requestIdleCallback" in window ? requestIdleCallback(refresh, { timeout: 3000 }) : setTimeout(refresh, 0));
+  if (document.readyState === "complete") idle();
+  else addEventListener("load", idle, { once: true });
+  document.addEventListener("visibilitychange", () => !document.hidden && refresh());
 }
 
 /* ------------------------------------------------------------------ reel */

@@ -1,44 +1,44 @@
 [
   {
     "name": "taste-skill",
-    "description": "Taste-Skill - gives your AI good taste. stops the AI from generating boring, generic slop",
-    "stars": 95429,
+    "description": "Agent skills that give coding agents taste: art direction, reference images and a browser check instead of generic AI pages",
+    "stars": 97198,
     "url": "https://github.com/Leonxlnx/taste-skill"
   },
   {
     "name": "unlazy",
     "description": "Anti-laziness skill for AI agents. Core: the Depth Tree method, which splits a task N layers deep and gives every leaf the full time budget of the whole task, so effort multiplies with depth. Grounded in 2025-2026 research on model laziness, underthinking and premature completion.",
-    "stars": 3918,
+    "stars": 3948,
     "url": "https://github.com/Leonxlnx/unlazy"
   },
   {
     "name": "agentic-ai-prompt-research",
     "description": "Research into how agentic AI coding assistants work. Reconstructed prompt patterns, agent coordination, and security classification",
-    "stars": 2553,
+    "stars": 2552,
     "url": "https://github.com/Leonxlnx/agentic-ai-prompt-research"
   },
   {
     "name": "lumenshaders",
     "description": "LUMEN, a generative shader studio. 9 WebGL2 art modes plus synth style blending, perfect-loop animation, gradient sets, share codes and PNG/WebM/GIF export. Zero dependencies.",
-    "stars": 358,
+    "stars": 360,
     "url": "https://github.com/Leonxlnx/lumenshaders"
   },
   {
     "name": "tastecode",
     "description": "Personal Harness - a beautiful, adaptive control panel for AI coding agents. Windows-first, design-agent powered.",
-    "stars": 339,
+    "stars": 356,
     "url": "https://github.com/Leonxlnx/tastecode"
   },
   {
     "name": "cinetic",
     "description": "Cinematic launch films and motion design from code, directed by your coding agent.",
-    "stars": 173,
+    "stars": 226,
     "url": "https://github.com/Leonxlnx/cinetic"
   },
   {
     "name": "prompt-library",
     "description": "A clean, open-source desktop app to organize and manage your AI prompts. Built with Electron.",
-    "stars": 145,
+    "stars": 146,
     "url": "https://github.com/Leonxlnx/prompt-library"
   },
   {
@@ -62,14 +62,20 @@
   {
     "name": "level-devil",
     "description": "Browser-based Level Devil fan recreation — rage platformer with perfectly planned traps. Pure HTML/CSS/JS.",
-    "stars": 27,
+    "stars": 28,
     "url": "https://github.com/Leonxlnx/level-devil"
   },
   {
     "name": "motion-recreation",
     "description": "Editable motion-design recreation built with Astra, JavaScript, Canvas and WebGL.",
-    "stars": 26,
+    "stars": 27,
     "url": "https://github.com/Leonxlnx/motion-recreation"
+  },
+  {
+    "name": "golden-temple",
+    "description": "A golden-hour Japanese temple built entirely in code with three.js. No models, no textures, no HDRIs. Rendered offline into a 70s 1080p60 film",
+    "stars": 25,
+    "url": "https://github.com/Leonxlnx/golden-temple"
   },
   {
     "name": "sakura-realm",
