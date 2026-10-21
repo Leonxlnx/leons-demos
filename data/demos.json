@@ -29,6 +29,33 @@
   ]
  },
  {
+  "id": "2111582260818239777",
+  "category": "Web/Interactive",
+  "title": "Ancient Greek world built by Opus 5.5, no assets, all code",
+  "created_at": "2026-10-17T22:16:56.000Z",
+  "likes": 3372,
+  "reposts": 197,
+  "views": 239230,
+  "post_url": "https://x.com/LexnLin/status/2111582260818239777",
+  "text": "I asked Opus 5.5 to build an ancient Greek world as detailed as possible\n\nno assets were used! everything you see here is made with code https://t.co/vOgMgRHOYt",
+  "links": [
+   "https://github.com/Leonxlnx/athenaion"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2111592989545951522"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2111581258383794177/img/5dlK_lrTgipJeqHf.jpg",
+    "video": "https://video.twimg.com/amplify_video/2111581258383794177/vid/avc1/1920x1080/zth-UyAONCqs3Dru.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
   "id": "2110389810258968965",
   "category": "Animations/Videos",
   "title": "Clawd animation made with Opus 5.5 Ultracode (~12h run)",
@@ -203,6 +230,34 @@
   ]
  },
  {
+  "id": "2112560562609803311",
+  "category": "Web/Interactive",
+  "title": "Alpine lake by Opus 5.5: all code, synthesized music and nature sounds",
+  "created_at": "2026-10-20T15:04:22.000Z",
+  "likes": 944,
+  "reposts": 35,
+  "views": 45790,
+  "post_url": "https://x.com/LexnLin/status/2112560562609803311",
+  "text": "I asked Opus 5.5 to build an alpine lake\n\nEVERYTHING is code. no assets were used.\neven the music and nature sounds are synthesized https://t.co/12Kosq2Siy",
+  "links": [
+   "https://github.com/Leonxlnx/procedural-alpine-lake"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2112584673675051166",
+   "https://x.com/i/status/2112665671171797052"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2112554403366408192/img/ZSvS13rvYI-HeXLx.jpg",
+    "video": "https://video.twimg.com/amplify_video/2112554403366408192/vid/avc1/3440x1440/lceiHePeDRGEL2Jx.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
   "id": "2096341945979383932",
   "category": "Web/Interactive",
   "title": "Ocean in the browser by GPT 6 Astra (~5h)",
@@ -277,6 +332,33 @@
   ],
   "tools": [
    "Codex"
+  ]
+ },
+ {
+  "id": "2112264777309491443",
+  "category": "Animations/Videos",
+  "title": "10 Chinese landscapes painted by Opus 5.5, ~22k lines of JS incl. sound",
+  "created_at": "2026-10-19T19:29:01.000Z",
+  "likes": 726,
+  "reposts": 44,
+  "views": 25750,
+  "post_url": "https://x.com/LexnLin/status/2112264777309491443",
+  "text": "Opus 5.5 painted 10 chinese landscapes\n\neverything you see and hear is code, ~22k lines of JavaScript\nyes even the sfx and the background music are made with code as well :) https://t.co/gr1U7ZyQEr",
+  "links": [
+   "https://github.com/Leonxlnx/shanshui"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2112264780908216693"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2112262560175042561/img/yKHoKljbKK_mKXGW.jpg",
+    "video": "https://video.twimg.com/amplify_video/2112262560175042561/vid/avc1/1920x1080/V-aBI2BX0tbPE99L.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
   ]
  },
  {
@@ -583,6 +665,29 @@
   ],
   "tools": [
    "Codex"
+  ]
+ },
+ {
+  "id": "2112310361194140058",
+  "category": "Animations/Videos",
+  "title": "260k+ voxels morphing into a cube, meadow, storm, ferrofluid, galaxy (Opus 5.5)",
+  "created_at": "2026-10-19T22:30:09.000Z",
+  "likes": 406,
+  "reposts": 21,
+  "views": 51580,
+  "post_url": "https://x.com/LexnLin/status/2112310361194140058",
+  "text": "I made a video with Opus 5.5 where 260k+ voxels turn into random things (a cube, a meadow, a storm, a ferrofluid, a galaxy,...) \n\neverything is made with JS\nsounds on! :) https://t.co/uoPUxeEsQ2",
+  "links": [],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2112309309237272576/img/rdEjumo0fFqcIgUV.jpg",
+    "video": "https://video.twimg.com/amplify_video/2112309309237272576/vid/avc1/1920x1080/qDMTM_L8YO1smgrg.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
   ]
  },
  {
