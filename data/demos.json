@@ -106,7 +106,6 @@
    }
   ],
   "tools": [
-   "Claude",
    "Codex"
   ],
   "crop": "top"
@@ -188,6 +187,34 @@
   ],
   "tools": [
    "Codex"
+  ]
+ },
+ {
+  "id": "2113720560920428685",
+  "category": "Web/Interactive",
+  "title": "Na Pali coast drone flight by Opus 5.5, everything is code",
+  "created_at": "2026-10-23T19:53:47.000Z",
+  "likes": 1022,
+  "reposts": 61,
+  "views": 38181,
+  "post_url": "https://x.com/LexnLin/status/2113720560920428685",
+  "text": "I asked Opus 5.5 to recreate the Na Pali coast and fly a drone through it\n\neverything is code, repo below! https://t.co/0ooYrZdWgx",
+  "links": [
+   "https://github.com/Leonxlnx/napali"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2113720831448846481",
+   "https://x.com/i/status/2113720889778811139"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2113717777299083264/img/6zad8F1kzehB-NOl.jpg",
+    "video": "https://video.twimg.com/amplify_video/2113717777299083264/vid/avc1/1920x1080/c8EPBKDxnmbIPFc0.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
   ]
  },
  {
@@ -293,6 +320,29 @@
   ],
   "tools": [
    "Codex"
+  ]
+ },
+ {
+  "id": "2113025231732224063",
+  "category": "Animations/Videos",
+  "title": "Paper-cut fox film by Opus 5.5, all JavaScript, no assets",
+  "created_at": "2026-10-21T21:50:48.000Z",
+  "likes": 886,
+  "reposts": 57,
+  "views": 35985,
+  "post_url": "https://x.com/LexnLin/status/2113025231732224063",
+  "text": "Opus 5.5 made this paper-cut fox film.\nall javascript and no assets were used! https://t.co/WU4ImVxgQZ",
+  "links": [],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2113024275653206016/img/7l99rCAoYI1Z_Dwe.jpg",
+    "video": "https://video.twimg.com/amplify_video/2113024275653206016/vid/avc1/1920x1080/1-_FPFQxbc2bTmMJ.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
   ]
  },
  {
@@ -569,6 +619,31 @@
   ],
   "poster": "/demos/posters/2103194052850241739.webp",
   "posterTime": 18.4
+ },
+ {
+  "id": "2113333862625648715",
+  "category": "Web/Interactive",
+  "title": "Realistic ocean water by Opus 5.5, no assets",
+  "created_at": "2026-10-22T18:17:11.000Z",
+  "likes": 618,
+  "reposts": 30,
+  "views": 26785,
+  "post_url": "https://x.com/LexnLin/status/2113333862625648715",
+  "text": "I asked Opus 5.5 to build some very realistic ocean/water.\nno assets were used :)\n\nhere is the repo, feel free to use! https://t.co/1uhypTNhAr https://t.co/caVJTo1X5F",
+  "links": [
+   "https://github.com/Leonxlnx/open-water"
+  ],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2113333078340907008/img/hsbEdi-08fRyTdzL.jpg",
+    "video": "https://video.twimg.com/amplify_video/2113333078340907008/vid/avc1/1920x1080/-mb5LbT9j60Z009K.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
  },
  {
   "id": "2096982947639468284",
@@ -1605,6 +1680,33 @@
     "type": "video",
     "image": "https://pbs.twimg.com/amplify_video_thumb/2110464940066627584/img/jIUAg3nTQhM5TjpG.jpg",
     "video": "https://video.twimg.com/amplify_video/2110464940066627584/vid/avc1/1920x1080/yhnCj67ImkuhSvjd.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2114005623620980888",
+  "category": "Games",
+  "title": "Kick the Buddy in 3D by Opus 5.5: spells and weapons, all code",
+  "created_at": "2026-10-24T14:46:31.000Z",
+  "likes": 80,
+  "reposts": 2,
+  "views": 3638,
+  "post_url": "https://x.com/LexnLin/status/2114005623620980888",
+  "text": "I built Kick the Buddy in 3D with Opus 5.5 \n\nthere are many spells or weapons:\nlightning, frost, meteors, a black hole, pistol, grenades, a rocket launcher and a minigun (and everything is code!) -- sound on :)\n\nplay it here! https://t.co/Hm7njfUGqv https://t.co/u98HmBvaMi",
+  "links": [
+   "https://claude.ai/artifact/C4VEzERV7VNGNWDyUk8Qbz"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2114005628419289372"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2113997836840751106/img/QmQv-TjwWQuOSEft.jpg",
+    "video": "https://video.twimg.com/amplify_video/2113997836840751106/vid/avc1/1280x720/X-R5_IwitJMAmAsC.mp4"
    }
   ],
   "tools": [
