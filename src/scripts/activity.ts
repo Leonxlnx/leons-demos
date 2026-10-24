@@ -1,23 +1,13 @@
-/** Page activity shared between the video player, the homepage and the background shader. */
-export const activity = { videos: 0, scrolling: false, paused: false };
-
-const listeners: (() => void)[] = [];
-export const onActivity = (fn: () => void) => listeners.push(fn);
-
-export function setActivity(next: Partial<typeof activity>) {
-  if (Object.entries(next).every(([k, v]) => activity[k as keyof typeof activity] === v)) return;
-  Object.assign(activity, next);
-  for (const fn of listeners) fn();
-}
+/** Whether the page is scrolling: the /demos video player waits for it to settle before it starts videos. */
+export const activity = { scrolling: false };
 
 let settle = 0;
 addEventListener(
   "scroll",
   () => {
-    setActivity({ scrolling: true });
+    activity.scrolling = true;
     clearTimeout(settle);
-    settle = window.setTimeout(() => setActivity({ scrolling: false }), 150);
+    settle = window.setTimeout(() => (activity.scrolling = false), 150);
   },
-  // Capture, so scrolling inside an element (the homepage strip) counts too.
-  { passive: true, capture: true },
+  { passive: true },
 );

@@ -1,7 +1,8 @@
 ---
 /*
  * TasteCode: the app itself. Its window lies back in perspective and stands up as it scrolls
- * into the middle of the screen.
+ * into the middle of the screen, then rests as a plain picture, drawn 1:1 on a 2x screen. Phones
+ * get the chat column at its own size instead of the whole window shrunk to a smudge.
  */
 import Icon from "../Icon.astro";
 import { compact } from "../../lib/format";
@@ -41,14 +42,30 @@ const { project } = Astro.props;
   </div>
   <div class="tc-stage">
     <figure class="tc-window">
-      <img
-        src="/work/tastecode-app.webp"
-        alt="The TasteCode window: projects on the left, a chat with Codex, a terminal and the composer with Ask first and Design"
-        width="1280"
-        height="720"
-        loading="lazy"
-        decoding="async"
-      />
+      <picture>
+        <source
+          media="(max-width: 560px)"
+          type="image/avif"
+          srcset="/work/tastecode-phone-sm.avif 720w, /work/tastecode-phone.avif 1120w"
+          sizes="calc(100vw - 2rem)"
+          width="1120"
+          height="1460"
+        />
+        <source media="(max-width: 560px)" type="image/webp" srcset="/work/tastecode-phone.webp" width="1120" height="1460" />
+        <source
+          type="image/avif"
+          srcset="/work/tastecode-app-sm.avif 1600w, /work/tastecode-app.avif 2880w"
+          sizes="min(100vw - 2rem, (100vh - 7rem) * 1.6, 100rem)"
+        />
+        <img
+          src="/work/tastecode-app.webp"
+          alt="The TasteCode window: a coding agent's finished answer, the code it wrote and the four files it edited"
+          width="2880"
+          height="1800"
+          loading="lazy"
+          decoding="async"
+        />
+      </picture>
     </figure>
   </div>
 </section>
@@ -74,7 +91,6 @@ const { project } = Astro.props;
     flex: none;
     width: clamp(3.5rem, 6vw, 6rem);
     height: auto;
-    border-radius: 22%;
   }
   .tc-copy {
     grid-column: 8 / -1;
@@ -84,23 +100,31 @@ const { project } = Astro.props;
     perspective: 1600px;
     perspective-origin: 50% 0%;
   }
+  /* The window keeps some of the screen around it: never taller than the screen less 7rem. */
   .tc-window {
-    margin: 0;
+    width: min(100%, (100vh - 7rem) * 1.6);
+    width: min(100%, (100svh - 7rem) * 1.6);
+    margin: 0 auto;
     overflow: hidden;
     border-radius: 12px;
     background: #111;
+    /* The window's own hairline edge, which the picture leaves out. */
+    box-shadow: 0 0 0 1px var(--line-2);
     transform-origin: 50% 100%;
   }
+  .tc-window picture,
   .tc-window img {
     display: block;
     width: 100%;
     height: auto;
   }
-  /* The window lies back and stands up as it reaches the middle of the screen. */
+  /* The window lies back and stands up as it reaches the middle of the screen. It fills backwards
+     only: past the middle the animation lets go, so the window is no longer a scaled layer and
+     its text rasterises at full resolution. The tilt has no scale in it for the same reason. */
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
       .tc-window {
-        animation: stand-up linear both;
+        animation: stand-up linear backwards;
         animation-timeline: view();
         animation-range: entry 0% cover 50%;
       }
@@ -108,7 +132,7 @@ const { project } = Astro.props;
   }
   @keyframes stand-up {
     from {
-      transform: rotateX(32deg) scale(0.86) translateY(4rem);
+      transform: rotateX(32deg) translateY(4rem);
       opacity: 0.4;
     }
     to {

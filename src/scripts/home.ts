@@ -5,7 +5,6 @@
 
 import { compact } from "../lib/format";
 import { column, glyphs } from "../lib/odometer";
-import { setActivity } from "./activity";
 
 // Arriving by a view transition, everything here waits until it has finished, so setting up
 // does not steal frames from the morph. The head script in Base.astro leaves the transition's
@@ -18,14 +17,13 @@ if (transition) await Promise.resolve(transition).catch(() => {});
 document.documentElement.classList.add("reveal");
 
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
-const finePointer = matchMedia("(hover: hover) and (pointer: fine)").matches;
 const root = document.documentElement;
 let paused = false;
 
 /* ------------------------------------------------------------------ pause */
 
-// One button pauses everything that moves on its own: the background, the reel, the films and
-// the waveform (WCAG 2.2.2). Its name stays "Pause …" and aria-pressed carries the state.
+// One button pauses everything that moves on its own: the reel, the films, the waveform and the
+// collage (WCAG 2.2.2). Its name stays "Pause …" and aria-pressed carries the state.
 const motionButton = document.querySelector<HTMLButtonElement>(".motion");
 if (motionButton && !reducedMotion) {
   motionButton.hidden = false;
@@ -33,25 +31,24 @@ if (motionButton && !reducedMotion) {
   motionButton.addEventListener("click", () => {
     paused = !paused;
     root.classList.toggle("motion-paused", paused);
-    setActivity({ paused });
     motionButton.setAttribute("aria-pressed", String(paused));
     icon.setAttribute("href", paused ? "#i-play" : "#i-pause");
   });
-  // It appears once the hero has gone, where the moving parts are.
+  // It appears once the hero has gone, where the moving parts are: once the page's first 120svh
+  // have left the top of the screen. An observer only hears when overlap changes, and a jump
+  // (End, Home, a link, a dragged scrollbar) can clear a thin mark without ever touching it, so
+  // the probe spans that whole band and every jump in or out of it is seen.
   const hero = document.querySelector("[data-intro]");
   if (hero && "IntersectionObserver" in window) {
     const marker = document.createElement("div");
     // An invisible probe, not a rule.
-    marker.style.cssText = "position:absolute;top:120svh;height:1px;width:1px;pointer-events:none"; // taste-skill-ignore
+    marker.style.cssText = "position:absolute;top:0;left:0;height:120svh;width:1px;pointer-events:none"; // taste-skill-ignore
     marker.setAttribute("aria-hidden", "true");
     document.body.append(marker);
-    new IntersectionObserver(([e]) => root.classList.toggle("past-hero", !e.isIntersecting && e.boundingClientRect.top < 0)).observe(marker);
+    new IntersectionObserver(([e]) => root.classList.toggle("past-hero", !e.isIntersecting && e.boundingClientRect.bottom <= 0)).observe(marker);
   }
-  // At the end of the page it would sit on the email; it steps aside there.
-  const close = document.querySelector(".close");
-  if (close && "IntersectionObserver" in window) {
-    new IntersectionObserver(([e]) => root.classList.toggle("at-close", e.isIntersecting), { rootMargin: "0px 0px -40% 0px" }).observe(close);
-  }
+  // At the end it parks under the reel and scrolls away with it, clear of the email: that is
+  // CSS alone (position: sticky, in index.astro).
 }
 
 /* ------------------------------------------------------------------ clocks */
@@ -267,73 +264,138 @@ if (starred.length) {
 
 /* ------------------------------------------------------------------ reel */
 
-// The closing reel is ink on paper: dithered prints whose colour develops under the mouse.
-// The colour posters are only requested on mouse devices, as the reel approaches the screen,
-// so they are there for the first hover and phones never download them. The reel drifts left
-// on its own and picks up the page's scroll speed, in either direction, with a little mass;
-// it stops under the mouse, with focus inside, when paused and off screen. Without this
-// script it runs as a plain CSS loop.
+// The closing reel drifts left on its own and picks up the page's scroll speed, in either
+// direction, with a little mass; it eases to a stop when paused. The drift is one Web Animation,
+// run by the compositor, so while the reel simply drifts the page does no work at all. A scroll
+// only changes the animation's playback rate, and frames are asked for only while that rate
+// eases back to the drift or down to a stop. Off screen it holds where it is. The loop's length
+// is measured only when the track resizes. Without this script it runs as a plain CSS loop.
 const reel = document.querySelector<HTMLElement>(".reel");
 const track = reel?.querySelector<HTMLElement>(".reel-track");
-if (reel && finePointer && "IntersectionObserver" in window) {
+const stills = Array.from(document.querySelectorAll<HTMLImageElement>(".reel img"));
+
+// A still that has not arrived waits unseen and fades in when it does, instead of popping into
+// its frame; one that fails leaves the plain frame.
+for (const img of stills) {
+  const hide = () => (img.style.visibility = "hidden");
+  if (img.complete) {
+    if (img.naturalWidth === 0 && img.currentSrc) hide();
+    continue;
+  }
+  img.classList.add("is-waiting");
+  img.addEventListener("load", () => img.classList.remove("is-waiting"), { once: true });
+  img.addEventListener("error", hide, { once: true });
+}
+// Lazy stills in a clipped strip are only fetched as they slide in, so once the reel is a screen
+// away they are all asked for at once.
+if (reel && "IntersectionObserver" in window) {
   const near = new IntersectionObserver(
     ([e]) => {
       if (!e.isIntersecting) return;
+      stills.forEach((img) => (img.loading = "eager"));
       near.disconnect();
-      reel.querySelectorAll<HTMLImageElement>(".tint[data-src]").forEach((img) => (img.src = img.dataset.src!));
     },
-    { rootMargin: "800px 0px" },
+    { rootMargin: "100% 0px" },
   );
   near.observe(reel);
 }
-for (const img of document.querySelectorAll<HTMLImageElement>(".reel img")) {
-  const hide = () => (img.style.visibility = "hidden");
-  if (img.complete && img.naturalWidth === 0 && img.currentSrc) hide();
-  else img.addEventListener("error", hide, { once: true });
-}
-if (reel && track && !reducedMotion && "IntersectionObserver" in window) {
+
+if (reel && track && !reducedMotion && "IntersectionObserver" in window && "animate" in track) {
   reel.classList.add("is-js");
-  const BASE = 26; // px per second
-  let x = 0;
-  let speed = BASE;
+  const BASE = 24; // px per second
+  // The drift starts this many loops in: run backwards, an animation ends at its start, and no
+  // scroll back up is long enough to get there.
+  const LEAD = 1000;
+  const loop = (length: number) => (length / BASE) * 1000; // ms
+  let anim: Animation | undefined;
+  let period = 0;
+  let speed = BASE; // what the reel moves at now, px per second
   let boost = 0;
   let lastY = scrollY;
   let last = 0;
   let raf = 0;
-  let hovering = false;
   let onScreen = false;
+
+  const setSpeed = (v: number) => {
+    speed = v;
+    anim?.updatePlaybackRate(v / BASE);
+  };
+
+  // One loop is one list and the gap after it. A new length rebuilds the drift at the same point
+  // of its loop and the same speed.
+  const build = () => {
+    const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+    const next = (track.scrollWidth + gap) / 2;
+    if (!next || Math.abs(next - period) < 0.5) return;
+    const at = anim ? ((anim.currentTime as number) % loop(period)) / loop(period) : 0;
+    anim?.cancel();
+    period = next;
+    anim = track.animate([{ transform: "translateX(0)" }, { transform: `translateX(${-period}px)` }], {
+      duration: loop(period),
+      iterations: Infinity,
+    });
+    anim.currentTime = (LEAD + at) * loop(period);
+    anim.playbackRate = speed / BASE;
+    if (!onScreen || (paused && !raf)) anim.pause();
+  };
+  build();
+  if ("ResizeObserver" in window) new ResizeObserver(build).observe(track);
+
+  const frame = (now: number) => {
+    // A frame's time can fall just before the click or scroll that asked for it.
+    const dt = Math.max(0, Math.min(0.064, (now - last) / 1000));
+    last = now;
+    boost *= Math.pow(0.03, dt);
+    if (Math.abs(boost) < 1) boost = 0;
+    const target = paused ? 0 : BASE + boost;
+    let v = speed + (target - speed) * (1 - Math.pow(1 - 0.08, dt * 60));
+    // All but there, it lands on the drift or the stop and asks for no more frames.
+    const settled = !boost && Math.abs(target - v) < 0.5;
+    if (settled) v = target;
+    setSpeed(v);
+    if (settled && paused) anim?.pause();
+    raf = settled ? 0 : requestAnimationFrame(frame);
+  };
+  const kick = () => {
+    if (!anim || !onScreen || raf) return;
+    if (!paused && anim.playState === "paused") anim.play();
+    last = performance.now();
+    raf = requestAnimationFrame(frame);
+  };
 
   addEventListener(
     "scroll",
     () => {
-      // Only scroll seen while the reel is on screen counts, or a long scroll down the page
-      // would store up and send the reel racing in.
-      if (onScreen) boost = Math.max(-2400, Math.min(2400, boost + (scrollY - lastY) * 1.5));
+      // Only scroll seen while the reel is on screen and free counts, or a long scroll down the
+      // page would store up and send the reel racing in.
+      if (onScreen && !paused) {
+        boost = Math.max(-1600, Math.min(1600, boost + (scrollY - lastY) * 1.2));
+        kick();
+      }
       lastY = scrollY;
     },
     { passive: true },
   );
-  reel.addEventListener("pointerenter", () => (hovering = true));
-  reel.addEventListener("pointerleave", () => (hovering = false));
 
-  const frame = (now: number) => {
-    const dt = Math.min(0.064, (now - last) / 1000);
-    last = now;
-    boost *= Math.pow(0.03, dt);
-    const held = hovering || paused || root.classList.contains("motion-paused") || reel.matches(":focus-within");
-    const target = held ? 0 : BASE + boost;
-    speed += (target - speed) * (1 - Math.pow(1 - 0.08, dt * 60));
-    x -= speed * dt;
-    const period = (track.scrollWidth + 8) / 2;
-    if (period > 0) x = ((x % period) - period) % period;
-    track.style.transform = `translate3d(${x.toFixed(2)}px, 0, 0)`;
-    raf = onScreen ? requestAnimationFrame(frame) : 0;
-  };
+  // The pause button's own listener, added first, has already flipped `paused`. Any boost goes,
+  // so a stop eases straight down; off screen the reel only takes the new speed.
+  motionButton?.addEventListener("click", () => {
+    boost = 0;
+    if (onScreen) kick();
+    else setSpeed(paused ? 0 : BASE);
+  });
+
   new IntersectionObserver(([e]) => {
     onScreen = e.isIntersecting;
-    if (onScreen && !raf) {
-      last = performance.now();
-      raf = requestAnimationFrame(frame);
+    if (!anim) return;
+    if (onScreen) {
+      if (!paused) anim.play();
+      return;
     }
+    // Off screen it holds, and comes back at its plain drift.
+    cancelAnimationFrame(raf);
+    raf = boost = 0;
+    setSpeed(paused ? 0 : BASE);
+    anim.pause();
   }).observe(reel);
 }

@@ -24,27 +24,21 @@ import { DEMOS, VISIBLE_FILTERS, VISIBLE_TOOL_FILTERS } from "../lib/demos";
         ))
       }
     </nav>
-    <nav class="filters" aria-label="Filter by tool" hidden={VISIBLE_TOOL_FILTERS.length < 3}>
+    <nav class="filters" aria-label="Filter by tool" hidden={VISIBLE_TOOL_FILTERS.length < 2}>
       {
-        VISIBLE_TOOL_FILTERS.map((f) =>
-          f.logo ? (
-            <button
-              type="button"
-              class="logo-btn"
-              data-group="tool"
-              data-value={f.id}
-              aria-pressed="false"
-              aria-label={f.label}
-              title={f.label}
-            >
-              <Icon name={f.logo} size={14} />
-            </button>
-          ) : (
-            <button type="button" data-group="tool" data-value={f.id} aria-pressed={f.id === "all" ? "true" : "false"}>
-              {f.label}
-            </button>
-          ),
-        )
+        VISIBLE_TOOL_FILTERS.map((f) => (
+          <button
+            type="button"
+            class="logo-btn"
+            data-group="tool"
+            data-value={f.id}
+            aria-pressed="false"
+            aria-label={f.label}
+            title={f.label}
+          >
+            <Icon name={f.logo} size={14} />
+          </button>
+        ))
       }
     </nav>
   </div>
@@ -52,6 +46,11 @@ import { DEMOS, VISIBLE_FILTERS, VISIBLE_TOOL_FILTERS } from "../lib/demos";
   <main class="grid">
     {DEMOS.map((d, i) => <Card demo={d} eager={i < 4} />)}
   </main>
+
+  <button class="motion" type="button" aria-pressed="false" hidden>
+    <Icon name="pause" size={14} />
+    <span class="sr-only">Pause videos</span>
+  </button>
 
   <footer class="page-foot">
     <a class="ink" href="/">Leon Lin</a>
@@ -66,3 +65,40 @@ import { DEMOS, VISIBLE_FILTERS, VISIBLE_TOOL_FILTERS } from "../lib/demos";
     import "../scripts/app";
   </script>
 </Base>
+
+<style>
+  /* One soft light falls on the top of the page, behind the title; below it is the plain ground. */
+  :global(body) {
+    background: radial-gradient(70% 36rem at 50% 0, rgb(255 255 255 / 0.05), transparent) no-repeat;
+  }
+
+  /* Pause for the videos (WCAG 2.2.2), the homepage's button. It rides in the bottom corner, on
+     the grid's right edge, and parks just under the grid: once the end comes up, it scrolls away
+     with the cards and never lands on the footer. It takes no room in the page: the margins
+     cancel its height. */
+  .motion {
+    position: sticky;
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    z-index: 20;
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    margin: -1rem max(var(--pad), calc((100% - 1680px) / 2 + var(--pad)), env(safe-area-inset-right))
+      calc(1rem - 2.75rem) auto;
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--text);
+    transition: transform var(--t-press) var(--ease-out);
+  }
+  .motion[hidden] {
+    display: none;
+  }
+  /* A light ring around a dark one, so focus shows on the page and over a video alike. */
+  .motion:focus-visible {
+    box-shadow: 0 0 0 2px var(--bg);
+  }
+  .motion:active {
+    transform: scale(0.94);
+  }
+</style>

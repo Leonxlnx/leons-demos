@@ -1,6 +1,7 @@
 /*
- * Homepage primitives shared by the section components in src/components/home: the frame,
- * masked lines, paper sections, buttons and the reveal system that home.ts drives.
+ * Homepage primitives shared by the section components in src/components/home: the wrap and
+ * its twelve columns, masked lines, paper sections, buttons and the reveal system that home.ts
+ * drives.
  */
 
 .wrap {
@@ -18,9 +19,19 @@
   /* Section names (Taste Skill, TasteCode, Demos) and headings (about, GitHub, Recognition). */
   --step-section: clamp(3.25rem, 0.6rem + 8.2vw, 9.5rem);
   --step-heading: clamp(2.5rem, 1rem + 4vw, 5.5rem);
+  /* The space above a section, inside main and in the close after it. */
+  --section: clamp(6rem, 12vw, 12rem);
+  /* The space under the closing reel, where the pause button parks (index.astro). */
+  --reel-foot: clamp(3rem, 6vw, 5rem);
+}
+/* In whole pixels: the button's margins cancel its height, and a fraction left over between
+   them opens a hairline of the dark ground between the reel's paper and the footer's. */
+@supports (width: round(1px, 1px)) {
+  :root {
+    --reel-foot: round(clamp(3rem, 6vw, 5rem), 1px);
+  }
 }
 main {
-  --section: clamp(6rem, 12vw, 12rem);
   overflow-x: clip;
 }
 
@@ -72,14 +83,6 @@ main {
 .paper ::selection {
   background: var(--paper-ink);
   color: var(--paper);
-}
-
-.h2 {
-  margin: 0;
-  font-size: var(--step-lead);
-  font-weight: 500;
-  line-height: 1.2;
-  letter-spacing: -0.015em;
 }
 
 /* The work sections share one voice: a large name, one line at lead size, a quieter note and
@@ -134,8 +137,8 @@ main {
   white-space: nowrap;
   transition:
     transform var(--t-press) var(--ease-out),
-    background-color var(--t-hover) ease,
-    color var(--t-hover) ease;
+    background-color var(--t-hover) var(--ease-out),
+    color var(--t-hover) var(--ease-out);
 }
 .paper .button {
   color: var(--paper);
@@ -150,41 +153,39 @@ main {
 .button:active {
   transform: scale(0.97);
 }
-@media (hover: hover) and (pointer: fine) {
-  .button:hover {
-    background: #c9c9c9;
-  }
-  .paper .button:hover {
-    background: #333;
-  }
-  .button.quiet:hover {
-    background: #262626;
-  }
-  .paper .button.quiet:hover {
-    background: #d4d4d4;
-  }
-  .button:hover .icon-go {
-    transform: translateX(3px);
-  }
-  .button:hover .icon-out {
-    transform: translate(2px, -2px);
-  }
+/* Focused, a button's fill moves one step toward the ground and its arrow leans the way it
+   goes. */
+.button:focus-visible {
+  background: #c9c9c9;
+}
+.paper .button:focus-visible {
+  background: #333;
+}
+.button.quiet:focus-visible {
+  background: #262626;
+}
+.paper .button.quiet:focus-visible {
+  background: #d4d4d4;
+}
+.button:focus-visible .icon:has(use[href="#i-arrow"]) {
+  transform: translateX(3px);
+}
+.button:focus-visible .icon:has(use[href="#i-arrow-up-right"]) {
+  transform: translate(2px, -2px);
 }
 
-/* A text link: underlined at rest, the underline lifts away on hover. */
+/* A text link: underlined; the underline lifts away under keyboard focus. */
 .ink {
   text-decoration: underline;
   text-decoration-thickness: 0.07em;
   text-underline-offset: 0.22em;
   text-decoration-color: currentColor;
   transition:
-    text-decoration-color var(--t-hover) ease,
-    color var(--t-hover) ease;
+    text-decoration-color var(--t-hover) var(--ease-out),
+    color var(--t-hover) var(--ease-out);
 }
-@media (hover: hover) and (pointer: fine) {
-  .ink:hover {
-    text-decoration-color: transparent;
-  }
+.ink:focus-visible {
+  text-decoration-color: transparent;
 }
 
 /* ------------------------------------------------------------ reveals */
@@ -217,21 +218,11 @@ main {
   }
   .reveal [data-reveal="fade"].is-in {
     opacity: 1;
-    transition: opacity var(--t-ui) ease var(--d, 0ms);
+    transition: opacity var(--t-ui) var(--ease-out) var(--d, 0ms);
   }
-  /* Pictures develop: they arrive through the Bayer tiles, one threshold per step. */
-  .reveal [data-reveal="print"] {
-    mask-image: var(--m0);
-    mask-size: 12px 12px;
-  }
-  .reveal [data-reveal="print"].is-in {
-    mask-image: none;
-    animation: develop calc(8 * var(--step-fast)) steps(1, jump-end) both;
-    animation-delay: var(--d, 0ms);
-  }
-
-  /* Index rows: the name rises, its note and stars develop through the dither's greys. */
-  .reveal [data-reveal="entry"] .entry-name > span {
+  /* Index rows: the name rises out of its line, then its note and stars fade up. These are
+     animations, not transitions, so they never replace the row's own focus transitions. */
+  .reveal [data-reveal="entry"]:not(.is-in) .entry-name > span {
     transform: translateY(105%);
   }
   .reveal [data-reveal="entry"]:not(.is-in) .entry-note,
@@ -239,34 +230,22 @@ main {
     opacity: 0;
   }
   .reveal [data-reveal="entry"].is-in .entry-name > span {
-    transform: none;
-    transition: transform 700ms var(--ease-out) calc(var(--b, 0) * var(--stagger));
+    animation: line-in 700ms var(--ease-out) calc(var(--b, 0) * var(--stagger)) backwards;
   }
   .reveal [data-reveal="entry"].is-in .entry-note,
   .reveal [data-reveal="entry"].is-in .entry-stars {
-    animation: tone-muted calc(3 * var(--step-fast)) steps(3, jump-none) backwards;
-    animation-delay: calc(120ms + var(--b, 0) * var(--stagger));
+    animation: fade-in 600ms var(--ease-out) calc(120ms + var(--b, 0) * var(--stagger)) backwards;
   }
+}
 
-  /* Recognition rows enter in reading order and develop in tone; the fill lands in one step. */
-  .reveal [data-reveal="row"]:not(.is-in) {
+@keyframes line-in {
+  from {
+    transform: translateY(105%);
+  }
+}
+@keyframes fade-in {
+  from {
     opacity: 0;
-  }
-  .reveal tr.alt[data-reveal="row"]:not(.is-in) {
-    background: transparent;
-  }
-  .reveal [data-reveal="row"].is-in th {
-    animation: tone-text calc(3 * var(--step-fast)) steps(3, jump-none) backwards;
-    animation-delay: calc(var(--b, 0) * var(--stagger));
-  }
-  .reveal [data-reveal="row"].is-in .grp,
-  .reveal [data-reveal="row"].is-in .res {
-    animation: tone-muted calc(3 * var(--step-fast)) steps(3, jump-none) backwards;
-    animation-delay: calc(var(--stagger) + var(--b, 0) * var(--stagger));
-  }
-  .reveal tr.alt[data-reveal="row"].is-in {
-    animation: fill-on 1ms step-end backwards;
-    animation-delay: calc(var(--b, 0) * var(--stagger));
   }
 }
 
@@ -282,53 +261,5 @@ main {
   to {
     opacity: 1;
     transform: none;
-  }
-}
-@keyframes develop {
-  0% {
-    mask-image: var(--m1);
-  }
-  12.5% {
-    mask-image: var(--m2);
-  }
-  25% {
-    mask-image: var(--m3);
-  }
-  37.5% {
-    mask-image: var(--m4);
-  }
-  50% {
-    mask-image: var(--m5);
-  }
-  62.5% {
-    mask-image: var(--m6);
-  }
-  75% {
-    mask-image: var(--m7);
-  }
-  87.5%,
-  100% {
-    mask-image: none;
-  }
-}
-@keyframes tone-muted {
-  from {
-    color: #262626;
-  }
-  to {
-    color: var(--muted);
-  }
-}
-@keyframes tone-text {
-  from {
-    color: #262626;
-  }
-  to {
-    color: var(--text);
-  }
-}
-@keyframes fill-on {
-  from {
-    background-color: transparent;
   }
 }

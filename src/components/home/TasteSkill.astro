@@ -14,11 +14,13 @@ interface Props {
 const { taste, installs } = Astro.props;
 const INSTALL = "npx skills add Leonxlnx/taste-skill";
 
+// The pages, captured at 2x from the examples in the repository: AVIF at 800 and 1600 wide, and
+// WebP for browsers without AVIF.
 const OUTPUTS = [
-  { src: "/work/taste-nachtschicht.webp", w: 1200, h: 696, alt: "A club night website built with Taste Skill: a grid of archival photographs and black date tiles" },
-  { src: "/work/taste-roast.webp", w: 1200, h: 686, alt: "A coffee roaster's page built with Taste Skill: four photographs of beans from raw to cooled" },
-  { src: "/work/taste-storefront.webp", w: 1200, h: 696, alt: "A coffee shop storefront page built with Taste Skill" },
-  { src: "/work/taste-questions.webp", w: 1200, h: 692, alt: "A questions page for a coffee shop built with Taste Skill" },
+  { name: "taste-nachtschicht", alt: "A club night website built with Taste Skill: a grid of archival photographs and black date tiles" },
+  { name: "taste-roast", alt: "A coffee roaster's page built with Taste Skill: four photographs of beans from raw to cooled" },
+  { name: "taste-storefront", alt: "A coffee shop storefront page built with Taste Skill" },
+  { name: "taste-questions", alt: "A questions page for a coffee shop built with Taste Skill" },
 ];
 ---
 
@@ -92,7 +94,10 @@ const OUTPUTS = [
       {
         OUTPUTS.map((o, i) => (
           <li class="shot" style={`--d:${i * 90}ms`}>
-            <img src={o.src} alt={o.alt} width={o.w} height={o.h} loading="lazy" decoding="async" data-reveal="print" />
+            <picture>
+              <source type="image/avif" srcset={`/work/${o.name}-sm.avif 800w, /work/${o.name}.avif 1600w`} sizes="clamp(18rem, 42vw, 46rem)" />
+              <img src={`/work/${o.name}.webp`} alt={o.alt} width="1600" height="928" loading="lazy" decoding="async" data-reveal="up" />
+            </picture>
           </li>
         ))
       }
@@ -171,12 +176,13 @@ const OUTPUTS = [
     color: var(--paper);
     font-size: var(--step-body);
     font-weight: 500;
-    transition:
-      transform var(--t-press) var(--ease-out),
-      background-color var(--t-hover) ease;
+    transition: transform var(--t-press) var(--ease-out);
   }
   .copy:active {
     transform: scale(0.97);
+  }
+  .copy:focus-visible {
+    background: #333;
   }
   /* Only once the page script runs, which is what makes it work. */
   :global(.reveal) .copy {
@@ -204,11 +210,6 @@ const OUTPUTS = [
   .copy.is-done .roll > span + span {
     transform: none;
   }
-  @media (hover: hover) and (pointer: fine) {
-    .copy:hover {
-      background: #333;
-    }
-  }
   .taste-links {
     display: flex;
     gap: 1.5rem;
@@ -223,8 +224,9 @@ const OUTPUTS = [
   .specimens {
     margin-top: clamp(5rem, 12svh, 9rem);
   }
-  /* Each figure is sized by its own column, so the figure and its caption always fit beside
-     each other: --fig is resolved inside the .specimen container. */
+  /* Each figure is sized by its own column: --fig is resolved inside the .specimen container.
+     On a wide screen the caption sits beside its figure; below 1180px it would fit beside one
+     and not the other, so there both captions go under (see the end). */
   .specimen {
     --fig: min(var(--step-monument), 37cqi);
     display: flex;
@@ -309,6 +311,8 @@ const OUTPUTS = [
     height: auto;
     border-radius: 6px;
     background: var(--paper-2);
+    /* A hairline, so a page as light as the paper keeps its edge. */
+    box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
   }
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
@@ -334,10 +338,31 @@ const OUTPUTS = [
       scrollbar-width: none;
     }
   }
+  /* With reduced motion the band stays still, so the pages lie in a grid on the column instead,
+     two to a row and one on a phone, every one of them in reach. */
+  @media (prefers-reduced-motion: reduce) {
+    .band {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      width: auto;
+      max-width: 1680px;
+      margin-inline: auto;
+    }
+    .shot {
+      width: auto;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) and (max-width: 560px) {
+    .band {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
 
   @media screen and (prefers-reduced-motion: no-preference) {
     /* The install command types itself, one character every 28ms, behind a block caret that
-       blinks twice and leaves. It is one text node, selectable and copyable throughout. */
+       blinks twice and leaves. It is one text node, selectable and copyable throughout. The
+       caret is as wide as the line, its block painted at the left edge, so travelling the line
+       is a translate of 100% that the compositor runs. */
     :global(.reveal) .install:not(.is-in) code {
       clip-path: inset(0 100% 0 0);
     }
@@ -348,9 +373,11 @@ const OUTPUTS = [
       position: absolute;
       top: 0.12em;
       bottom: 0.08em;
+      left: 0;
       display: block;
-      width: 0.55em;
-      background: currentColor;
+      width: 100%;
+      background: linear-gradient(currentColor, currentColor) 0 0 / 0.55em 100% no-repeat;
+      pointer-events: none;
       animation:
         caret-move calc(var(--chars) * 28ms) steps(var(--chars), jump-end) 420ms both,
         caret-end 1140ms steps(1, jump-end) calc(420ms + var(--chars) * 28ms) forwards;
@@ -400,10 +427,10 @@ const OUTPUTS = [
   }
   @keyframes caret-move {
     from {
-      left: 0;
+      translate: 0;
     }
     to {
-      left: 100%;
+      translate: 100%;
     }
   }
   @keyframes caret-end {
@@ -438,6 +465,17 @@ const OUTPUTS = [
       justify-content: center;
     }
   }
+  /* Up to 1180px both figures take their caption under them, so the pair always matches. */
+  @media (max-width: 1180px) {
+    .specimen {
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .specimen figcaption {
+      max-width: none;
+      padding-top: 0;
+    }
+  }
   @media (max-width: 860px) {
     .taste {
       padding-bottom: calc(var(--section) * 0.5);
@@ -454,16 +492,10 @@ const OUTPUTS = [
     }
     .specimen {
       --fig: min(19rem, 40cqi);
-      flex-direction: column;
-      gap: 0.6rem;
     }
     .cut {
       height: auto;
       overflow: visible;
-    }
-    .specimen figcaption {
-      max-width: none;
-      padding-top: 0;
     }
   }
 </style>

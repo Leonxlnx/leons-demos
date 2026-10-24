@@ -4,20 +4,22 @@ Leon Lin's personal site ([@LexnLin](https://x.com/LexnLin) · [GitHub](https://
 
 - `/` is the portfolio, one section component each in `src/components/home`:
   - **Intro**: the hero, on paper. His name, and a collage that rises piece by piece from below the screen: Leon seen
-    from behind (a drawn silhouette, `public/home/me.png`), the three models he builds with as tiles behind his
-    head, and his guitar, Munich and his sports as grey photographs (`public/home`). The words on the left and the
-    pieces point at each other on hover; under a mouse the collage leans with the pointer. With motion allowed and a
-    hero that fits the screen, `src/scripts/intro.ts` pins the hero and the about section as one stage: scrolling,
-    the photographs leave, the tiles drop behind his shoulders and come up beside the about text as solid tilted
-    tiles. On phones and short screens the about section simply follows, and the pieces part as the hero scrolls away.
+    from behind as a black silhouette, the three models he builds with as glass tiles round his head, a metal ring
+    through them (`Ring.astro`), his laptop with TasteCode open, the Frauenkirche, a tablet of photographs, his guitar
+    and a football (all in `public/home/v2`). Nothing on the site reacts to hover. With motion allowed and a hero that
+    fits the screen, `src/scripts/intro.ts` pins the hero and the about section as one stage: scrolling, the ring and
+    the photographs leave, the tiles drop behind his shoulders and come up beside the about text as one cluster, with
+    a ring and two photographs behind it. On phones and short screens the about section simply follows, and the pieces
+    part as the hero scrolls away.
   - **Taste Skill**: what it is, live stars and installs as odometers, the install command, and a band of pages
     agents built with it that slides with the scroll.
   - **TasteCode**, **earshot**, **cinetic**: one short section each on the dark ground. The TasteCode window stands up
     as it scrolls in; earshot shows a listening timeline you can scrub, and Listen plays six seconds of sound made
-    in code with Web Audio; cinetic plays its films (`public/work/cinetic`, small H.264 encodes), the lead one
+    in code with Web Audio; cinetic plays its films (`public/work/cinetic`, 1080p H.264 with 720p cuts for phones), the lead one
     opening to the full width and developing its colour in the middle of the screen.
   - **More on GitHub** (the index of hand-picked repos from [`data/projects.json`](data/projects.json)),
-    **Recognition**, **Demos** (the reel of dithered prints) and the contact footer.
+    **Recognition**, **Demos** (a reel of demo stills, picked in `REEL` in `src/components/home/Close.astro`) and the
+    contact footer.
 
   Section entrances, the pause button, the Munich clocks, live stars and the reel are in `src/scripts/home.ts`;
   shared primitives (frame, buttons, reveals) in `src/styles/home.css`.
@@ -32,15 +34,8 @@ Videos autoplay muted, but at most four at a time (two on narrow screens): the m
 another once the page has loaded and scrolling has settled. Every other video is unloaded back to its poster. Posters
 are requested as resized WebP from `pbs.twimg.com`.
 
-Built with [Astro](https://astro.build) as a fully static site. Client JS is the background, the homepage scene and
-sections, and on `/demos` the filters and the video scheduler.
-
-The background is a WebGL2 port of two effects from
-[shader-effects-inc/shaders](https://github.com/shader-effects-inc/shaders) (MIT): `SimplexNoise` feeding `Dither`
-(Bayer 4×4), in black and grey. The library itself needs WebGPU and adds ~700 KB gzipped, so the two effects are
-inlined in `src/scripts/bg-renderer.ts`. It runs in a worker through `OffscreenCanvas` (main thread as a fallback),
-renders at one pixel per dither cell at 20 fps (10 while videos play), holds still while scrolling, stops when the tab
-is hidden, and shows a still frame for `prefers-reduced-motion`.
+Built with [Astro](https://astro.build) as a fully static site. Client JS is the homepage scene and sections, and on
+`/demos` the filters and the video scheduler.
 
 ## Develop
 
@@ -70,22 +65,22 @@ Star counts are live: the build reads them from the GitHub API (falling back to 
 limited; set `GITHUB_TOKEN` in the Vercel project to lift the limit), and the homepage refreshes them in the browser
 from GitHub's search API, at most once every ten minutes per visitor.
 
-The Taste Skill install count (`TASTE_INSTALLS` in `src/pages/index.astro`, from skills.sh) and the recognition table
-are written by hand in that file.
+The Taste Skill install count (`TASTE_INSTALLS` in `src/pages/index.astro`, from skills.sh) and the recognition entries
+(`src/components/home/Recognition.astro`) are written by hand.
 
 ## Pictures
 
-The posters in the homepage reel are shown as prints in four greys, dithered with the background's 4×4 Bayer matrix
-(`public/dither/{id}-paper.png`; `{id}.png` is the darker variant). After adding demos or when a poster changes, run
-`node scripts/dither.mjs` (it fetches every poster from `pbs.twimg.com`, rewrites all prints in about 40 seconds and
-uses `sharp`, which comes with Astro; it imports `src/lib/bayer.ts`, so it needs Node 22.18+ or
-`--experimental-strip-types`) and commit `public/dither`. `node scripts/previews.mjs` still writes
-`data/previews.json` (smaller encodes per clip) for future use; no page plays them right now.
+The homepage reel shows the demos' own posters in grey, at sizes that stay sharp on retina screens (local posters
+in `public/demos/posters` have a 720 px copy next to them). On `/demos` the cards play X's 720p or 360p cuts of
+each video from `data/previews.json` (written by `node scripts/previews.mjs`), not the full-size files.
 
-The hero silhouette is drawn by `node scripts/silhouette.mjs` (deterministic; `SEED`, `HEAD`, `LEN` and `BLUR` tune
-it). The four hero photographs are CC0 (rawpixel and the WordPress photo directory) and need no credit; replace them
-with your own any time, same file names, in grey. A pause button in the corner stops everything that moves on its
-own: the background, the reel, the films, the waveform and the floating collage.
+The hero and about pictures in `public/home/v2` are cut from CC0 photographs (Wikimedia Commons, Unsplash's CC0
+years, rawpixel and the WordPress photo directory) and need no credit: the silhouette (Tim Marshall), the laptop
+(Pineapple Supply Co., with TasteCode composited into its screen), the tablet (彭家杰, with three photographs on it), the
+Gehrenspitze in Tyrol (Wilfredor) and the Frauenkirche (Christoph Braun). All are grey with one shared tone curve. Each
+has smaller copies beside it for phones (`-sm`, and `-md` for the two about photographs); replace a picture together
+with its copies, same names and sizes. A pause button in the corner stops everything that moves on its own: the reel,
+the films and the waveform; on `/demos` its own button stops the playing cards.
 
 ## Updating the demos
 
@@ -115,8 +110,7 @@ no video).
 Three optional fields fix a card whose video starts badly: `"poster": "/demos/posters/<id>.webp"` replaces a black,
 blank or loading first frame with a frame from the middle (16:10 WebP in `public/demos/posters`, e.g.
 `ffmpeg -ss 20 -i <video> -frames:v 1 frame.png`), `"posterTime": 24` starts playback at that moment, and
-`"crop": "top"` shows only the upper clip of a video that stacks two. Run `node scripts/dither.mjs` after changing a
-poster, so the homepage reel prints match.
+`"crop": "top"` shows only the upper clip of a video that stacks two.
 
 Media is hotlinked from Twitter's CDN. The page sets `referrer: no-referrer`, because `video.twimg.com` rejects
 requests that carry a third-party referrer.

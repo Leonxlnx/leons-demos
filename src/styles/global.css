@@ -10,10 +10,8 @@
 }
 
 :root {
-  --bg: #000;
-  --card: #0a0a0a;
+  --bg: #0a0a0a;
   --surface: #141414;
-  --line: rgba(255, 255, 255, 0.08);
   --line-2: rgba(255, 255, 255, 0.16);
   --text: #ededed;
   --muted: #8f8f8f;
@@ -23,12 +21,12 @@
   --paper-muted: #5c5c5c;
   --pad: clamp(1rem, 3vw, 2.5rem);
   --gutter: clamp(0.75rem, 1.4vw, 1.5rem);
-  /* Motion has two voices on one clock. Objects (name, frames, digits, pills) travel on
-     curves; material (dither, tone, masks, typing) changes only in steps. */
+  /* Every picture of a demo, on /demos and in the homepage reel, has the same corners. */
+  --radius-media: 10px;
+  /* One clock for motion. Focus and press answer in under a quarter second on the ease-out
+     curve; entrances take longer. */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-  --ease: var(--ease-out);
   --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
-  --ease-soft: cubic-bezier(0.33, 1, 0.68, 1);
   --t-press: 140ms;
   --t-hover: 180ms;
   --t-ui: 240ms;
@@ -36,28 +34,11 @@
   --t-reveal: 800ms;
   --t-hero: 900ms;
   --stagger: 70ms;
-  --step-page: 45ms;
-  --step-fast: 70ms;
-  --step-ambient: 125ms;
   --step-small: 0.875rem;
   --step-body: clamp(1rem, 0.96rem + 0.2vw, 1.0625rem);
   --step-lead: clamp(1.375rem, 1.15rem + 0.8vw, 1.75rem);
-  --step-index: clamp(2.25rem, 1rem + 3.6vw, 4.25rem);
   --step-display: clamp(4.5rem, 1rem + 15vw, 10.5rem);
   --step-monument: clamp(4.5rem, 18.4vw, 16.5rem);
-  /* Bayer mask tiles, written by scripts/bayer-css.mjs. Do not edit by hand. */
-  /* bayer:start */
-  /* --mN = tile(2N): 2N of 16 cells lit, in bayer4() order. */
-  --m0: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3C/svg%3E");
-  --m1: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3Cpath fill='%23000' d='M0 0h3v3H0zM6 6h3v3H6z'/%3E%3C/svg%3E");
-  --m2: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3Cpath fill='%23000' d='M0 0h3v3H0zM6 0h3v3H6zM0 6h3v3H0zM6 6h3v3H6z'/%3E%3C/svg%3E");
-  --m3: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3Cpath fill='%23000' d='M0 0h3v3H0zM6 0h3v3H6zM3 3h3v3H3zM0 6h3v3H0zM6 6h3v3H6zM9 9h3v3H9z'/%3E%3C/svg%3E");
-  --m4: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3Cpath fill='%23000' d='M0 0h3v3H0zM6 0h3v3H6zM3 3h3v3H3zM9 3h3v3H9zM0 6h3v3H0zM6 6h3v3H6zM3 9h3v3H3zM9 9h3v3H9z'/%3E%3C/svg%3E");
-  --m5: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3Cpath fill='%23000' d='M0 0h3v3H0zM3 0h3v3H3zM6 0h3v3H6zM3 3h3v3H3zM9 3h3v3H9zM0 6h3v3H0zM6 6h3v3H6zM9 6h3v3H9zM3 9h3v3H3zM9 9h3v3H9z'/%3E%3C/svg%3E");
-  --m6: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3Cpath fill='%23000' d='M0 0h3v3H0zM3 0h3v3H3zM6 0h3v3H6zM9 0h3v3H9zM3 3h3v3H3zM9 3h3v3H9zM0 6h3v3H0zM3 6h3v3H3zM6 6h3v3H6zM9 6h3v3H9zM3 9h3v3H3zM9 9h3v3H9z'/%3E%3C/svg%3E");
-  --m7: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3Cpath fill='%23000' d='M0 0h3v3H0zM3 0h3v3H3zM6 0h3v3H6zM9 0h3v3H9zM0 3h3v3H0zM3 3h3v3H3zM9 3h3v3H9zM0 6h3v3H0zM3 6h3v3H3zM6 6h3v3H6zM9 6h3v3H9zM3 9h3v3H3zM6 9h3v3H6zM9 9h3v3H9z'/%3E%3C/svg%3E");
-  --m8: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12' shape-rendering='crispEdges'%3E%3Cpath fill='%23000' d='M0 0h3v3H0zM3 0h3v3H3zM6 0h3v3H6zM9 0h3v3H9zM0 3h3v3H0zM3 3h3v3H3zM6 3h3v3H6zM9 3h3v3H9zM0 6h3v3H0zM3 6h3v3H3zM6 6h3v3H6zM9 6h3v3H9zM0 9h3v3H0zM3 9h3v3H3zM6 9h3v3H6zM9 9h3v3H9z'/%3E%3C/svg%3E");
-  /* bayer:end */
   font-family: "Geist Variable", "Geist Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   color-scheme: dark;
 }
@@ -116,24 +97,6 @@ video {
   flex: none;
 }
 
-/* ------------------------------------------------------------------ background */
-
-.bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  width: 100vw;
-  height: 100lvh;
-  image-rendering: pixelated;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 160ms linear;
-}
-.bg.ready {
-  opacity: 1;
-}
-
 /* ------------------------------------------------------------------ header */
 
 .top {
@@ -161,31 +124,39 @@ video {
 /* The padding gives each link a 44px touch target without moving it. */
 .nav a,
 .site-title {
-  padding: 0.65rem 0.4rem;
-  margin: -0.65rem -0.4rem;
+  --px: 0.4rem;
+  padding: 0.65rem var(--px);
+  margin: -0.65rem calc(-1 * var(--px));
 }
 .nav a {
+  position: relative;
   color: var(--muted);
-  text-decoration: underline;
-  text-decoration-color: transparent;
-  text-decoration-thickness: 0.07em;
-  text-underline-offset: 0.25em;
-  transition: color var(--t-hover) ease, text-decoration-color var(--t-hover) ease;
+  transition: color var(--t-hover) var(--ease-out);
 }
 /* The last link is one glyph (X): its hit area grows to about 44px without moving it. */
 .nav a:last-child {
-  padding-inline: 1rem;
-  margin-inline: -1rem;
+  --px: 1rem;
 }
-.nav a[aria-current="page"] {
+/* The underline draws in from the left and leaves to the right. It sits on the text's own box,
+   inside the touch padding. */
+.nav a::after {
+  content: "";
+  position: absolute;
+  inset: auto var(--px) 0.65rem;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform var(--t-ui) var(--ease-out);
+}
+.nav a[aria-current="page"],
+.nav a:focus-visible {
   color: var(--text);
-  text-decoration-color: currentColor;
 }
-@media (hover: hover) and (pointer: fine) {
-  .nav a:hover {
-    color: var(--text);
-    text-decoration-color: currentColor;
-  }
+.nav a[aria-current="page"]::after,
+.nav a:focus-visible::after {
+  transform: none;
+  transform-origin: left;
 }
 
 .filters {
@@ -204,7 +175,9 @@ video {
   font-size: 0.82rem;
   color: var(--muted);
   white-space: nowrap;
-  transition: color 0.2s, background 0.2s;
+  transition:
+    color var(--t-hover) var(--ease-out),
+    background-color var(--t-hover) var(--ease-out);
 }
 .filters .logo-btn {
   display: inline-flex;
@@ -212,10 +185,9 @@ video {
   gap: 0.3rem;
   padding: 0 0.75rem;
 }
-@media (hover: hover) and (pointer: fine) {
-  .filters button:hover {
-    color: var(--text);
-  }
+.filters button:focus-visible {
+  color: var(--text);
+  outline-offset: 0;
 }
 .filters button:disabled {
   color: var(--muted);
@@ -341,14 +313,12 @@ video {
   text-underline-offset: 0.22em;
   text-decoration-color: transparent;
   transition:
-    text-decoration-color var(--t-hover) ease,
-    color var(--t-hover) ease;
+    text-decoration-color var(--t-hover) var(--ease-out),
+    color var(--t-hover) var(--ease-out);
 }
-@media (hover: hover) and (pointer: fine) {
-  .page-foot .ink:hover {
-    color: var(--text);
-    text-decoration-color: currentColor;
-  }
+.page-foot .ink:focus-visible {
+  color: var(--text);
+  text-decoration-color: currentColor;
 }
 
 @media (max-width: 900px) {
@@ -389,6 +359,7 @@ video {
   flex-direction: column;
   content-visibility: auto;
   contain-intrinsic-size: auto 330px;
+  scroll-margin-top: clamp(1.5rem, 4vw, 3rem);
 }
 .card[hidden] {
   display: none;
@@ -397,8 +368,9 @@ video {
   position: relative;
   aspect-ratio: 16 / 10;
   overflow: hidden;
-  border-radius: 10px;
+  border-radius: var(--radius-media);
   background: var(--surface);
+  transition: transform var(--t-ui) var(--ease-out);
 }
 .media img,
 .media video {
@@ -408,35 +380,12 @@ video {
   height: 100%;
   object-fit: cover;
 }
-.media img {
-  transition: transform 0.8s var(--ease);
-}
-@media (hover: hover) and (pointer: fine) {
-  .card:hover .media img,
-  .card:hover .media video {
-    transform: scale(1.03);
-  }
-}
 .media video {
   opacity: 0;
-  transition:
-    opacity 0.4s,
-    transform 0.8s var(--ease);
+  transition: opacity 400ms var(--ease-out);
 }
 .media.playing video {
   opacity: 1;
-}
-/* A video of two stacked clips shows its upper one: the seam sits just past the bottom edge. */
-.media--top img,
-.media--top video {
-  height: 204%;
-  object-position: 50% 0;
-}
-/* A video of two stacked clips shows its upper one: the seam sits just past the bottom edge. */
-.media--top img,
-.media--top video {
-  height: 204%;
-  object-position: 50% 0;
 }
 /* A video of two stacked clips shows its upper one: the seam sits just past the bottom edge. */
 .media--top img,
@@ -464,6 +413,13 @@ video {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+.title a {
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 0.07em;
+  text-underline-offset: 0.22em;
+  transition: text-decoration-color var(--t-hover) var(--ease-out);
+}
 .title a::after {
   content: "";
   position: absolute;
@@ -475,7 +431,26 @@ video {
 .title a:focus-visible::after {
   outline: 2px solid #fff;
   outline-offset: 4px;
-  border-radius: 10px;
+  border-radius: var(--radius-media);
+}
+
+/* Focusing a card lifts its picture by a hair and underlines its title. */
+.card:has(.title a:focus-visible) .media {
+  transform: translateY(-3px);
+}
+.title a:focus-visible {
+  text-decoration-color: currentColor;
+}
+/* Arriving from the homepage reel, the card that was picked is ringed for a moment. */
+.card:target .media {
+  outline: 2px solid var(--text);
+  outline-offset: 4px;
+  animation: ring-out 1.6s var(--ease-out) 1.2s forwards;
+}
+@keyframes ring-out {
+  to {
+    outline-color: transparent;
+  }
 }
 
 .foot {
@@ -527,25 +502,32 @@ video {
   color: #d4d4d4;
   white-space: nowrap;
   transition:
-    color 0.2s,
-    background 0.2s,
+    color var(--t-hover) var(--ease-out),
+    background-color var(--t-hover) var(--ease-out),
     transform var(--t-press) var(--ease-out);
 }
 .btn:active {
   transform: scale(0.96);
 }
-@media (hover: hover) and (pointer: fine) {
-  .btn:hover {
-    color: #000;
-    background: #fff;
-  }
-  .btn--primary:hover {
-    background: #cfcfcf;
-  }
-}
 .btn--primary {
   color: #000;
   background: #fff;
+}
+/* A fill one step up: grey pills lighten, the white one greys a little. */
+.btn:focus-visible {
+  color: #fff;
+  background: #262626;
+}
+.btn--primary:focus-visible {
+  color: #000;
+  background: #d4d4d4;
+}
+
+/* An icon button is a circle: as wide as it is tall, here and in the touch sizes below. */
+.btn--icon {
+  width: 2rem;
+  padding: 0;
+  color: var(--muted);
 }
 
 /* Touch: 40px controls with a little more room between them. */
@@ -571,11 +553,6 @@ video {
     width: 2.5rem;
     padding: 0;
   }
-}
-.btn--icon {
-  width: 2rem;
-  padding: 0;
-  color: var(--muted);
 }
 
 @media (prefers-reduced-motion: reduce) {

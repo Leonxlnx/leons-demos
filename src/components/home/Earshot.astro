@@ -2,7 +2,7 @@
 /*
  * earshot: ears for coding agents. Its picture is a listening: a waveform with a playhead that
  * sweeps it, the events it hears named as they pass, and the commands an agent runs, taken from
- * the README. Under a mouse the playhead follows the pointer.
+ * the README. Pressed and dragged with a mouse, the playhead follows the pointer.
  */
 import Icon from "../Icon.astro";
 import { compact } from "../../lib/format";
@@ -13,7 +13,7 @@ interface Props {
 }
 const { project } = Astro.props;
 
-// A 22 second take, drawn like the launch film's: a run of key presses, notes, pops, two
+// A six second take, drawn like the launch film's: a run of key presses, notes, pops, two
 // whooshes and a ding. Bars are the envelope at 120 points, deterministic.
 const N = 120;
 let seed = 5;
@@ -75,9 +75,9 @@ const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<spa
   <figure class="listen" data-listen data-reveal="up" style="--d:120ms">
     <div class="wave" aria-hidden="true">
       <div class="bars">
-        {bars.map((v, i) => <span class="bar" style={`--v:${v.toFixed(3)};--t:${(i / (N - 1)).toFixed(4)}`} />)}
+        {bars.map((v) => <span class="bar" style={`--v:${v.toFixed(3)}`} />)}
+        <div class="sweep" />
       </div>
-      <div class="head" />
       <ol class="events">
         {
           events.map((e) => (
@@ -94,6 +94,7 @@ const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<spa
         <span class="play-label">Listen</span>
       </button>
       <span class="play-note">Six seconds of sound, every one made in code</span>
+      <span class="sr-only" role="status" aria-live="polite" data-play-status></span>
     </div>
     <pre class="term"><code set:html={TERM} /></pre>
     <figcaption class="sr-only">A listening timeline as earshot draws it, and three commands with their answers from the earshot README.</figcaption>
@@ -101,45 +102,75 @@ const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<spa
 </section>
 
 <script>
-  /* The playhead sweeps the take every 9 seconds while the figure is on screen; under a mouse it
-     follows the pointer instead. Bars it has passed are lit, and the event under it is named.
+  /* The playhead sweeps the take every 9 seconds while the figure is on screen; pressed and
+     dragged with a mouse, it follows the pointer instead. Bars it has passed are lit, and the
+     event under it is named. All of it is one clock: the veil that is the playhead and the six
+     names are Web Animations on transform and opacity, so the compositor runs the sweep and the
+     main thread only starts, pauses or seeks them (a drag, the pause button, leaving the screen).
      Listen plays the take for real, six seconds made in code with Web Audio the way earshot forge
      makes its sounds: key presses (filtered noise clicks), a glockenspiel note and a ding (decaying
      sines with a bright partial), a pop (a falling sine) and two whooshes (noise through a swept
-     band-pass). The playhead follows the audio clock while it plays. */
+     band-pass). While it plays, the sweep runs at the take's pace from the audio's first sample;
+     the button keeps its focus, marked aria-disabled, and a status line reads its state out. */
   const fig = document.querySelector<HTMLElement>("[data-listen]");
-  if (fig) {
+  const sweep = fig?.querySelector<HTMLElement>(".sweep");
+  if (fig && sweep && "animate" in sweep) {
     const wave = fig.querySelector<HTMLElement>(".wave")!;
     const items = Array.from(fig.querySelectorAll<HTMLElement>(".events li"));
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    let t = 0;
-    let last = 0;
-    let raf = 0;
-    let hover = false;
-    let visible = false;
-    const set = (v: number) => {
-      t = v;
-      wave.style.setProperty("--p", v.toFixed(4));
-      for (const li of items) {
+    const root = document.documentElement;
+    // One idle sweep, in ms, and the take, in seconds.
+    const LOOP = 9000;
+    const T = 6;
+    const REST = 0.54;
+    const timing: KeyframeAnimationOptions = { duration: LOOP, iterations: Infinity, fill: "both" };
+    const hidden = { opacity: 0, transform: "translateY(6px)" };
+    const shown = { opacity: 1, transform: "none" };
+    // A name fades in over 2.5% of the sweep as the playhead reaches it and holds for 12%.
+    const anims = [
+      sweep.animate([{ transform: "translateX(0%)" }, { transform: "translateX(100%)" }], timing),
+      ...items.map((li) => {
         const at = Number(li.dataset.at);
-        li.classList.toggle("is-on", v >= at && v < at + 0.12);
+        const on = Math.min(at + 0.025, 0.99);
+        const off = Math.min(at + 0.12, 0.995);
+        return li.animate(
+          [
+            { offset: 0, ...hidden },
+            { offset: at, ...hidden },
+            { offset: on, ...shown },
+            { offset: off, ...shown },
+            { offset: Math.min(off + 0.025, 1), ...hidden },
+            { offset: 1, ...hidden },
+          ],
+          timing,
+        );
+      }),
+    ];
+    const seek = (p: number) => {
+      for (const a of anims) {
+        a.pause();
+        a.currentTime = Math.min(0.9999, Math.max(0, p)) * LOOP;
       }
     };
-    const frame = (now: number) => {
-      const dt = Math.min(0.05, (now - last) / 1000);
-      last = now;
-      const paused = document.documentElement.classList.contains("motion-paused");
-      if (playing && ctx) set(Math.min(1, Math.max(0, (ctx.currentTime - ctxStart) / T)));
-      else if (!hover && !paused && !reduced) set((t + dt / 9) % 1);
-      raf = visible || playing ? requestAnimationFrame(frame) : 0;
-    };
-    // The take, in seconds, and where each sound sits on the 0..1 timeline above.
-    const T = 6;
+    let visible = false;
+    let held = false;
     let playing = false;
-    let ctxStart = 0;
+    // Runs the idle sweep when it may move, holds it where it is otherwise.
+    const sync = () => {
+      if (playing) return;
+      if (reduced) return seek(REST);
+      const go = visible && !held && !root.classList.contains("motion-paused");
+      for (const a of anims) {
+        if (go) a.play();
+        else a.pause();
+      }
+    };
+    seek(reduced ? REST : 0);
+
     let ctx: AudioContext | null = null;
     const button = fig.querySelector<HTMLButtonElement>("[data-play]");
     const label = button?.querySelector(".play-label");
+    const status = fig.querySelector("[data-play-status]");
 
     function noise(ac: AudioContext, seconds: number) {
       const buf = ac.createBuffer(1, Math.ceil(ac.sampleRate * seconds), ac.sampleRate);
@@ -209,13 +240,18 @@ const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<spa
       n.connect(bp).connect(g).connect(out);
       n.start(at);
     }
-    function listen() {
-      if (playing) return;
+    async function listen() {
+      // aria-disabled, not disabled: a disabled button would drop keyboard focus to the page.
+      if (playing || button!.getAttribute("aria-disabled") === "true") return;
       const AC = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       if (!AC) return;
       ctx ??= new AC();
       const ac = ctx;
-      ac.resume();
+      playing = true;
+      if (label) label.textContent = "Listening";
+      if (status) status.textContent = "Playing six seconds of sound";
+      button!.setAttribute("aria-disabled", "true");
+      await ac.resume().catch(() => {});
       const master = ac.createGain();
       master.gain.value = 0.42;
       master.connect(ac.destination);
@@ -226,44 +262,63 @@ const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<spa
       whoosh(ac, t0 + T * 0.5 - 0.34, master);
       whoosh(ac, t0 + T * 0.7 - 0.34, master);
       bell(ac, t0 + T * 0.9, 2093, 1.6, master);
-      playing = true;
-      ctxStart = t0;
-      fig!.classList.add("is-playing");
-      if (label) label.textContent = "Listening";
-      button!.disabled = true;
+      // The sweep starts from 0 when the first sample sounds and crosses in T seconds.
+      const lead = (t0 - ac.currentTime + (ac.outputLatency || 0)) * 1000;
+      const start = Number(document.timeline.currentTime ?? performance.now()) + lead;
+      for (const a of anims) {
+        a.playbackRate = LOOP / 1000 / T;
+        a.startTime = start;
+      }
       setTimeout(() => {
         playing = false;
-        fig!.classList.remove("is-playing");
+        for (const a of anims) a.playbackRate = 1;
+        sync();
+      }, lead + T * 1000);
+      setTimeout(() => {
         if (label) label.textContent = "Listen again";
-        button!.disabled = false;
+        if (status) status.textContent = "Finished playing";
+        button!.removeAttribute("aria-disabled");
         master.disconnect();
-      }, (T + 0.4) * 1000);
-      if (!raf) {
-        last = performance.now();
-        raf = requestAnimationFrame(frame);
-      }
+      }, lead + (T + 0.4) * 1000);
     }
     if (button) {
       button.hidden = false;
       button.addEventListener("click", listen);
     }
 
-    if (reduced) set(0.52);
-    else {
+    if (!reduced) {
       new IntersectionObserver(([e]) => {
         visible = e.isIntersecting;
-        if (visible && !raf) {
-          last = performance.now();
-          raf = requestAnimationFrame(frame);
-        }
+        sync();
       }).observe(fig);
-      wave.addEventListener("pointermove", (e) => {
-        if (e.pointerType !== "mouse" || playing) return;
-        hover = true;
-        const r = wave.getBoundingClientRect();
-        set(Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)));
+      new MutationObserver(sync).observe(root, { attributes: true, attributeFilter: ["class"] });
+      // Pressed and dragged with a mouse, the playhead follows the pointer: the same animations,
+      // seeked. A touch is left to scroll the page.
+      let rect: DOMRect | null = null;
+      const follow = (e: PointerEvent) => {
+        if (rect && !playing) seek((e.clientX - rect.left) / rect.width);
+      };
+      wave.addEventListener("pointerdown", (e) => {
+        if (e.pointerType !== "mouse" || e.button !== 0 || playing) return;
+        // No text selection while dragging.
+        e.preventDefault();
+        wave.setPointerCapture(e.pointerId);
+        rect = wave.getBoundingClientRect();
+        held = true;
+        follow(e);
       });
-      wave.addEventListener("pointerleave", () => (hover = false));
+      wave.addEventListener("pointermove", (e) => {
+        if (held) follow(e);
+      });
+      const release = () => {
+        if (!held) return;
+        held = false;
+        rect = null;
+        sync();
+      };
+      wave.addEventListener("pointerup", release);
+      wave.addEventListener("pointercancel", release);
+      wave.addEventListener("lostpointercapture", release);
     }
   }
 </script>
@@ -291,10 +346,13 @@ const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<spa
     background: #0d0d0d;
   }
   .wave {
-    --p: 0;
     position: relative;
     height: clamp(9rem, 16vw, 13rem);
-    cursor: ew-resize;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .wave {
+      cursor: ew-resize;
+    }
   }
   .bars {
     position: absolute;
@@ -302,23 +360,32 @@ const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<spa
     display: flex;
     align-items: center;
     gap: 2px;
+    overflow: hidden;
   }
-  /* Bars the playhead has passed are lit; the rest wait in a dim grey. */
   .bar {
     flex: 1;
     height: 100%;
     border-radius: 2px;
     background: #ededed;
-    opacity: calc(0.22 + 0.78 * (1 - clamp(0, (var(--t) - var(--p)) * 100, 1)));
     transform: scaleY(max(0.04, var(--v)));
   }
-  .head {
+  /* Bars the playhead has passed are lit; the rest wait in a dim grey. The grey is one veil in
+     the panel's colour at 78%, the same as each bar at 22% opacity, and its left edge is the
+     playhead. Only the veil moves, by transform, so the 120 bars are drawn once and never
+     restyled. Without the script it rests a little past the middle. */
+  .sweep {
+    position: absolute;
+    inset: 0;
+    background: rgb(13 13 13 / 0.78);
+    transform: translateX(54%);
+  }
+  .sweep::before {
+    content: "";
     position: absolute;
     top: 0;
-    bottom: 2.25rem;
-    left: calc(var(--p) * 100%);
+    bottom: 0;
+    left: -1px;
     width: 2px;
-    margin-left: -1px;
     background: #ededed;
   }
   .events {
@@ -332,23 +399,16 @@ const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<spa
     list-style: none;
   }
   /* Each name is anchored in proportion to its own width (at 0 its left edge, at 1 its right),
-     so it never leaves the wave. */
+     so it never leaves the wave. The script fades it in and out on the playhead's clock. */
   .events li {
     position: absolute;
     left: calc(var(--at) * 100%);
-    color: var(--muted);
+    color: var(--text);
     font-size: var(--step-small);
     white-space: nowrap;
     opacity: 0;
-    transform: translate(calc(var(--at) * -100%), 6px);
-    transition:
-      opacity 240ms var(--ease-out),
-      transform 240ms var(--ease-out);
-  }
-  .events li:global(.is-on) {
-    color: var(--text);
-    opacity: 1;
-    transform: translate(calc(var(--at) * -100%), 0);
+    translate: calc(var(--at) * -100%) 0;
+    transform: translateY(6px);
   }
   .listen-bar {
     display: flex;
@@ -363,17 +423,17 @@ const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<spa
     padding-inline: 1.2rem;
     background: #1f1f1f;
   }
-  @media (hover: hover) and (pointer: fine) {
-    .listen .play:hover {
-      background: #2a2a2a;
-    }
+  .listen .play:focus-visible {
+    background: #2a2a2a;
   }
   .play[hidden],
   .play[hidden] + .play-note {
     display: none;
   }
-  .play:disabled {
+  /* While the take plays the button rests: it keeps focus but takes no press. */
+  .play[aria-disabled="true"] {
     cursor: default;
+    transform: none;
   }
   .play-note {
     color: var(--muted);
@@ -385,10 +445,6 @@ const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<spa
     .bar:nth-child(2n) {
       display: none;
     }
-  }
-  /* While it plays, the lit bars breathe with the sound. */
-  :global(.is-playing) .bar {
-    transition: opacity 60ms linear;
   }
   .term {
     margin: 1.5rem 0 0;
@@ -407,11 +463,6 @@ const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<spa
   .term :global(.prompt),
   .term :global(.out) {
     color: var(--muted);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .events li {
-      transition: none;
-    }
   }
   @media (max-width: 860px) {
     .ear-copy,

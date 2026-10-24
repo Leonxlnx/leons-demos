@@ -1,15 +1,14 @@
 /*
  * The hero and about scene (components/home/Intro.astro).
  *
- * - Pointing at a piece of the collage lifts it and lets the rest step back; pointing at any of
- *   the three model tiles lifts all three.
- * - Under a mouse the collage leans with the pointer, each piece by its own depth.
- * - The scene: with motion allowed and a hero that fits the screen, html.scene pins the hero
- *   and the about section as one stage, 160svh of scroll long. Scrolling, the name and the
- *   intro rise away, everything else in the collage flies outward, Leon sinks, the tiles drop
- *   behind his shoulders, then come up beside the about text, thick and turned, where they
- *   follow the pointer and float. Progress is eased toward the scroll position each frame, so
- *   the stage moves with a little weight. Transforms and opacity only.
+ * With motion allowed and a hero that fits the screen, html.scene pins the hero and the about
+ * section as one stage, 110svh of scroll long (an inline script at the top of the intro sets the
+ * class before it is first laid out, so the page never jumps; this module confirms it).
+ * Scrolling, the name and the intro rise away, the ring opens and fades, everything else in the
+ * collage flies outward, the tiles settle back toward Leon's shoulders and, while he sinks, come
+ * up beside the about text as one cluster, thick and turned. Once they land they float in CSS
+ * and this script asks for no more frames. Progress is eased toward the scroll position each
+ * frame, so the stage moves with a little weight. Transforms and opacity only.
  */
 
 const intro = document.querySelector<HTMLElement>("[data-intro]");
@@ -18,7 +17,6 @@ if (intro) init(intro);
 function init(intro: HTMLElement) {
   const root = document.documentElement;
   const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const finePointer = matchMedia("(hover: hover) and (pointer: fine)").matches;
 
   const stage = intro.querySelector<HTMLElement>(".stage")!;
   const hero = intro.querySelector<HTMLElement>(".hero")!;
@@ -29,26 +27,8 @@ function init(intro: HTMLElement) {
   const tiles = pieces.filter((p) => p.classList.contains("is-tile"));
   const flying = pieces.filter((p) => !p.classList.contains("is-tile"));
   const heroTop = hero.querySelector<HTMLElement>(".hero-top")!;
-  const sides = Array.from(hero.querySelectorAll<HTMLElement>(".side"));
+  const rings = Array.from(collage.querySelectorAll<SVGSVGElement>(".ring"));
   const reveals = Array.from(about.querySelectorAll<HTMLElement>("[data-reveal]"));
-
-  /* ---------------------------------------------------------------- pieces */
-
-  /** Lifts one piece (or every tile) and lets the rest of the collage step back. */
-  function light(on: HTMLElement | null) {
-    const group = on?.classList.contains("is-tile") ? tiles : on ? [on] : [];
-    collage.classList.toggle("has-focus", !!on);
-    for (const p of pieces) p.classList.toggle("is-on", group.includes(p));
-  }
-  for (const p of pieces) {
-    p.addEventListener("pointerenter", (e) => {
-      if (e.pointerType !== "mouse" || (scene.on && scene.p > 0.05)) return;
-      light(p);
-    });
-    p.addEventListener("pointerleave", () => light(null));
-  }
-
-  /* ---------------------------------------------------------------- the stage */
 
   const vh = () => innerHeight;
   const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
@@ -57,6 +37,13 @@ function init(intro: HTMLElement) {
   const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
   const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
 
+  // The timeline, in scene progress. The phases overlap, so no frame is left half empty.
+  const DIP = [0, 0.12]; // the tiles settle back toward his shoulders
+  const RISE = [0.08, 0.6]; // and come up to the cluster
+  const SINK = [0.06, 0.28]; // Leon sinks below the edge, gone before the about text
+  const HERE = 0.24; // the about text comes in
+  const LANDED = 0.6; // the tiles are in place and float on their own
+
   interface Box {
     cx: number;
     cy: number;
@@ -64,14 +51,19 @@ function init(intro: HTMLElement) {
   }
   interface TileMove {
     el: HTMLElement;
-    tile: HTMLElement;
+    body: HTMLElement;
+    /** The tile's own thickness in the hero, from its CSS --depth. */
+    depth: number;
     from: Box;
     to: Box;
     r: number;
+    rx0: number;
+    ry0: number;
     rx: number;
     ry: number;
     rz: number;
-    seed: number;
+    /** Stacking in the cluster, taken once the tile is on its way there. */
+    zi: string;
   }
   interface Flyer {
     el: HTMLElement;
@@ -88,8 +80,10 @@ function init(intro: HTMLElement) {
     flyers: [] as Flyer[],
     visible: true,
     here: false,
+    // Where the intro starts on the page and how far it scrolls, read only on measure.
+    top: 0,
+    run: 0,
   };
-  const pointer = { x: 0, y: 0, tx: 0, ty: 0 };
 
   const box = (el: Element, origin: DOMRect): Box => {
     const r = el.getBoundingClientRect();
@@ -99,24 +93,31 @@ function init(intro: HTMLElement) {
 
   /** Reads every start and end place with all scene transforms cleared. */
   function measure() {
-    const moved = [me, heroTop, ...sides, ...pieces];
+    const moved = [me, heroTop, ...rings, ...pieces];
     for (const el of moved) el.style.transform = "";
     const origin = stage.getBoundingClientRect();
     const c = collage.getBoundingClientRect();
     const centre = { x: c.left + c.width / 2, y: c.top + c.height / 2 };
-    scene.moves = tiles.map((el, i) => {
-      const slot = about.querySelector<HTMLElement>(`[data-slot="${el.querySelector<HTMLElement>("[data-tile]")!.dataset.tile}"]`)!;
-      const target = slot.querySelector(".tile")!;
+    scene.top = intro.getBoundingClientRect().top + scrollY;
+    scene.run = intro.offsetHeight - vh();
+    scene.moves = tiles.map((el) => {
+      const tile = el.querySelector<HTMLElement>(".tile")!;
+      const body = tile.querySelector<HTMLElement>(".tile-body")!;
+      const slot = about.querySelector<HTMLElement>(`[data-slot="${tile.dataset.tile}"]`)!;
+      body.style.transform = "";
       return {
         el,
-        tile: el.querySelector<HTMLElement>(".tile")!,
+        body,
+        depth: num(tile, "--depth") || 14,
         from: box(el, origin),
-        to: box(target, origin),
+        to: box(slot.querySelector(".tile")!, origin),
         r: num(el, "--r") || num(el.querySelector(".piece-in")!, "rotate"),
+        rx0: parseFloat(tile.dataset.rx || "12"),
+        ry0: parseFloat(tile.dataset.ry || "0"),
         rx: num(slot, "--rx"),
         ry: num(slot, "--ry"),
         rz: num(slot, "--rz"),
-        seed: i * 1.7,
+        zi: getComputedStyle(slot).getPropertyValue("--zi").trim(),
       };
     });
     scene.flyers = flying.map((el) => {
@@ -132,71 +133,60 @@ function init(intro: HTMLElement) {
     const p = scene.p;
     const H = vh();
     const W = innerWidth;
-    // Act one, the hero clears and the tiles drop behind Leon's shoulders: 0 to 0.36.
-    // Act two, he sinks and the tiles come up past him to the about section: 0.38 to 0.86.
     const a = easeOut(seg(p, 0, 0.3));
-    const drop = easeInOut(seg(p, 0.04, 0.36));
-    const b = easeInOut(seg(p, 0.38, 0.86));
-    const pointerOn = finePointer && !reducedMotion;
-    const px = pointerOn ? pointer.x : 0;
-    const py = pointerOn ? pointer.y : 0;
+    const dip = easeInOut(seg(p, DIP[0], DIP[1]));
+    const b = easeInOut(seg(p, RISE[0], RISE[1]));
 
     heroTop.style.transform = `translate3d(0, ${(-a * H * 0.32).toFixed(2)}px, 0)`;
-    heroTop.style.opacity = String(clamp(1 - seg(p, 0, 0.24) * 1.1));
-    sides.forEach((s, i) => {
-      const k = easeOut(seg(p, i * 0.03, 0.28 + i * 0.03));
-      s.style.transform = `translate3d(0, ${(-k * H * 0.22).toFixed(2)}px, 0)`;
-      const so = clamp(1 - k * 1.25);
-      s.style.opacity = String(so);
-      s.style.visibility = so < 0.01 ? "hidden" : "";
-    });
+    heroTop.style.opacity = String(clamp(1 - seg(p, 0, 0.2) * 1.1));
 
-    // Leon stands while the tiles drop behind him, then sinks below the edge.
-    const sink = easeInOut(seg(p, 0.3, 0.68));
-    me.style.transform = `translate3d(${(-px * 6).toFixed(2)}px, ${(sink * 70 + py * 4).toFixed(2)}%, 0)`;
-    const mo = clamp(1 - seg(p, 0.52, 0.68));
+    // The ring opens out round his head and fades first.
+    const ro = clamp(1 - seg(p, 0, 0.14));
+    for (const r of rings) {
+      r.style.transform = `translate3d(0, ${(-a * H * 0.06).toFixed(2)}px, 0) scale(${(1 + a * 0.22).toFixed(4)})`;
+      r.style.opacity = String(ro);
+      r.style.visibility = ro < 0.01 ? "hidden" : "";
+    }
+
+    // Leon stands while the tiles dip behind him, then sinks below the edge.
+    const sink = easeInOut(seg(p, SINK[0], SINK[1]));
+    me.style.transform = `translate3d(0, ${(sink * 105).toFixed(2)}%, 0)`;
+    const mo = clamp(1 - seg(p, 0.22, SINK[1]));
     me.style.opacity = String(mo);
     me.style.visibility = mo < 0.01 ? "hidden" : "";
 
     for (const f of scene.flyers) {
-      const depth = parseFloat(f.el.dataset.depth || "1");
-      const k = easeOut(seg(p, 0, 0.32));
-      const x = f.dx * k * W * 0.42 + px * depth * 16;
-      const y = Math.max(0, f.dy) * k * H * 0.3 + k * H * 0.1 + py * depth * 12;
+      const k = easeOut(seg(p, 0, 0.28));
+      const x = f.dx * k * W * 0.42;
+      const y = Math.max(0, f.dy) * k * H * 0.3 + k * H * 0.1;
       f.el.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) rotate(${(f.spin * k).toFixed(2)}deg) scale(${(1 + k * 0.18).toFixed(4)})`;
-      const o = clamp(1 - seg(p, 0.04, 0.28));
+      const o = clamp(1 - seg(p, 0.03, 0.24));
       f.el.style.opacity = String(o);
       f.el.style.visibility = o < 0.01 ? "hidden" : "";
     }
 
-    // The float runs on its own clock, which stops while motion is paused.
-    const now = performance.now();
-    if (!paused()) floatClock += Math.min(64, now - lastFrame);
-    lastFrame = now;
-    const t = floatClock / 1000;
     for (const m of scene.moves) {
-      const depth = parseFloat(m.el.dataset.depth || "1");
-      // Act one: drop behind the shoulders, a little smaller, as if pushed back.
-      const dropY = drop * H * 0.3;
-      const back = 1 - drop * 0.32;
-      // Act two: from there to the slot, growing to its size.
+      // Dip: toward his shoulders, a little smaller, as if pushed back. Rise: from there to the
+      // slot, growing to its size.
       const toScale = m.to.w / m.from.w;
-      const x = lerp(0, m.to.cx - m.from.cx, b) + (1 - b) * px * depth * 14;
-      const y = lerp(dropY, m.to.cy - m.from.cy, b) + (1 - b) * py * depth * 10;
-      const s = lerp(back, toScale, b);
-      // Afloat in the about section: a slow bob, and the tilt follows the pointer.
-      const here = seg(p, 0.86, 1);
-      const bob = Math.sin(t * 0.9 + m.seed) * 5 * here;
-      m.el.style.transform = `translate3d(${x.toFixed(2)}px, ${(y + bob).toFixed(2)}px, 0) rotate(${(-m.r * b).toFixed(2)}deg) scale(${s.toFixed(4)})`;
-      m.tile.style.setProperty("--depth", `${lerp(7, 34 / toScale, b).toFixed(2)}px`);
-      m.tile.style.setProperty("--rx", `${(lerp(12, m.rx, b) - py * 10 * b).toFixed(2)}deg`);
-      m.tile.style.setProperty("--ry", `${(lerp(0, m.ry, b) + px * 14 * b + Math.sin(t * 0.6 + m.seed) * 3 * here).toFixed(2)}deg`);
-      m.tile.style.setProperty("--rz", `${lerp(0, m.rz, b).toFixed(2)}deg`);
+      // Sideways they move first, so they are clear of the about text by the time it comes in.
+      const x = lerp(0, m.to.cx - m.from.cx, easeOut(seg(p, RISE[0], 0.32)));
+      const y = lerp(dip * H * 0.08, m.to.cy - m.from.cy, b);
+      const s = lerp(1 - dip * 0.1, toScale, b);
+      m.el.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) rotate(${(-m.r * b).toFixed(2)}deg) scale(${s.toFixed(4)})`;
+      m.el.style.zIndex = b > 0.5 ? m.zi : "";
+      // One transform on the body: the turn, and the thickness as a stretch in depth.
+      const thick = lerp(m.depth, 34 / toScale, b) / m.depth;
+      m.body.style.transform = `rotateX(${lerp(m.rx0, m.rx, b).toFixed(2)}deg) rotateY(${lerp(m.ry0, m.ry, b).toFixed(2)}deg) rotateZ(${lerp(0, m.rz, b).toFixed(2)}deg) scaleZ(${thick.toFixed(4)})`;
     }
 
-    // The names under the tiles wait until the tiles have landed.
-    about.classList.toggle("is-settled", p > 0.84);
-    const here = p > 0.62;
+    // Classes change only when their state does.
+    const landed = p >= LANDED;
+    if (landed !== about.classList.contains("is-settled")) {
+      about.classList.toggle("is-settled", landed);
+      intro.classList.toggle("is-afloat", landed);
+    }
+    const here = p > HERE;
     if (here !== scene.here) {
       scene.here = here;
       about.classList.toggle("is-here", here);
@@ -204,42 +194,21 @@ function init(intro: HTMLElement) {
     }
   }
 
-  /** Hero pieces lean with the pointer while the scene is off (phones, short screens). */
-  function renderParallax() {
-    for (const p of pieces) {
-      const depth = parseFloat(p.dataset.depth || "1");
-      p.style.transform = `translate3d(${(pointer.x * depth * 14).toFixed(2)}px, ${(pointer.y * depth * 10).toFixed(2)}px, 0)`;
-    }
-    me.style.transform = `translate3d(${(-pointer.x * 6).toFixed(2)}px, ${(pointer.y * 4).toFixed(2)}px, 0)`;
-  }
-
   let raf = 0;
-  let floatClock = 0;
-  let lastFrame = performance.now();
-  const paused = () => root.classList.contains("motion-paused");
   function frame() {
     raf = 0;
-    const k = scene.on ? 0.14 : 0;
-    scene.p += (scene.target - scene.p) * (scene.on ? k : 1);
+    scene.p += (scene.target - scene.p) * 0.14;
     if (Math.abs(scene.target - scene.p) < 0.0004) scene.p = scene.target;
-    pointer.x += (pointer.tx - pointer.x) * 0.08;
-    pointer.y += (pointer.ty - pointer.y) * 0.08;
-    if (scene.on) render();
-    else if (finePointer && !reducedMotion) renderParallax();
-    const settling =
-      Math.abs(scene.target - scene.p) > 0.0004 || Math.abs(pointer.tx - pointer.x) > 0.001 || Math.abs(pointer.ty - pointer.y) > 0.001;
-    const floating = scene.on && scene.p > 0.86 && !paused();
-    if (scene.visible && (settling || floating)) raf = requestAnimationFrame(frame);
+    render();
+    if (scene.visible && scene.p !== scene.target) raf = requestAnimationFrame(frame);
   }
   const wake = () => {
-    if (!raf && scene.visible) raf = requestAnimationFrame(frame);
+    if (scene.on && !raf && scene.visible) raf = requestAnimationFrame(frame);
   };
 
+  /** Scroll position to progress, from the measured place: no layout read per scroll. */
   function readScroll() {
-    if (!scene.on) return;
-    const r = intro.getBoundingClientRect();
-    const run = r.height - vh();
-    scene.target = run > 0 ? clamp(-r.top / run) : 0;
+    scene.target = scene.run > 0 ? clamp((scrollY - scene.top) / scene.run) : 0;
   }
 
   // The stacked hero (phones, narrow tablets, portrait screens) never pins; same query as the CSS.
@@ -249,18 +218,21 @@ function init(intro: HTMLElement) {
     // The hero's own box, not its scrollHeight: the figure runs past its bottom edge on purpose.
     const fits = hero.offsetHeight <= vh() + 4 && !stacked.matches;
     const on = !reducedMotion && fits;
+    root.classList.toggle("scene", on);
+    about.toggleAttribute("data-hold", on);
     if (on !== scene.on) {
       scene.on = on;
-      root.classList.toggle("scene", on);
-      about.toggleAttribute("data-hold", on);
       if (!on) {
-        for (const el of [me, heroTop, ...sides, ...pieces]) {
+        for (const el of [me, heroTop, ...rings, ...pieces]) {
           el.style.transform = "";
           el.style.opacity = "";
           el.style.visibility = "";
+          el.style.zIndex = "";
         }
-        for (const m of scene.moves) m.tile.removeAttribute("style");
+        // Back to each tile's resting angle and thickness.
+        for (const m of scene.moves) m.body.style.transform = "";
         about.classList.remove("is-here", "is-settled");
+        intro.classList.remove("is-afloat");
         // The about text was waiting for the scene; without it, it is simply shown.
         for (const el of reveals) el.classList.add("is-in");
         scene.here = false;
@@ -275,45 +247,38 @@ function init(intro: HTMLElement) {
     }
   }
 
-  if (!reducedMotion) {
-    decide();
-    // The first layout can still move as the font arrives.
-    document.fonts?.ready.then(decide);
-    addEventListener("scroll", () => {
+  if (reducedMotion) return;
+  decide();
+  // The first layout can still move as the font arrives.
+  document.fonts?.ready.then(decide);
+  addEventListener(
+    "scroll",
+    () => {
+      if (!scene.on || !scene.visible) return;
       readScroll();
       wake();
-    }, { passive: true });
-    let resizeTimer = 0;
-    addEventListener("resize", () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = window.setTimeout(decide, 120);
-    });
-    new IntersectionObserver(([e]) => {
-      scene.visible = e.isIntersecting;
-      if (scene.visible) wake();
-    }).observe(intro);
-    // Pausing or resuming re-renders once, so the float stops or picks up where it was.
-    new MutationObserver(() => {
-      lastFrame = performance.now();
+    },
+    { passive: true },
+  );
+  let resizeTimer = 0;
+  addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = window.setTimeout(decide, 120);
+  });
+  new IntersectionObserver(([e]) => {
+    scene.visible = e.isIntersecting;
+    if (scene.visible && scene.on) {
+      readScroll();
       wake();
-    }).observe(root, { attributes: true, attributeFilter: ["class"] });
-    // Tabbing back into the hero's links while the scene has moved on scrolls back to it.
-    heroTop.addEventListener("focusin", () => {
-      if (scene.on && scene.p > 0.1) intro.scrollIntoView({ block: "start" });
-    });
-    if (finePointer) {
-      addEventListener(
-        "pointermove",
-        (e) => {
-          if (e.pointerType !== "mouse") return;
-          pointer.tx = (e.clientX / innerWidth) * 2 - 1;
-          pointer.ty = (e.clientY / innerHeight) * 2 - 1;
-          wake();
-        },
-        { passive: true },
-      );
     }
-    // The tile entrance animation sits on the inner element; once it ends, measured places hold.
-    wake();
-  }
+  }).observe(intro);
+  // Tabbing back into the hero's links while the scene has moved on scrolls back to it; tabbing
+  // into the about text before the scene reaches it scrolls on to it, so focus never sits on
+  // something unseen.
+  heroTop.addEventListener("focusin", () => {
+    if (scene.on && scene.p > 0.1) scrollTo({ top: scene.top, behavior: "instant" });
+  });
+  about.addEventListener("focusin", () => {
+    if (scene.on && scene.p < LANDED) scrollTo({ top: scene.top + scene.run, behavior: "instant" });
+  });
 }

@@ -1,71 +1,88 @@
 ---
-/* Recognition: the Taste Skill programmes and competition results, as one table. */
-interface Row {
+/*
+ * Recognition, set as type on hairlines: the two programmes Taste Skill is part of across the
+ * top, as links, and the competition results beneath. Each entry says what in large type, with
+ * where in small grey type under it.
+ */
+import Icon from "../Icon.astro";
+
+interface Entry {
   what: string;
+  where: string;
   url?: string;
-  result: string;
   lang?: string;
 }
-const recognition: { group: string; rows: Row[] }[] = [
+const programmes: Entry[] = [
   {
-    group: "Taste Skill",
-    rows: [
-      { what: "Vercel Open Source Program", url: "https://vercel.com/blog/vercel-open-source-program-spring-2026-cohort", result: "Spring 2026 cohort" },
-      { what: "Google Labs Stitch Skills", url: "https://github.com/google-labs-code/stitch-skills/pull/38", result: "taste-design merged" },
-    ],
+    what: "Vercel Open Source Program",
+    where: "Taste Skill, Spring 2026 cohort",
+    url: "https://vercel.com/blog/vercel-open-source-program-spring-2026-cohort",
   },
   {
-    group: "Competitions",
-    rows: [
-      { what: "LovHack Season 1", result: "2nd place" },
-      { what: "Landeswettbewerb Mathematik Bayern", result: "Landessieger", lang: "de" },
-      { what: "European Statistics Competition", result: "4th in national round 2, qualified for Europe" },
-      { what: "Pangea Mathematics Final 2024", result: "Gold" },
-    ],
+    what: "Google Labs Stitch Skills",
+    where: "taste-design merged",
+    url: "https://github.com/google-labs-code/stitch-skills/pull/38",
   },
 ];
+const results: Entry[] = [
+  { what: "2nd place", where: "LovHack Season 1" },
+  { what: "Landessieger", where: "Landeswettbewerb Mathematik Bayern", lang: "de" },
+  { what: "Qualified for Europe", where: "European Statistics Competition, 4th in national round 2" },
+  { what: "Gold", where: "Pangea Mathematics Final 2024" },
+];
 
-// Rows alternate a fill across the whole table, not per group.
-let row = 0;
-const groups = recognition.map((g) => ({ ...g, rows: g.rows.map((r) => ({ ...r, alt: row++ % 2 === 0 })) }));
+// The last word travels with the arrow, so the arrow never wraps onto a line of its own.
+const split = (s: string) => {
+  const i = s.lastIndexOf(" ") + 1;
+  return [s.slice(0, i), s.slice(i)];
+};
 ---
 
-<section class="recog wrap" aria-labelledby="recog-h">
-  <h2 id="recog-h" class="recog-h" data-reveal="line">
-    <span class="line"><span>Recognition</span></span>
-  </h2>
-  <table class="table" aria-labelledby="recog-h">
-    {
-      groups.map((g) => (
-        <tbody>
-          {g.rows.map((r, i) => (
-            <tr class:list={[r.alt && "alt"]} data-reveal="row">
-              <td class:list={["grp", i === 0 && "first"]}>
-                <span class:list={[i > 0 && "sr-only"]}>{g.group}</span>
-              </td>
-              <th scope="row">
-                {r.url ? (
-                  <a href={r.url} target="_blank" rel="noopener">
-                    {r.what}
-                  </a>
-                ) : (
-                  r.what
-                )}
-              </th>
-              <td class="res" lang={r.lang}>
-                {r.result}
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      ))
-    }
-  </table>
+<section class="recog" aria-labelledby="recog-h">
+  <div class="wrap">
+    <h2 id="recog-h" class="recog-h" data-reveal="line">
+      <span class="line"><span>Recognition</span></span>
+    </h2>
+    <ul class="list">
+      {
+        programmes.map((e) => {
+          const [head, last] = split(e.what);
+          return (
+            <li class="item lead">
+              <a class="cell" href={e.url} target="_blank" rel="noopener" data-reveal="up">
+                <span class="what">
+                  {head}
+                  <span class="end">
+                    {last}<Icon name="arrow-up-right" size={24} />
+                  </span>
+                </span>
+                <span class="where">{e.where}</span>
+              </a>
+            </li>
+          );
+        })
+      }
+      {
+        results.map((e) => (
+          <li class="item" lang={e.lang}>
+            <div class="cell" data-reveal="up">
+              <span class="what">{e.what}</span>
+              <span class="where">{e.where}</span>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
 </section>
 
 <style>
+  /* Its own ground, so the list never depends on what is painted behind the page. */
   .recog {
-    padding-block: var(--section) var(--section);
+    background: var(--bg);
+  }
+  .recog > .wrap {
+    padding-block: var(--section);
   }
   .recog-h {
     margin: 0;
@@ -74,97 +91,147 @@ const groups = recognition.map((g) => ({ ...g, rows: g.rows.map((r) => ({ ...r, 
     line-height: 1;
     letter-spacing: -0.045em;
   }
-  /* The row fills bleed 1rem past the text, so the text keeps the page's two lines. */
-  .table {
-    width: calc(100% + 2rem);
-    margin: 2.5rem -1rem 0;
-    border-collapse: collapse;
-    table-layout: fixed;
+
+  /* On the page's twelve columns: the programmes take half each, the results a quarter, so the
+     middle gutter runs straight down both rows. */
+  .list {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: clamp(2.5rem, 4vw, 4rem) var(--gutter);
+    margin: 2.5rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .item {
+    grid-column: span 3;
+    min-width: 0;
+  }
+  /* A programme's name takes its size from its entry, so the entry can measure itself in it. */
+  .lead {
+    grid-column: span 6;
+    container-type: inline-size;
+    font-size: clamp(1.75rem, 0.6rem + 2.6vw, 3.25rem);
+  }
+  /* Each entry hangs from its own hairline and rises in with it, so its text never crosses
+     the rule of the entry below. */
+  .cell {
+    position: relative;
+    display: block;
+    padding-top: clamp(1rem, 1.6vw, 1.5rem);
+  }
+  .cell::before,
+  a.cell::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: var(--line-2);
+  }
+  .what {
+    display: block;
+    font-size: clamp(1.5rem, 0.4rem + 1.9vw, 2.5rem);
+    font-weight: 500;
+    line-height: 1.04;
+    letter-spacing: -0.04em;
+    text-wrap: balance;
+  }
+  .lead .what {
+    font-size: inherit;
+    letter-spacing: -0.045em;
+  }
+  .where {
+    display: block;
+    max-width: 34ch;
+    margin-top: 0.75rem;
+    color: var(--muted);
     font-size: var(--step-body);
     line-height: 1.4;
+    text-wrap: balance;
   }
-  .table th,
-  .table td {
-    padding: 0.95rem 1rem;
-    text-align: left;
+
+  /* The programmes are links: an arrow in full ink at the end of the name says so. Tabbing to
+     one nudges the name, sends the arrow on its way and brings the line beneath up to full
+     ink. */
+  .end {
+    white-space: nowrap;
+  }
+  .end :global(.icon) {
+    width: 1em;
+    height: 1em;
+    margin: -0.2em 0 0 -0.06em;
     vertical-align: baseline;
+    transition: translate var(--t-ui) var(--ease-out);
   }
-  .table th {
-    font-weight: 500;
-    padding-left: calc(var(--gutter) / 2);
+  a.cell::after {
+    background: var(--text);
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform var(--t-ui) var(--ease-out);
   }
-  .table tr.alt {
-    background: var(--surface);
+  a.cell .what {
+    transition: translate var(--t-ui) var(--ease-out);
   }
-  .table a {
-    text-decoration: underline;
-    text-decoration-thickness: 0.07em;
-    text-underline-offset: 0.22em;
-    text-decoration-color: transparent;
-    transition: text-decoration-color var(--t-hover) ease;
+  a.cell .where {
+    transition: color var(--t-hover) var(--ease-out);
   }
-  @media (hover: hover) and (pointer: fine) {
-    .table a:hover {
-      text-decoration-color: currentColor;
+  /* Focus turns the entry's rule into the top edge of a ring around the entry, level with the
+     rules beside it, so ring and rule never run as two lines. Being a border, the ring also
+     survives forced colours. A tap draws the rule in white. */
+  a.cell:focus-visible {
+    outline: none;
+  }
+  a.cell:focus-visible::before {
+    inset: -1px -0.5rem -0.5rem;
+    height: auto;
+    border: 2px solid #fff;
+    border-radius: 2px;
+    background: none;
+  }
+  a.cell:active::after {
+    transform: none;
+    transform-origin: left;
+  }
+  a.cell:focus-visible .what {
+    translate: 0.375rem 0;
+  }
+  a.cell:focus-visible :global(.icon) {
+    translate: 0.08em -0.08em;
+  }
+  a.cell:focus-visible .where {
+    color: var(--text);
+  }
+
+  /* Below a wide screen four results no longer fit one row; they pair up under the programmes. */
+  @media (max-width: 1280px) {
+    .item {
+      grid-column: span 6;
     }
   }
-  .grp {
-    width: 50%;
-    color: var(--muted);
-  }
-  .res {
-    width: 25%;
-    text-align: right !important;
-    color: var(--muted);
-  }
-  /* Between phone and desktop the group column gives up room to the names and results. */
-  @media (max-width: 1100px) {
-    .grp {
-      width: 24%;
-    }
-    .res {
-      width: 32%;
+  /* Side by side, the two names wrap together: once the longer one (13.28em on one line) no
+     longer fits its half, the shorter one breaks too, so the pair stays level. */
+  @media (min-width: 701px) {
+    @container (width < 13.3em) {
+      .lead .what {
+        max-width: 10em;
+      }
     }
   }
-  /* On a phone each row is a two-line block; the groups are told apart by space, not fills. */
+  /* On a phone, one column of entries. */
   @media (max-width: 700px) {
-    .table th a {
-      display: inline-block;
-      padding-block: 0.6rem;
-      margin-block: -0.6rem;
+    .list {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: 1.75rem;
+      margin-top: 2rem;
     }
-    .table,
-    .table tbody,
-    .table tr,
-    .table th,
-    .table td {
-      display: block;
-      width: auto;
+    .item,
+    .lead {
+      grid-column: 1;
     }
-    .table {
-      margin-inline: 0;
+    .cell {
+      padding-top: 1rem;
     }
-    .table tbody + tbody {
-      margin-top: 2.5rem;
-    }
-    .table tr {
-      padding-block: 0.7rem;
-    }
-    .table tr.alt {
-      background: none;
-    }
-    .table th,
-    .table td {
-      padding: 0;
-    }
-    .table td.grp:not(.first) {
-      display: none;
-    }
-    .table td.grp {
-      margin: 0 0 0.5rem;
-    }
-    .res {
-      text-align: left !important;
+    .where {
+      margin-top: 0.5rem;
     }
   }
 </style>

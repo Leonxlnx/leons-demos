@@ -1,6 +1,6 @@
 ---
 import Icon from "./Icon.astro";
-import { compact, sizedImage, toolFilter, type ViewDemo } from "../lib/demos";
+import { compact, posterSrcset, sizedImage, toolFilter, type ViewDemo } from "../lib/demos";
 
 interface Props {
   demo: ViewDemo;
@@ -9,14 +9,18 @@ interface Props {
 const { demo, eager = false } = Astro.props;
 const tools = demo.tools.map(toolFilter);
 const toolLabel = tools.map((t) => t.label).join(" and ");
+// The picture is one grid column wide: at least 320px, up to four of them in 1680px.
+const sizes = "(max-width: 699px) calc(100vw - 2rem), (max-width: 1057px) 47vw, (max-width: 1430px) 31vw, (max-width: 1679px) 25vw, 382px";
 ---
 
-<article class="card" data-id={demo.id} data-cat={demo.cat} data-tool={demo.toolIds}>
+<article class="card" id={demo.id} data-id={demo.id} data-cat={demo.cat} data-tool={demo.toolIds}>
   <div class:list={["media", demo.crop === "top" && "media--top"]}>
     {
       demo.poster && (
         <img
           src={sizedImage(demo.poster, "small")}
+          srcset={posterSrcset(demo)}
+          sizes={sizes}
           alt=""
           loading={eager ? "eager" : "lazy"}
           fetchpriority={eager ? "high" : "auto"}
@@ -26,7 +30,11 @@ const toolLabel = tools.map((t) => t.label).join(" and ");
         />
       )
     }
-    {demo.video && <video data-src={demo.video} muted loop playsinline preload="none" aria-hidden="true" />}
+    {
+      demo.video && (
+        <video data-src={demo.video} data-src-sm={demo.videoSm} muted loop playsinline preload="none" aria-hidden="true" />
+      )
+    }
   </div>
   <div class="body">
     <h2 class="title">
@@ -39,7 +47,7 @@ const toolLabel = tools.map((t) => t.label).join(" and ");
           tools.length > 0 && (
             <span class="tool" role="img" aria-label={toolLabel} title={toolLabel}>
               {tools.map((t) => (
-                <Icon name={t.logo!} size={12} />
+                <Icon name={t.logo} size={12} />
               ))}
             </span>
           )

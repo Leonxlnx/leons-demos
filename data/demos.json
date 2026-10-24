@@ -54,7 +54,8 @@
   "tools": [
    "Claude"
   ],
-  "poster": "/demos/posters/2111582260818239777.webp"
+  "poster": "/demos/posters/2111582260818239777.webp",
+  "posterTime": 3
  },
  {
   "id": "2110389810258968965",
@@ -79,7 +80,9 @@
   ],
   "tools": [
    "Claude"
-  ]
+  ],
+  "poster": "/demos/posters/2110389810258968965.webp",
+  "posterTime": 31.2
  },
  {
   "id": "2103282610948464811",
@@ -129,7 +132,9 @@
   ],
   "tools": [
    "Claude"
-  ]
+  ],
+  "poster": "/demos/posters/2106101651010449796.webp",
+  "posterTime": 4.9
  },
  {
   "id": "2104148233106723099",
@@ -156,7 +161,9 @@
   ],
   "tools": [
    "Claude"
-  ]
+  ],
+  "poster": "/demos/posters/2104148233106723099.webp",
+  "posterTime": 8.6
  },
  {
   "id": "2096166277849239804",
@@ -230,7 +237,8 @@
   "tools": [
    "Claude"
   ],
-  "poster": "/demos/posters/2109718604883370450.webp"
+  "poster": "/demos/posters/2109718604883370450.webp",
+  "posterTime": 20
  },
  {
   "id": "2112560562609803311",
@@ -258,7 +266,9 @@
   ],
   "tools": [
    "Claude"
-  ]
+  ],
+  "poster": "/demos/posters/2112560562609803311.webp",
+  "posterTime": 13.2
  },
  {
   "id": "2096341945979383932",
@@ -556,7 +566,9 @@
   ],
   "tools": [
    "Claude"
-  ]
+  ],
+  "poster": "/demos/posters/2103194052850241739.webp",
+  "posterTime": 18.4
  },
  {
   "id": "2096982947639468284",
@@ -691,7 +703,9 @@
   ],
   "tools": [
    "Claude"
-  ]
+  ],
+  "poster": "/demos/posters/2112310361194140058.webp",
+  "posterTime": 35
  },
  {
   "id": "2095920966899728661",
@@ -750,7 +764,9 @@
   ],
   "tools": [
    "Claude"
-  ]
+  ],
+  "poster": "/demos/posters/2110013871532490973.webp",
+  "posterTime": 12
  },
  {
   "id": "2086540718235910272",
@@ -1267,7 +1283,9 @@
   ],
   "tools": [
    "Codex"
-  ]
+  ],
+  "poster": "/demos/posters/2096799556478357923.webp",
+  "posterTime": 21
  },
  {
   "id": "2103069626473341273",
@@ -1294,7 +1312,9 @@
   ],
   "tools": [
    "Claude"
-  ]
+  ],
+  "poster": "/demos/posters/2103069626473341273.webp",
+  "posterTime": 29.5
  },
  {
   "id": "2108653450691232173",

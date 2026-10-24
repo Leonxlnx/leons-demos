@@ -1,5 +1,5 @@
 ---
-/* More on GitHub: the open-source index. Each row is a link; pointing at it lays a band behind it. */
+/* More on GitHub: the open-source index. Each row is a link; focus lays a band behind it. */
 import Icon from "../Icon.astro";
 import { compact } from "../../lib/format";
 import type { ViewProject } from "../../lib/projects";
@@ -62,12 +62,9 @@ const { projects } = Astro.props;
     color: var(--muted);
     white-space: nowrap;
     font-size: var(--step-body);
-    transition: color var(--t-hover) ease;
   }
-  @media (hover: hover) and (pointer: fine) {
-    .all:hover {
-      color: var(--text);
-    }
+  .all:focus-visible {
+    color: var(--text);
   }
   .index {
     margin: 2.5rem 0 0;
@@ -83,18 +80,25 @@ const { projects } = Astro.props;
     padding-block: clamp(0.55rem, 1.1vw, 0.9rem);
     isolation: isolate;
   }
-  /* Pointing at an entry lays a filled band behind its row and brings its note up to full ink. */
+  /* Focus lays a filled band behind an entry's row, nudges its name and brings its note up to
+     full ink. The rest of the list stays as it is. */
   .entry::before {
     content: "";
     position: absolute;
-    inset: 0 -1rem;
+    /* It reaches a little past the text, but stays 4px inside the page's edge on phones. */
+    inset: 0 calc(-1 * min(1rem, var(--pad) - 4px));
     z-index: -1;
+    border-radius: 12px;
     background: var(--surface);
     opacity: 0;
-    transition: opacity var(--t-hover) ease;
+    transition: opacity var(--t-ui) var(--ease-out);
   }
+  /* Focus rings the band itself, so the ring and the fill share one shape. */
   .entry:focus-visible {
-    outline-offset: 0;
+    outline: none;
+  }
+  .entry:focus-visible::before {
+    outline: 2px solid var(--text);
   }
   .entry-name {
     display: block;
@@ -112,13 +116,16 @@ const { projects } = Astro.props;
     display: block;
     transition: translate var(--t-ui) var(--ease-out);
   }
+  .entry:focus-visible .entry-name > span {
+    translate: 0.375rem 0;
+  }
   .entry-note {
     grid-column: 7 / 12;
     color: var(--muted);
     font-size: var(--step-body);
     line-height: 1.45;
     text-wrap: pretty;
-    transition: color var(--t-hover) ease;
+    transition: color var(--t-hover) var(--ease-out);
   }
   .entry-stars {
     display: inline-flex;
@@ -129,7 +136,7 @@ const { projects } = Astro.props;
     color: var(--muted);
     font-size: var(--step-body);
     font-variant-numeric: tabular-nums;
-    transition: color var(--t-hover) ease;
+    transition: color var(--t-hover) var(--ease-out);
   }
   .entry:focus-visible::before {
     opacity: 1;
@@ -137,42 +144,6 @@ const { projects } = Astro.props;
   .entry:focus-visible .entry-note,
   .entry:focus-visible .entry-stars {
     color: var(--text);
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .entry:hover::before {
-      opacity: 1;
-    }
-    .entry:hover .entry-name > span {
-      translate: 0.5rem 0;
-    }
-    .entry:hover .entry-note,
-    .entry:hover .entry-stars {
-      color: var(--text);
-    }
-  }
-  /* On touch there is no hover: the row crossing the middle of the screen gets the band. */
-  @supports (animation-timeline: view()) {
-    @media (hover: none) {
-      .entry {
-        view-timeline: --row block;
-      }
-      .entry::before {
-        transition: none;
-        animation: band linear both;
-        animation-timeline: --row;
-        animation-range: cover 40% cover 60%;
-      }
-    }
-  }
-  @keyframes band {
-    0%,
-    100% {
-      opacity: 0;
-    }
-    35%,
-    65% {
-      opacity: 1;
-    }
   }
   @media (max-width: 1100px) {
     .entry-name {

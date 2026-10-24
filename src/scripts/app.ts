@@ -1,4 +1,4 @@
-import { activity, setActivity } from "./activity";
+import { activity } from "./activity";
 
 type Group = "cat" | "tool";
 
@@ -28,9 +28,12 @@ function apply() {
   history.replaceState(null, "", url);
 }
 
+// Pressing the active filter again clears it. The tool filters have no "All" of their own: with
+// no tool picked, every tool shows.
 for (const b of buttons) {
   b.addEventListener("click", () => {
-    state[b.dataset.group as Group] = b.dataset.value!;
+    const group = b.dataset.group as Group;
+    state[group] = state[group] === b.dataset.value ? "all" : b.dataset.value!;
     apply();
   });
 }
@@ -48,7 +51,8 @@ if (state.cat !== "all" || state.tool !== "all") apply();
  * to the higher-ranked card, then to whatever is already playing). Every other video is
  * released back to its poster, so the page never holds more decoders than that. Stopping
  * is immediate; starting waits for the page to load and for scrolling to settle, so fast
- * scrolls don't kick off downloads. Reduced-motion users keep the static thumbnails.
+ * scrolls don't kick off downloads. The pause button stops them all. Reduced-motion users
+ * keep the static thumbnails.
  */
 const autoplay = !matchMedia("(prefers-reduced-motion: reduce)").matches;
 const videos = Array.from(document.querySelectorAll<HTMLVideoElement>(".media video"));
@@ -58,6 +62,12 @@ const broken = new WeakSet<HTMLVideoElement>();
 const MIN_RATIO = 0.5;
 const maxPlaying = () => (innerWidth >= 700 ? 4 : 2);
 const loaded = (v: HTMLVideoElement) => v.hasAttribute("src");
+let paused = false;
+
+// A card plays X's 720p cut, or its 360p one wherever the card is at most 640 device pixels
+// wide, which that cut still fills (sharp phone screens get the 720p cut).
+const source = (v: HTMLVideoElement) =>
+  v.dataset.srcSm && v.clientWidth * devicePixelRatio <= 640 ? v.dataset.srcSm : v.dataset.src!;
 
 // Spinning up several decoders at once stalls the main thread, so new videos start one
 // at a time: the next waits for the previous one's first frame (or a timeout).
@@ -67,7 +77,7 @@ function play(v: HTMLVideoElement) {
   if (!loaded(v)) {
     if (starting) return;
     starting = v;
-    v.src = v.dataset.src!;
+    v.src = source(v);
     const next = () => {
       clearTimeout(fallback);
       if (starting !== v) return;
@@ -99,11 +109,16 @@ let timer = 0;
 
 function update() {
   if (!ready) return;
-  if (activity.scrolling) return schedule();
-  if (document.hidden) {
-    for (const v of videos) if (loaded(v)) v.pause();
+  // Paused or in a hidden tab, each video stops on its frame; one that has not shown a frame
+  // yet goes back to its poster.
+  if (paused || document.hidden) {
+    for (const v of videos) {
+      if (v.parentElement?.classList.contains("playing")) v.pause();
+      else release(v);
+    }
     return;
   }
+  if (activity.scrolling) return schedule();
   const wanted = new Set(
     videos
       .filter((v) => (ratio.get(v) ?? 0) >= MIN_RATIO && !broken.has(v))
@@ -117,7 +132,6 @@ function update() {
   );
   for (const v of videos) if (!wanted.has(v)) release(v);
   for (const v of wanted) play(v);
-  setActivity({ videos: wanted.size });
 }
 
 function schedule() {
@@ -134,7 +148,6 @@ if (autoplay && "IntersectionObserver" in window) {
         ratio.set(v, r);
         if (r < MIN_RATIO) release(v);
       }
-      setActivity({ videos: videos.filter(loaded).length });
       schedule();
     },
     { threshold: [0, 0.25, 0.5, 0.75, 1] },
@@ -158,4 +171,19 @@ if (autoplay && "IntersectionObserver" in window) {
 
   document.addEventListener("visibilitychange", update);
   addEventListener("resize", schedule);
+
+  // One button pauses the videos (WCAG 2.2.2), as on the homepage: its name stays "Pause …"
+  // and aria-pressed carries the state. While paused, scrolling starts no video either.
+  const motionButton = document.querySelector<HTMLButtonElement>(".motion");
+  if (motionButton) {
+    motionButton.hidden = false;
+    const icon = motionButton.querySelector("use")!;
+    motionButton.addEventListener("click", () => {
+      paused = !paused;
+      document.documentElement.classList.toggle("motion-paused", paused);
+      motionButton.setAttribute("aria-pressed", String(paused));
+      icon.setAttribute("href", paused ? "#i-play" : "#i-pause");
+      update();
+    });
+  }
 }

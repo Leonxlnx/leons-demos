@@ -1,6 +1,5 @@
 ---
 import "../styles/home.css";
-import DitherRamp from "../components/DitherRamp.astro";
 import Icon from "../components/Icon.astro";
 import Cinetic from "../components/home/Cinetic.astro";
 import Close from "../components/home/Close.astro";
@@ -25,14 +24,9 @@ const cinetic = find("cinetic")!;
 // The open-source index, in this order. Every other repo stays on GitHub.
 const SHOWN = [
   "unlazy",
-  "agentic-ai-prompt-research",
-  "athenaion",
-  "lumenshaders",
   "open-water",
-  "golden-temple",
-  "shanshui",
+  "lumenshaders",
   "prompt-library",
-  "claude-of-duty",
   "kimi-code-desktop",
   "todobar",
 ];
@@ -61,7 +55,6 @@ const jsonLd = {
   <main>
     <Intro email={EMAIL} />
     <TasteSkill taste={taste} installs={TASTE_INSTALLS} />
-    <DitherRamp flip />
     <div class="work">
       <TasteCode project={tastecode} />
       <Earshot project={earshot} />
@@ -71,13 +64,12 @@ const jsonLd = {
     <Recognition />
   </main>
 
-  <DitherRamp />
-  <Close email={EMAIL} />
-
-  <button class="motion" type="button" aria-pressed="false" hidden>
-    <Icon name="pause" size={14} />
-    <span class="sr-only">Pause moving pictures</span>
-  </button>
+  <Close email={EMAIL}>
+    <button class="motion" type="button" aria-pressed="false" hidden>
+      <Icon name="pause" size={14} />
+      <span class="sr-only">Pause moving pictures</span>
+    </button>
+  </Close>
 
   <script>
     import "../scripts/home";
@@ -85,25 +77,35 @@ const jsonLd = {
 </Base>
 
 <style>
-  /* Pause for everything that moves on its own: the background, the reel and the films (WCAG
-     2.2.2). It sits in the corner, out of the way. */
+  /* The dark run starts on a clean cut under the paper, with one soft light falling from that
+     edge; the rest of it is the plain ground. */
+  .work {
+    background: radial-gradient(70% 36rem at 50% 0, rgb(255 255 255 / 0.055), transparent) no-repeat, var(--bg);
+  }
+
+  /* Pause for everything that moves on its own: the reel, the films, the waveform and the
+     collage (WCAG 2.2.2). It rides in the bottom corner, out of the way, and its place in the page is just
+     under the reel: once that comes up, it parks there and scrolls away with it, so it is on
+     screen as long as the reel is and never lands on the email. It takes no room in the page:
+     the margins cancel its height. */
   .motion {
-    position: fixed;
-    right: max(var(--pad), env(safe-area-inset-right));
+    --park: 1rem;
+    position: sticky;
     bottom: max(1rem, env(safe-area-inset-bottom));
     z-index: 20;
     display: grid;
     place-items: center;
     width: 2.75rem;
     height: 2.75rem;
+    margin: calc(var(--park) - var(--reel-foot)) max(var(--pad), env(safe-area-inset-right))
+      calc(var(--reel-foot) - var(--park) - 2.75rem) auto;
     border-radius: 999px;
     background: #141414;
     color: #ededed;
     opacity: 0;
     transition:
       transform var(--t-press) var(--ease-out),
-      opacity var(--t-ui) ease,
-      background-color var(--t-hover) ease;
+      opacity var(--t-ui) var(--ease-out);
     pointer-events: none;
   }
   .motion[hidden] {
@@ -115,16 +117,13 @@ const jsonLd = {
     opacity: 1;
     pointer-events: auto;
   }
-  :global(.at-close) .motion:not(:focus-visible) {
-    opacity: 0;
-    pointer-events: none;
+  /* A dark ring around a light one, so focus shows on the dark run and on paper alike. */
+  .motion:focus-visible {
+    outline: 2px solid #141414;
+    outline-offset: 2px;
+    box-shadow: 0 0 0 2px #ededed;
   }
   .motion:active {
     transform: scale(0.94);
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .motion:hover {
-      background: #262626;
-    }
   }
 </style>
