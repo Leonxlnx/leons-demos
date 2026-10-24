@@ -1,12 +1,12 @@
 /*
  * The hero and about scene (components/home/Intro.astro).
  *
- * - The words on the left and the pieces of the collage point at each other: pointing at
- *   "Guitar" lifts the guitar, pointing at a tile lifts all three models and lights "AI".
+ * - Pointing at a piece of the collage lifts it and lets the rest step back; pointing at any of
+ *   the three model tiles lifts all three.
  * - Under a mouse the collage leans with the pointer, each piece by its own depth.
  * - The scene: with motion allowed and a hero that fits the screen, html.scene pins the hero
  *   and the about section as one stage, 160svh of scroll long. Scrolling, the name and the
- *   side columns rise away, the photographs fly outward, Leon sinks, and the three tiles drop
+ *   intro rise away, everything else in the collage flies outward, Leon sinks, the tiles drop
  *   behind his shoulders, then come up beside the about text, thick and turned, where they
  *   follow the pointer and float. Progress is eased toward the scroll position each frame, so
  *   the stage moves with a little weight. Transforms and opacity only.
@@ -27,38 +27,25 @@ function init(intro: HTMLElement) {
   const me = collage.querySelector<HTMLElement>(".me")!;
   const pieces = Array.from(collage.querySelectorAll<HTMLElement>(".piece"));
   const tiles = pieces.filter((p) => p.classList.contains("is-tile"));
-  const photos = pieces.filter((p) => p.classList.contains("is-photo"));
+  const flying = pieces.filter((p) => !p.classList.contains("is-tile"));
   const heroTop = hero.querySelector<HTMLElement>(".hero-top")!;
   const sides = Array.from(hero.querySelectorAll<HTMLElement>(".side"));
-  const buttons = Array.from(hero.querySelectorAll<HTMLButtonElement>(".things button"));
   const reveals = Array.from(about.querySelectorAll<HTMLElement>("[data-reveal]"));
 
-  /* ---------------------------------------------------------------- words and pieces */
+  /* ---------------------------------------------------------------- pieces */
 
-  let pinned: string | null = null;
-  function light(thing: string | null, only?: HTMLElement) {
-    collage.classList.toggle("has-focus", !!thing);
-    for (const p of pieces) p.classList.toggle("is-on", !!thing && (only ? p === only : p.dataset.thing === thing));
-    for (const b of buttons) b.classList.toggle("is-on", b.dataset.thing === thing);
-  }
-  const rest = () => light(pinned);
-  for (const b of buttons) {
-    b.addEventListener("pointerenter", () => light(b.dataset.thing!));
-    b.addEventListener("pointerleave", rest);
-    b.addEventListener("focus", () => light(b.dataset.thing!));
-    b.addEventListener("blur", rest);
-    b.addEventListener("click", () => {
-      pinned = pinned === b.dataset.thing ? null : b.dataset.thing!;
-      for (const o of buttons) o.setAttribute("aria-pressed", String(o.dataset.thing === pinned));
-      light(pinned);
-    });
+  /** Lifts one piece (or every tile) and lets the rest of the collage step back. */
+  function light(on: HTMLElement | null) {
+    const group = on?.classList.contains("is-tile") ? tiles : on ? [on] : [];
+    collage.classList.toggle("has-focus", !!on);
+    for (const p of pieces) p.classList.toggle("is-on", group.includes(p));
   }
   for (const p of pieces) {
     p.addEventListener("pointerenter", (e) => {
-      if (e.pointerType !== "mouse" || scene.p > 0.05) return;
-      light(p.dataset.thing!, p.classList.contains("is-tile") ? undefined : p);
+      if (e.pointerType !== "mouse" || (scene.on && scene.p > 0.05)) return;
+      light(p);
     });
-    p.addEventListener("pointerleave", rest);
+    p.addEventListener("pointerleave", () => light(null));
   }
 
   /* ---------------------------------------------------------------- the stage */
@@ -132,7 +119,7 @@ function init(intro: HTMLElement) {
         seed: i * 1.7,
       };
     });
-    scene.flyers = photos.map((el) => {
+    scene.flyers = flying.map((el) => {
       const r = el.getBoundingClientRect();
       const dx = r.left + r.width / 2 - centre.x;
       const dy = r.top + r.height / 2 - centre.y;
@@ -155,9 +142,7 @@ function init(intro: HTMLElement) {
     const py = pointerOn ? pointer.y : 0;
 
     heroTop.style.transform = `translate3d(0, ${(-a * H * 0.32).toFixed(2)}px, 0)`;
-    const ho = clamp(1 - seg(p, 0, 0.24) * 1.1);
-    heroTop.style.opacity = String(ho);
-    heroTop.style.visibility = ho < 0.01 ? "hidden" : "";
+    heroTop.style.opacity = String(clamp(1 - seg(p, 0, 0.24) * 1.1));
     sides.forEach((s, i) => {
       const k = easeOut(seg(p, i * 0.03, 0.28 + i * 0.03));
       s.style.transform = `translate3d(0, ${(-k * H * 0.22).toFixed(2)}px, 0)`;
@@ -184,7 +169,11 @@ function init(intro: HTMLElement) {
       f.el.style.visibility = o < 0.01 ? "hidden" : "";
     }
 
-    const t = performance.now() / 1000;
+    // The float runs on its own clock, which stops while motion is paused.
+    const now = performance.now();
+    if (!paused()) floatClock += Math.min(64, now - lastFrame);
+    lastFrame = now;
+    const t = floatClock / 1000;
     for (const m of scene.moves) {
       const depth = parseFloat(m.el.dataset.depth || "1");
       // Act one: drop behind the shoulders, a little smaller, as if pushed back.
@@ -205,6 +194,8 @@ function init(intro: HTMLElement) {
       m.tile.style.setProperty("--rz", `${lerp(0, m.rz, b).toFixed(2)}deg`);
     }
 
+    // The names under the tiles wait until the tiles have landed.
+    about.classList.toggle("is-settled", p > 0.84);
     const here = p > 0.62;
     if (here !== scene.here) {
       scene.here = here;
@@ -223,6 +214,9 @@ function init(intro: HTMLElement) {
   }
 
   let raf = 0;
+  let floatClock = 0;
+  let lastFrame = performance.now();
+  const paused = () => root.classList.contains("motion-paused");
   function frame() {
     raf = 0;
     const k = scene.on ? 0.14 : 0;
@@ -234,7 +228,7 @@ function init(intro: HTMLElement) {
     else if (finePointer && !reducedMotion) renderParallax();
     const settling =
       Math.abs(scene.target - scene.p) > 0.0004 || Math.abs(pointer.tx - pointer.x) > 0.001 || Math.abs(pointer.ty - pointer.y) > 0.001;
-    const floating = scene.on && scene.p > 0.86;
+    const floating = scene.on && scene.p > 0.86 && !paused();
     if (scene.visible && (settling || floating)) raf = requestAnimationFrame(frame);
   }
   const wake = () => {
@@ -248,10 +242,12 @@ function init(intro: HTMLElement) {
     scene.target = run > 0 ? clamp(-r.top / run) : 0;
   }
 
+  // The stacked hero (phones, narrow tablets, portrait screens) never pins; same query as the CSS.
+  const stacked = matchMedia("(max-width: 860px), (max-aspect-ratio: 4/5)");
   /** The scene runs only with motion allowed and when the hero fits the screen as it is. */
   function decide() {
     // The hero's own box, not its scrollHeight: the figure runs past its bottom edge on purpose.
-    const fits = hero.offsetHeight <= vh() + 4 && innerWidth > 860;
+    const fits = hero.offsetHeight <= vh() + 4 && !stacked.matches;
     const on = !reducedMotion && fits;
     if (on !== scene.on) {
       scene.on = on;
@@ -264,7 +260,11 @@ function init(intro: HTMLElement) {
           el.style.visibility = "";
         }
         for (const m of scene.moves) m.tile.removeAttribute("style");
-        about.classList.remove("is-here");
+        about.classList.remove("is-here", "is-settled");
+        // The about text was waiting for the scene; without it, it is simply shown.
+        for (const el of reveals) el.classList.add("is-in");
+        scene.here = false;
+        scene.p = scene.target = 0;
       }
     }
     if (on) {
@@ -292,6 +292,15 @@ function init(intro: HTMLElement) {
       scene.visible = e.isIntersecting;
       if (scene.visible) wake();
     }).observe(intro);
+    // Pausing or resuming re-renders once, so the float stops or picks up where it was.
+    new MutationObserver(() => {
+      lastFrame = performance.now();
+      wake();
+    }).observe(root, { attributes: true, attributeFilter: ["class"] });
+    // Tabbing back into the hero's links while the scene has moved on scrolls back to it.
+    heroTop.addEventListener("focusin", () => {
+      if (scene.on && scene.p > 0.1) intro.scrollIntoView({ block: "start" });
+    });
     if (finePointer) {
       addEventListener(
         "pointermove",

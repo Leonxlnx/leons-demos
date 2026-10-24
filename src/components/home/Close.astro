@@ -17,7 +17,7 @@ const [user, domain] = email.split("@");
 
 // Demos whose first video frame is black, blank or blurred, and white-ground posters, which
 // vanish into the paper. They stay on /demos.
-const WEAK_POSTERS = new Set(["2104148233106723099", "2103194052850241739", "2103069626473341273", "2091550626421338325", "2081438372447350957"]);
+const WEAK_POSTERS = new Set(["2104148233106723099", "2103194052850241739", "2103069626473341273", "2081438372447350957"]);
 const LIGHT_POSTERS = new Set(["2106101651010449796", "2107922902423417199"]);
 const REEL_H = 150;
 
@@ -50,7 +50,7 @@ const reel = DEMOS.filter((d) => d.video && d.poster && !WEAK_POSTERS.has(d.id) 
           reel.map((d) => {
             const paper = print(d.id);
             const w = Math.round(REEL_H * ratio(d));
-            const colour = `${d.poster!.replace(/\?.*$/, "")}?format=webp&name=360x360`;
+            const colour = d.poster!.startsWith("/") ? d.poster! : `${d.poster!.replace(/\?.*$/, "")}?format=webp&name=360x360`;
             return paper ? (
               <span class="reel-item" style={`--r:${ratio(d).toFixed(4)}`}>
                 <img class="paper-print" src={paper} alt="" width={w} height={REEL_H} loading="lazy" decoding="async" />

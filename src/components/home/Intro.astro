@@ -1,12 +1,16 @@
 ---
 /*
- * The hero and the about section, one scene. The hero is a collage around Leon seen from
- * behind: the three models he builds with as tiles behind his head, and his guitar, his city
- * and his sports as photographs. With motion allowed and a screen the hero fits, intro.ts pins
- * the two as one stage: scrolling, the hero leaves, the photographs fall away, the tiles sink
- * behind his shoulders and come back up beside the about text as solid, tilted objects. Without
- * the script the about section simply follows the hero, with its own still tiles.
+ * The hero and the about section, one scene. The hero is one dense collage around Leon seen
+ * from behind: the three models he builds with as tiles behind his head, his laptop with
+ * TasteCode open, the towers of the Frauenkirche over his shoulder, a screen of photographs from
+ * his week, and his guitar, football and hockey stick in front. With motion allowed and a screen
+ * the hero fits, intro.ts pins the two as one stage: scrolling, the hero leaves, the collage
+ * flies apart, the tiles sink behind his shoulders and come back up beside the about text as
+ * solid, tilted objects. Without the script the about section simply follows the hero, with
+ * its own still tiles.
  */
+import { existsSync } from "node:fs";
+import { join } from "node:path";
 import Icon from "../Icon.astro";
 import Nav from "../Nav.astro";
 
@@ -15,69 +19,50 @@ interface Props {
 }
 const { email } = Astro.props;
 
-type Thing = "ai" | "guitar" | "munich" | "hockey" | "football";
+type Kind = "tile" | "cut" | "laptop" | "screen";
 interface Piece {
   id: string;
-  thing: Thing;
-  /** Desktop place in the 1000x700 collage, in percent: left, top, width; rotation in degrees. */
+  kind: Kind;
+  /** Desktop place in the 1000x600 collage, in percent: left, top, width; rotation in degrees. */
   d: [number, number, number, number];
-  /** Phone place in the 1000x1111 collage. */
+  /** Phone place in the 1000x1000 collage. */
   m: [number, number, number, number];
   /** Parallax depth under the pointer. */
   z: number;
-  /** Stacking: under the figure (1), over it (4). */
+  /** Stacking: behind the figure (1, 2) or in front of it (4, 5). */
   layer: number;
   tile?: { icon: "claude" | "openai" | "gemini"; name: string };
-  photo?: { src: string; w: number; h: number; alt: string };
+  img?: { src: string; w: number; h: number; alt: string };
 }
 
-const PIECES: Piece[] = [
-  { id: "claude", thing: "ai", d: [39.5, 6, 21, -4], m: [37, 25, 26, -4], z: 0.55, layer: 2, tile: { icon: "claude", name: "Claude" } },
-  { id: "openai", thing: "ai", d: [25, 22, 17, -13], m: [5, 33, 23, -10], z: 0.8, layer: 1, tile: { icon: "openai", name: "ChatGPT" } },
-  { id: "gemini", thing: "ai", d: [58.5, 15, 15, 11], m: [72, 31, 23, 9], z: 0.8, layer: 1, tile: { icon: "gemini", name: "Gemini" } },
-  {
-    id: "munich",
-    thing: "munich",
-    d: [78, 3, 16, 6],
-    m: [73, 2, 23, 5],
-    z: 1,
-    layer: 2,
-    photo: { src: "/home/munich.webp", w: 600, h: 800, alt: "The two towers of the Frauenkirche in Munich" },
-  },
-  {
-    id: "guitar",
-    thing: "guitar",
-    d: [1, 33, 23, -8],
-    m: [3, 4, 34, -6],
-    z: 1.1,
-    layer: 2,
-    photo: { src: "/home/guitar.webp", w: 720, h: 540, alt: "A hand strumming an acoustic guitar" },
-  },
-  {
-    id: "hockey",
-    thing: "hockey",
-    d: [73, 50, 22, -5],
-    m: [66, 70, 31, -5],
-    z: 1.2,
-    layer: 4,
-    photo: { src: "/home/hockey.webp", w: 720, h: 540, alt: "An ice hockey faceoff" },
-  },
-  {
-    id: "football",
-    thing: "football",
-    d: [10, 63, 14, 7],
-    m: [4, 68, 21, 7],
-    z: 1.3,
-    layer: 4,
-    photo: { src: "/home/football.webp", w: 600, h: 600, alt: "A football on grass" },
-  },
-];
+// Cut-outs (public/home/cut, transparent, grey). A missing file drops its piece.
+const CUT = {
+  towers: { w: 661, h: 745, alt: "The towers of the Frauenkirche in Munich" },
+  guitar: { w: 1064, h: 2400, alt: "An archtop electric guitar" },
+  football: { w: 926, h: 917, alt: "A football" },
+  hockey: { w: 1064, h: 698, alt: "An ice hockey stick and a puck" },
+};
+const cut = (id: keyof typeof CUT) =>
+  existsSync(join(process.cwd(), "public", "home", "cut", `${id}.webp`)) ? { src: `/home/cut/${id}.webp`, ...CUT[id] } : undefined;
 
-const THINGS: { id: Thing; label: string }[] = [
-  { id: "ai", label: "AI" },
-  { id: "guitar", label: "Guitar" },
-  { id: "hockey", label: "Hockey" },
-  { id: "football", label: "Football" },
+const ALL: Piece[] = [
+  { id: "openai", kind: "tile", d: [22, 14, 19, -9], m: [8, 14, 26, -9], z: 0.7, layer: 1, tile: { icon: "openai", name: "ChatGPT" } },
+  { id: "gemini", kind: "tile", d: [59.5, 11, 19, 8], m: [65, 11, 26, 8], z: 0.7, layer: 1, tile: { icon: "gemini", name: "Gemini" } },
+  { id: "claude", kind: "tile", d: [39.5, 3, 22, -3], m: [36, 4, 29, -3], z: 0.5, layer: 2, tile: { icon: "claude", name: "Claude" } },
+  { id: "laptop", kind: "laptop", d: [6, 42, 34, -4], m: [-5, 50, 41, -4], z: 0.9, layer: 2 },
+  { id: "towers", kind: "cut", d: [75.5, 31, 15.5, 4], m: [71, 44, 23, 4], z: 0.8, layer: 1, img: cut("towers") },
+  { id: "screen", kind: "screen", d: [65, 58, 31, 5], m: [57, 69, 43, 5], z: 1.2, layer: 4 },
+  { id: "guitar", kind: "cut", d: [26, 44, 11.5, -14], m: [24, 55, 13.5, -14], z: 1.1, layer: 4, img: cut("guitar") },
+  { id: "football", kind: "cut", d: [9.5, 76, 11, 0], m: [2, 83, 15, 0], z: 1.3, layer: 5, img: cut("football") },
+  { id: "hockey", kind: "cut", d: [54, 65, 30, -8], m: [38, 71, 44, -8], z: 1.4, layer: 5, img: cut("hockey") },
+];
+const PIECES = ALL.filter((p) => p.kind !== "cut" || p.img);
+
+// The screen shows a week in photographs, one large and two small; the laptop shows his app.
+const SHOTS = [
+  { src: "/home/hockey.webp", alt: "An ice hockey faceoff" },
+  { src: "/home/guitar.webp", alt: "A hand strumming a guitar" },
+  { src: "/home/munich.webp", alt: "The Frauenkirche between two buildings" },
 ];
 
 /** About tiles: place in the models box (left, top, width in percent) and tilt in degrees. */
@@ -88,7 +73,8 @@ const MODELS = [
 ] as const;
 const SLABS = 12;
 
-const order = ["claude", "openai", "gemini", "munich", "guitar", "hockey", "football"];
+// Entrance order: the tiles round his head first, then what stands behind him, then the front.
+const order = ["claude", "openai", "gemini", "towers", "laptop", "screen", "guitar", "hockey", "football"];
 const style = (p: Piece) =>
   [
     `--x:${p.d[0]}%`,
@@ -102,7 +88,7 @@ const style = (p: Piece) =>
     `--z:${p.layer}`,
     `--dz:${p.z}`,
     `--i:${order.indexOf(p.id) + 1}`,
-    p.photo ? `--ar:${p.photo.w}/${p.photo.h}` : "--ar:1",
+    p.img ? `--ar:${p.img.w}/${p.img.h}` : "--ar:1",
   ].join(";");
 ---
 
@@ -111,7 +97,29 @@ const style = (p: Piece) =>
     <section class="hero paper" aria-labelledby="name">
       <div class="hero-top wrap">
         <h1 id="name" class="name"><span class="line"><span>Leon</span></span> <span class="line"><span>Lin</span></span></h1>
-        <Nav path="/" />
+        <div class="aside">
+          <div class="aside-top">
+            <p class="where">
+              <span>Munich</span>
+              <time class="clock" data-clock hidden></time>
+            </p>
+            <Nav path="/" />
+          </div>
+          <div class="intro-text" id="hero-foot">
+            <p class="lede">I build tools that give AI good taste.</p>
+            <p class="sub">Creator of Taste Skill, high school student in Munich.</p>
+            <div class="actions">
+              <a class="button" href={`mailto:${email}`}>
+                Email me
+                <Icon name="arrow" size={16} />
+              </a>
+              <a class="button quiet x" href="https://x.com/LexnLin" target="_blank" rel="noopener" aria-label="@LexnLin on X">
+                <Icon name="x" size={16} />
+                <span class="x-handle">@LexnLin</span>
+              </a>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="hero-body">
@@ -129,22 +137,21 @@ const style = (p: Piece) =>
           {
             PIECES.map((p) => (
               <figure
-                class:list={["piece", p.tile ? "is-tile" : "is-photo"]}
+                class:list={["piece", `is-${p.kind}`]}
                 style={style(p)}
                 data-piece={p.id}
-                data-thing={p.thing}
                 data-depth={p.z}
-                aria-hidden={p.tile ? "true" : undefined}
+                aria-hidden={p.kind === "tile" ? "true" : undefined}
               >
                 <span class="piece-in">
-                  {p.tile ? (
-                    <span class="tile" data-tile={p.tile.icon}>
+                  {p.kind === "tile" && (
+                    <span class="tile" data-tile={p.tile!.icon}>
                       <span class="tile-body">
                         {Array.from({ length: SLABS }, (_, k) => (
                           <span class="slab" style={`--k:${k + 1}`} />
                         ))}
                         <span class="face">
-                          <Icon name={p.tile.icon} size={24} />
+                          <Icon name={p.tile!.icon} size={24} />
                         </span>
                         {[1, 2, 3, 4].map((j) => (
                           <span class="glyph" style={`--j:${j}`}>
@@ -153,46 +160,40 @@ const style = (p: Piece) =>
                         ))}
                       </span>
                     </span>
-                  ) : (
-                    <img src={p.photo!.src} alt={p.photo!.alt} width={p.photo!.w} height={p.photo!.h} decoding="async" draggable="false" />
+                  )}
+                  {p.kind === "cut" && (
+                    <img class="cut" src={p.img!.src} alt={p.img!.alt} width={p.img!.w} height={p.img!.h} decoding="async" draggable="false" />
+                  )}
+                  {p.kind === "laptop" && (
+                    <span class="laptop">
+                      <span class="laptop-body">
+                        <span class="lid">
+                          <img
+                            src="/work/tastecode-app.webp"
+                            alt="TasteCode, Leon's desktop app for coding agents, open on a laptop"
+                            width="1280"
+                            height="720"
+                            decoding="async"
+                            draggable="false"
+                          />
+                        </span>
+                        <span class="deck" />
+                      </span>
+                    </span>
+                  )}
+                  {p.kind === "screen" && (
+                    <span class="screen">
+                      <span class="screen-body">
+                        {SHOTS.map((s) => (
+                          <img src={s.src} alt={s.alt} width="720" height="540" decoding="async" draggable="false" />
+                        ))}
+                      </span>
+                    </span>
                   )}
                 </span>
               </figure>
             ))
           }
-        </div>
-
-        <div class="side side-l">
-          <ul class="things" aria-label="What I spend my time on">
-            {
-              THINGS.map((t, i) => (
-                <li style={`--i:${i}`}>
-                  <button type="button" data-thing={t.id} aria-pressed="false">
-                    {t.label}
-                  </button>
-                </li>
-              ))
-            }
-          </ul>
-          <p class="where" style="--i:4">
-            <span>Munich</span>
-            <time class="clock" data-clock hidden></time>
-          </p>
-        </div>
-
-        <div class="side side-r" id="hero-foot">
-          <p class="lede" style="--i:0">I build tools that give AI good taste.</p>
-          <p class="sub" style="--i:1">Creator of Taste Skill, high school student in Munich.</p>
-          <div class="actions" style="--i:2">
-            <a class="button" href={`mailto:${email}`}>
-              Email me
-              <Icon name="arrow" size={16} />
-            </a>
-            <a class="button quiet x" href="https://x.com/LexnLin" target="_blank" rel="noopener" aria-label="@LexnLin on X">
-              <Icon name="x" size={16} />
-              <span class="x-handle">@LexnLin</span>
-            </a>
-          </div>
         </div>
       </div>
     </section>
@@ -265,31 +266,28 @@ const style = (p: Piece) =>
   /* ------------------------------------------------------------ hero */
 
   .hero {
-    --name: min(18.4vw, 30vh, 25rem);
+    --name: min(18.4vw, 30svh, 23.5rem);
     display: grid;
     grid-template-rows: auto minmax(0, 1fr);
     height: 100svh;
-    min-height: 34rem;
+    min-height: 36rem;
     padding-top: clamp(1.25rem, 3vw, 2rem);
     overflow: clip;
   }
-  @supports (height: 1svh) {
-    .hero {
-      --name: min(18.4vw, 30svh, 25rem);
-    }
-  }
+  /* The name on the left; the nav and the intro stand in the column beside it, the intro on the
+     name's baseline. */
   .hero-top {
     position: relative;
     z-index: 5;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 1rem;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: stretch;
+    gap: clamp(1.5rem, 3vw, 3rem);
   }
   /* The h1's box ends exactly on Geist's baseline (0.755em in a 0.8 line box). "Leon Lin" has
      no descenders. */
   .name {
+    align-self: end;
     height: 0.755em;
     margin: 0 0 0 -0.045em;
     font-size: var(--name);
@@ -310,12 +308,52 @@ const style = (p: Piece) =>
       margin-bottom: calc(0.355em - 0.5lh);
     }
   }
-  .hero-top :global(.nav) {
+  .aside {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1.5rem;
+    min-width: 0;
+  }
+  .aside-top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
     padding-top: 0.25rem;
   }
+  .intro-text {
+    max-width: 25rem;
+    padding-bottom: 0.15rem;
+  }
+  .lede {
+    margin: 0;
+    font-size: var(--step-lead);
+    font-weight: 500;
+    line-height: 1.12;
+    letter-spacing: -0.025em;
+    text-wrap: balance;
+  }
+  .sub {
+    margin: 0.6rem 0 0;
+    color: var(--paper-muted);
+    font-size: var(--step-body);
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+  }
+  .x {
+    padding-inline: 1.2rem;
+  }
 
-  /* The body is a size container: the collage takes the largest 1000x700 box that fits in its
-     middle and stands on the bottom edge, so the figure is cut by the end of the screen. */
+  /* The body is a size container: the collage takes the largest 1000x600 box that fits and
+     stands on the bottom edge, so the figure is cut by the end of the screen. */
   .hero-body {
     position: relative;
     width: 100%;
@@ -324,20 +362,20 @@ const style = (p: Piece) =>
     container-type: size;
   }
   .collage {
-    --cw: min(100cqw - 2 * var(--pad), 62cqw, 142.8cqh - 1rem, 1500px);
+    --cw: min(100cqw - 2 * var(--pad), 166.7cqh, 1500px);
     position: absolute;
     bottom: 0;
     left: 50%;
     width: var(--cw);
-    aspect-ratio: 1000 / 700;
+    aspect-ratio: 1000 / 600;
     translate: -50% 0;
   }
   .me {
     position: absolute;
-    top: 21%;
-    left: 22%;
+    top: 24%;
+    left: 29%;
     z-index: 3;
-    width: 56%;
+    width: 42%;
     height: auto;
     user-select: none;
     pointer-events: none;
@@ -357,34 +395,89 @@ const style = (p: Piece) =>
       translate 700ms cubic-bezier(0.34, 1.4, 0.64, 1),
       rotate 700ms cubic-bezier(0.34, 1.4, 0.64, 1),
       scale 700ms cubic-bezier(0.34, 1.4, 0.64, 1),
-      opacity 400ms var(--ease-out),
-      filter 400ms var(--ease-out);
+      opacity 400ms var(--ease-out);
   }
-  .is-photo img {
+  .cut {
     display: block;
     width: 100%;
     height: auto;
     aspect-ratio: var(--ar);
-    border-radius: 8px;
-    background: var(--paper-2);
-    object-fit: cover;
     user-select: none;
   }
 
-  /* Pointing at a piece, or at its word, lifts it straight; the rest of the collage steps back. */
+  /* Pointing at a piece lifts it straight; the rest of the collage steps back. */
   .collage.has-focus .piece:not(.is-on) .piece-in {
-    opacity: 0.32;
-  }
-  .collage.has-focus .me {
-    opacity: 0.9;
+    opacity: 0.35;
   }
   .piece.is-on .piece-in {
-    translate: 0 -10px;
+    translate: 0 -12px;
     rotate: 0deg;
-    scale: 1.07;
+    scale: 1.06;
   }
   .piece.is-on {
     z-index: 6;
+  }
+
+  /* ------------------------------------------------------------ the laptop and the screen */
+
+  /* Both are drawn flat in the page's greys and turned in 3D, so they sit in the collage at the
+     same angles as the tiles. Their pictures are real: TasteCode, and photographs. */
+  .laptop,
+  .screen {
+    display: block;
+    perspective: 1100px;
+  }
+  .laptop-body {
+    display: block;
+    transform: rotateY(20deg) rotateX(5deg);
+    transform-origin: 30% 60%;
+  }
+  .lid {
+    display: block;
+    padding: 3.4% 3.4% 4.6%;
+    border-radius: 4.5% 4.5% 1.5% 1.5% / 7% 7% 2% 2%;
+    background: #141414;
+  }
+  .lid img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 10;
+    border-radius: 1.2%;
+    object-fit: cover;
+    object-position: left top;
+    filter: grayscale(1);
+  }
+  .deck {
+    display: block;
+    height: 0;
+    margin: 0 -7%;
+    padding-top: 4.5%;
+    border-radius: 0 0 46% 46% / 0 0 100% 100%;
+    background: #3b3b3b;
+  }
+  .screen-body {
+    display: grid;
+    grid-template-columns: 1.35fr 1fr;
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    gap: 1.6%;
+    aspect-ratio: 16 / 10;
+    padding: 2.4%;
+    border-radius: 3% / 4.8%;
+    background: #0e0e0e;
+    transform: rotateY(-22deg) rotateX(4deg);
+    transform-origin: 70% 60%;
+  }
+  .screen-body img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+    border-radius: 2.5% / 3.6%;
+    object-fit: cover;
+  }
+  .screen-body img:first-child {
+    grid-row: span 2;
   }
 
   /* ------------------------------------------------------------ tiles */
@@ -393,7 +486,7 @@ const style = (p: Piece) =>
      little in front of it. --depth is the thickness, --rx/--ry the tilt; the hero shows them
      thin and almost flat, the about section thick and turned. */
   .tile {
-    --depth: 7px;
+    --depth: 8px;
     --rx: 12deg;
     --ry: 0deg;
     --rz: 0deg;
@@ -440,57 +533,13 @@ const style = (p: Piece) =>
     height: 46%;
   }
 
-  /* ------------------------------------------------------------ sides */
+  /* ------------------------------------------------------------ Munich */
 
-  .side {
-    position: absolute;
-    bottom: clamp(1.5rem, 4.5cqh, 3rem);
-    z-index: 5;
-    width: calc((100cqw - var(--cw, 62cqw)) / 2 - var(--pad) - 1rem);
-    --cw: min(100cqw - 2 * var(--pad), 62cqw, 142.8cqh - 1rem, 1500px);
-  }
-  .side-l {
-    left: var(--pad);
-  }
-  .side-r {
-    right: var(--pad);
-  }
-  .things {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.1rem;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-  .things button {
-    padding: 0.2rem 0;
-    color: var(--paper-muted);
-    font-size: var(--step-lead);
-    font-weight: 500;
-    line-height: 1.15;
-    letter-spacing: -0.02em;
-    transition:
-      color var(--t-hover) ease,
-      translate var(--t-ui) var(--ease-out);
-  }
-  .things button[aria-pressed="true"],
-  .things button.is-on {
-    color: var(--paper-ink);
-    translate: 0.35rem 0;
-  }
-  @media (hover: hover) and (pointer: fine) {
-    .things button:hover {
-      color: var(--paper-ink);
-      translate: 0.35rem 0;
-    }
-  }
   .where {
     display: flex;
     align-items: baseline;
     gap: 0.6rem;
-    margin: 1.75rem 0 0;
+    margin: 0;
     color: var(--paper-muted);
     font-size: var(--step-body);
   }
@@ -499,31 +548,6 @@ const style = (p: Piece) =>
   }
   .clock {
     font-variant-numeric: tabular-nums;
-  }
-
-  .lede {
-    margin: 0;
-    font-size: var(--step-lead);
-    font-weight: 500;
-    line-height: 1.12;
-    letter-spacing: -0.025em;
-    text-wrap: balance;
-  }
-  .sub {
-    margin: 0.9rem 0 0;
-    color: var(--paper-muted);
-    font-size: var(--step-body);
-    line-height: 1.45;
-    text-wrap: pretty;
-  }
-  .actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-top: 1.5rem;
-  }
-  .x {
-    padding-inline: 1.2rem;
   }
 
   /* ------------------------------------------------------------ about */
@@ -619,9 +643,11 @@ const style = (p: Piece) =>
     overflow: clip;
     background: var(--paper);
   }
+  /* The about section lies over the hero; the tiles cross from behind the figure into it. */
   :global(.scene) .about {
     position: absolute;
     inset: 0;
+    z-index: 2;
     min-height: 0;
     padding-block: 0;
     background: none;
@@ -630,15 +656,10 @@ const style = (p: Piece) =>
   :global(.scene) .about.is-here {
     pointer-events: auto;
   }
-  /* Until the scene reaches it the about text is not there at all, so nothing reads it under
-     the hero. */
+  /* Until the scene reaches it the about text is transparent (it stays in the accessibility tree
+     and find-in-page; nothing in it can take focus). */
   :global(.scene) .about:not(.is-here) .about-copy {
-    visibility: hidden;
-  }
-  /* Until the scene reaches it the about text is not there at all, so nothing reads it under
-     the hero. */
-  :global(.scene) .about:not(.is-here) .about-copy {
-    visibility: hidden;
+    opacity: 0;
   }
   :global(.scene) .slot .tile {
     visibility: hidden;
@@ -650,7 +671,7 @@ const style = (p: Piece) =>
       opacity 500ms var(--ease-out),
       transform 500ms var(--ease-out);
   }
-  :global(.scene) .about.is-here .slot-name {
+  :global(.scene) .about.is-settled .slot-name {
     opacity: 1;
     transform: none;
     transition-delay: calc(240ms + var(--i) * 80ms);
@@ -660,11 +681,6 @@ const style = (p: Piece) =>
   :global(.scene) .hero-top,
   :global(.scene) .side {
     will-change: transform, opacity;
-  }
-  /* In the scene the tiles leave the collage's stacking for the stage's, so they can pass from
-     behind the figure to the front of the about section. */
-  :global(.scene) .about {
-    z-index: 2;
   }
 
   /* ------------------------------------------------------------ entrance */
@@ -677,30 +693,29 @@ const style = (p: Piece) =>
     :global(.js) .name .line:last-child > span {
       animation-delay: 190ms;
     }
-    :global(.js) .hero-top :global(.nav) {
-      opacity: 0;
-      animation: rise 700ms var(--ease-out) 420ms forwards;
+    :global(.js) .aside-top,
+    :global(.js) .intro-text > * {
+      animation: rise 800ms var(--ease-out) backwards;
+      animation-delay: 420ms;
+    }
+    :global(.js) .intro-text > :nth-child(2) {
+      animation-delay: 490ms;
+    }
+    :global(.js) .intro-text > :nth-child(3) {
+      animation-delay: 560ms;
     }
     /* The collage comes up from below the screen, piece by piece: the figure first, then the
-       tiles round his head, then the photographs. */
+       tiles round his head, then what stands behind him, then the front. */
     :global(.js) .me {
       animation: come-up 1500ms cubic-bezier(0.16, 1, 0.3, 1) 200ms backwards;
     }
     :global(.js) .piece-in {
       animation: piece-up 1500ms cubic-bezier(0.16, 1, 0.3, 1) backwards;
-      animation-delay: calc(330ms + var(--i) * 85ms);
-    }
-    :global(.js) .side > *,
-    :global(.js) .things li {
-      animation: rise 900ms var(--ease-out) backwards;
-      animation-delay: calc(820ms + var(--i, 0) * 70ms);
-    }
-    :global(.js) .side-l > .things {
-      animation: none;
+      animation-delay: calc(330ms + var(--i) * 80ms);
     }
     /* Arriving through a view transition, the name and nav are carried over: no intro. */
     :global(.vt) .name .line > span,
-    :global(.vt) .hero-top :global(.nav) {
+    :global(.vt) .aside-top {
       opacity: 1;
       transform: none;
       animation: none;
@@ -727,22 +742,24 @@ const style = (p: Piece) =>
     }
   }
 
-  /* ------------------------------------------------------------ narrower */
-
-  /* Wide screens have the height for a larger collage; the side columns keep enough room. */
-  @media (min-width: 1800px) {
-    .collage,
-    .side {
-      --cw: min(100cqw - 2 * var(--pad), 72cqw, 142.8cqh - 1rem, 1500px);
+  /* As it lands the collage settles: each piece sways a few pixels, twice, out of step with the
+     others, and comes to rest within five seconds. Under a mouse it keeps leaning with the
+     pointer. */
+  @media (prefers-reduced-motion: no-preference) {
+    .piece .tile,
+    .cut,
+    .laptop-body,
+    .screen-body {
+      animation: float 2.2s ease-in-out 2 alternate both;
+      animation-delay: calc(900ms + var(--i) * 70ms);
     }
   }
-
-  @media (max-width: 1100px) {
-    .collage {
-      --cw: min(100cqw - 2 * var(--pad), 58cqw, 142.8cqh - 1rem);
+  @keyframes float {
+    from {
+      translate: 0 0;
     }
-    .side {
-      --cw: min(100cqw - 2 * var(--pad), 58cqw, 142.8cqh - 1rem);
+    to {
+      translate: 0 5px;
     }
   }
 
@@ -757,33 +774,20 @@ const style = (p: Piece) =>
       }
     }
   }
-  /* At rest the collage breathes: every tile and photograph floats a few pixels on its own slow
-     cycle, out of step with the others. */
-  @media (prefers-reduced-motion: no-preference) {
-    .piece .tile,
-    .is-photo img {
-      animation: float 6.5s ease-in-out infinite alternate;
-      animation-delay: calc(var(--i) * -1.37s);
-    }
-    .is-photo img {
-      animation-duration: 8s;
-    }
-    :global(.motion-paused) .piece .tile,
-    :global(.motion-paused) .is-photo img {
-      animation-play-state: paused;
-    }
-  }
-  @keyframes float {
-    from {
-      translate: 0 -3px;
-    }
-    to {
-      translate: 0 4px;
-    }
-  }
   @keyframes piece-away {
     to {
       translate: 0 calc(var(--dz) * -24vh);
+    }
+  }
+
+  /* ------------------------------------------------------------ narrower */
+
+  @media (max-width: 1100px) {
+    .hero-top {
+      grid-template-columns: auto minmax(0, 1fr);
+    }
+    .intro-text .sub {
+      display: none;
     }
   }
 
@@ -794,45 +798,49 @@ const style = (p: Piece) =>
     }
   }
 
-  /* Phones and narrow tablets: name, a taller collage, then the line and the buttons. */
-  @media (max-width: 860px) {
+  /* Phones and narrow tablets: the nav, the name across the width, the collage, then the intro
+     and the buttons. The hero's parts become one column of its own grid. */
+  @media (max-width: 860px), (max-aspect-ratio: 4/5) {
     .hero {
-      grid-template-rows: auto minmax(0, 1fr) auto;
+      grid-template-rows: auto auto minmax(0, 1fr) auto auto;
+      grid-template-areas: "nav" "name" "collage" "text" "where";
       height: auto;
       min-height: 100svh;
-      padding-bottom: 1.5rem;
+      padding-bottom: 1.25rem;
     }
-    .hero-top {
-      flex-direction: column-reverse;
-      gap: 1.25rem;
-    }
-    .hero-top :global(.nav) {
-      align-self: flex-end;
-      padding-top: 0;
-    }
-    .name {
-      font-size: calc((100vw - 2 * var(--pad)) / 3.55);
-      white-space: nowrap;
-    }
+    .hero-top,
+    .aside,
+    .aside-top,
     .hero-body {
       display: contents;
     }
+    .aside :global(.nav) {
+      grid-area: nav;
+      justify-self: end;
+      padding: 0 var(--pad);
+    }
+    .name {
+      grid-area: name;
+      margin: 1.25rem 0 0 calc(var(--pad) - 0.045em);
+      font-size: calc((100vw - 2 * var(--pad)) / 3.55);
+    }
     .collage {
-      --cw: min(100vw, 30rem);
+      --cw: min(100vw, 32rem);
       position: relative;
       bottom: auto;
       left: auto;
+      grid-area: collage;
       align-self: end;
       justify-self: center;
-      aspect-ratio: 1000 / 1111;
-      margin-top: 1rem;
+      aspect-ratio: 1;
+      margin-top: 1.25rem;
       translate: none;
-      overflow: clip;
+      overflow: visible clip;
     }
     .me {
-      top: 40%;
-      left: 11%;
-      width: 78%;
+      top: 30%;
+      left: 17%;
+      width: 66%;
     }
     .piece {
       top: var(--my);
@@ -842,26 +850,26 @@ const style = (p: Piece) =>
     .piece-in {
       rotate: var(--mr);
     }
-    .side {
-      position: static;
-      inset: auto;
-      width: auto;
-      padding-inline: var(--pad);
-    }
-    .side-l {
-      display: none;
-    }
-    .side-r {
+    .intro-text {
       position: relative;
       z-index: 5;
-      padding-top: 1.25rem;
+      grid-area: text;
+      max-width: none;
+      padding: 1.25rem var(--pad) 0;
       background: var(--paper);
+    }
+    .intro-text .sub {
+      display: block;
     }
     .lede {
       font-size: 1.5rem;
     }
     .actions .button:first-child {
       flex: 1;
+    }
+    .where {
+      grid-area: where;
+      padding: 1rem var(--pad) 0;
     }
     .about-copy,
     .models {
@@ -870,6 +878,22 @@ const style = (p: Piece) =>
     .models {
       width: min(100%, 26rem);
       margin: 3.5rem auto 0;
+      aspect-ratio: 1 / 1.14;
+    }
+    /* Claude sits lower so the names of the two tiles above clear it. */
+    .slot[data-slot="claude"] {
+      top: 53%;
+    }
+    .slot[data-slot="openai"] {
+      left: 4.5%;
+    }
+    .slot-name {
+      margin-top: 1.75rem;
+    }
+  }
+  @media (min-width: 600px) and (max-aspect-ratio: 4/5) {
+    .collage {
+      --cw: min(100vw - 2 * var(--pad), 100svh - 32rem, 56rem);
     }
   }
 </style>

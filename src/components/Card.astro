@@ -12,7 +12,7 @@ const toolLabel = tools.map((t) => t.label).join(" and ");
 ---
 
 <article class="card" data-id={demo.id} data-cat={demo.cat} data-tool={demo.toolIds}>
-  <div class="media">
+  <div class:list={["media", demo.crop === "top" && "media--top"]}>
     {
       demo.poster && (
         <img

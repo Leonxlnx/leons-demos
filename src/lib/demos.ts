@@ -24,6 +24,12 @@ export interface Demo {
   links: string[];
   related_posts: string[];
   media: Media[];
+  /** A local poster (public path) when the video's own first frame is black, blank or a loader. */
+  poster?: string;
+  /** Seconds into the video where playback starts, to match that poster. */
+  posterTime?: number;
+  /** "top" shows only the upper half of a video that stacks two clips. */
+  crop?: "top";
 }
 
 export interface DemoLink {
@@ -32,7 +38,7 @@ export interface DemoLink {
   primary: boolean;
 }
 
-export interface ViewDemo extends Demo {
+export interface ViewDemo extends Omit<Demo, "poster"> {
   shortTitle: string;
   cat: string;
   toolIds: string;
@@ -113,8 +119,8 @@ export const DEMOS: ViewDemo[] = (raw as Demo[])
       cat: catId(d.category),
       toolIds: d.tools.map((t) => toolFilter(t).id).join(" "),
       links_,
-      poster: primary?.image ?? null,
-      video: primary?.video ?? null,
+      poster: d.poster ?? primary?.image ?? null,
+      video: primary?.video ? primary.video + (d.posterTime ? `#t=${d.posterTime}` : "") : null,
     };
   });
 

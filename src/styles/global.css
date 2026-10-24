@@ -172,6 +172,11 @@ video {
   text-underline-offset: 0.25em;
   transition: color var(--t-hover) ease, text-decoration-color var(--t-hover) ease;
 }
+/* The last link is one glyph (X): its hit area grows to about 44px without moving it. */
+.nav a:last-child {
+  padding-inline: 1rem;
+  margin-inline: -1rem;
+}
 .nav a[aria-current="page"] {
   color: var(--text);
   text-decoration-color: currentColor;
@@ -207,8 +212,10 @@ video {
   gap: 0.3rem;
   padding: 0 0.75rem;
 }
-.filters button:hover {
-  color: var(--text);
+@media (hover: hover) and (pointer: fine) {
+  .filters button:hover {
+    color: var(--text);
+  }
 }
 .filters button:disabled {
   color: var(--muted);
@@ -323,9 +330,12 @@ video {
 }
 .page-foot-links {
   display: flex;
-  gap: 1.5rem;
+  gap: 2rem;
 }
 .page-foot .ink {
+  display: inline-block;
+  padding: 0.65rem 1rem;
+  margin: -0.65rem -1rem;
   text-decoration: underline;
   text-decoration-thickness: 0.07em;
   text-underline-offset: 0.22em;
@@ -401,9 +411,11 @@ video {
 .media img {
   transition: transform 0.8s var(--ease);
 }
-.card:hover .media img,
-.card:hover .media video {
-  transform: scale(1.03);
+@media (hover: hover) and (pointer: fine) {
+  .card:hover .media img,
+  .card:hover .media video {
+    transform: scale(1.03);
+  }
 }
 .media video {
   opacity: 0;
@@ -413,6 +425,24 @@ video {
 }
 .media.playing video {
   opacity: 1;
+}
+/* A video of two stacked clips shows its upper one: the seam sits just past the bottom edge. */
+.media--top img,
+.media--top video {
+  height: 204%;
+  object-position: 50% 0;
+}
+/* A video of two stacked clips shows its upper one: the seam sits just past the bottom edge. */
+.media--top img,
+.media--top video {
+  height: 204%;
+  object-position: 50% 0;
+}
+/* A video of two stacked clips shows its upper one: the seam sits just past the bottom edge. */
+.media--top img,
+.media--top video {
+  height: 204%;
+  object-position: 50% 0;
 }
 
 .body {
@@ -462,7 +492,7 @@ video {
   white-space: nowrap;
   align-items: center;
   gap: 0.35rem;
-  font-size: 0.8rem;
+  font-size: 0.8125rem;
   color: var(--muted);
   font-variant-numeric: tabular-nums;
 }
@@ -504,16 +534,43 @@ video {
 .btn:active {
   transform: scale(0.96);
 }
-.btn:hover {
-  color: #000;
-  background: #fff;
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover {
+    color: #000;
+    background: #fff;
+  }
+  .btn--primary:hover {
+    background: #cfcfcf;
+  }
 }
 .btn--primary {
   color: #000;
   background: #fff;
 }
-.btn--primary:hover {
-  background: #cfcfcf;
+
+/* Touch: 40px controls with a little more room between them. */
+@media (pointer: coarse) {
+  .filters {
+    gap: 0.25rem;
+  }
+  .filters button {
+    min-height: 2.75rem;
+  }
+  .filters .logo-btn {
+    min-width: 2.75rem;
+    justify-content: center;
+  }
+  .links {
+    gap: 0.5rem;
+  }
+  .btn {
+    height: 2.5rem;
+    padding: 0 1rem;
+  }
+  .btn--icon {
+    width: 2.5rem;
+    padding: 0;
+  }
 }
 .btn--icon {
   width: 2rem;

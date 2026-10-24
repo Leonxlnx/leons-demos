@@ -53,6 +53,10 @@ npm run preview  # serve the production build
 
 Requires Node 22.12+. Vercel detects Astro automatically and needs no config (build `npm run build`, output `dist`).
 
+Page views are counted with [Vercel Web Analytics](https://vercel.com/docs/analytics) (`@vercel/analytics`, the
+`<Analytics />` component at the end of `src/layouts/Base.astro`; no cookies). It reports only once Web Analytics is
+enabled in the Vercel project's Analytics tab.
+
 ## Updating the projects
 
 `data/projects.json` holds each repo's name, GitHub description, stars and URL. To refresh it, run
@@ -107,6 +111,12 @@ To add a demo or refresh stats, edit that file and push to `main`. The page sort
 in the file doesn't matter. Link labels come from the URL: `github.com` becomes **Repo**, other links become **Play**
 for games and **Live** for everything else; links to prompt files are not shown. The card uses the first video in `media` (or the first image if there is
 no video).
+
+Three optional fields fix a card whose video starts badly: `"poster": "/demos/posters/<id>.webp"` replaces a black,
+blank or loading first frame with a frame from the middle (16:10 WebP in `public/demos/posters`, e.g.
+`ffmpeg -ss 20 -i <video> -frames:v 1 frame.png`), `"posterTime": 24` starts playback at that moment, and
+`"crop": "top"` shows only the upper clip of a video that stacks two. Run `node scripts/dither.mjs` after changing a
+poster, so the homepage reel prints match.
 
 Media is hotlinked from Twitter's CDN. The page sets `referrer: no-referrer`, because `video.twimg.com` rejects
 requests that carry a third-party referrer.

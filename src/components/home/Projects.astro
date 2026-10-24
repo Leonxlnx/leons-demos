@@ -56,7 +56,11 @@ const { projects } = Astro.props;
     letter-spacing: -0.045em;
   }
   .all {
+    flex: none;
+    padding-block: 0.6rem;
+    margin-block: -0.6rem;
     color: var(--muted);
+    white-space: nowrap;
     font-size: var(--step-body);
     transition: color var(--t-hover) ease;
   }
@@ -183,15 +187,26 @@ const { projects } = Astro.props;
     }
   }
   @media (max-width: 700px) {
+    .entry {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
     .entry-name {
+      grid-column: 1 / -1;
       white-space: normal;
       overflow-wrap: anywhere;
     }
     .entry-note {
-      grid-column: 1 / 10;
+      grid-column: 1;
     }
     .entry-stars {
-      grid-column: 10 / -1;
+      grid-column: 2;
+    }
+  }
+  @media (max-width: 480px) {
+    .oss-head {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1rem;
     }
   }
 </style>

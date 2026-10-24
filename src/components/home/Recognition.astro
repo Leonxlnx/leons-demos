@@ -117,8 +117,22 @@ const groups = recognition.map((g) => ({ ...g, rows: g.rows.map((r) => ({ ...r, 
     text-align: right !important;
     color: var(--muted);
   }
+  /* Between phone and desktop the group column gives up room to the names and results. */
+  @media (max-width: 1100px) {
+    .grp {
+      width: 24%;
+    }
+    .res {
+      width: 32%;
+    }
+  }
   /* On a phone each row is a two-line block; the groups are told apart by space, not fills. */
   @media (max-width: 700px) {
+    .table th a {
+      display: inline-block;
+      padding-block: 0.6rem;
+      margin-block: -0.6rem;
+    }
     .table,
     .table tbody,
     .table tr,

@@ -39,7 +39,7 @@ const { project } = Astro.props;
       <video src="/work/cinetic/kiln.mp4" poster="/work/cinetic/kiln.webp" muted loop playsinline preload="none" aria-hidden="true"></video>
       <figcaption>
         <span>Kiln</span>
-        <span class="cap-note">A 25 second launch teaser, branded, scored and rendered by an agent from a two-sentence brief</span>
+        <span class="cap-note">A 25 second launch teaser, branded, scored and rendered by an agent from a <span class="nw">two-sentence</span> brief</span>
       </figcaption>
     </figure>
   </div>
@@ -90,11 +90,14 @@ const { project } = Astro.props;
       { threshold: 0.25 },
     );
     films.forEach((f) => io.observe(f));
-    const lead = films.find((f) => f.hasAttribute("data-lead"));
-    if (lead)
-      new IntersectionObserver(([e]) => lead.classList.toggle("is-lit", e.isIntersecting), {
-        rootMargin: "-30% 0px -30% 0px",
-      }).observe(lead);
+    const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
+    const lit = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) (e.target as HTMLElement).classList.toggle("is-lit", e.isIntersecting);
+      },
+      { rootMargin: "-30% 0px -30% 0px" },
+    );
+    films.filter((f) => !fine || f.hasAttribute("data-lead")).forEach((f) => lit.observe(f));
   }
   document.addEventListener("visibilitychange", sync);
   new MutationObserver(sync).observe(root, { attributes: true, attributeFilter: ["class"] });
@@ -148,6 +151,10 @@ const { project } = Astro.props;
   }
   .cap-note {
     color: var(--muted);
+    text-wrap: pretty;
+  }
+  .nw {
+    white-space: nowrap;
   }
 
   /* The lead screen opens from a framed picture to the full width as it scrolls in. */
@@ -161,23 +168,38 @@ const { project } = Astro.props;
   .screen figcaption {
     padding-inline: var(--pad);
   }
+  .screen .cap-note {
+    max-width: 44ch;
+  }
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
-      .screen video {
-        animation: open-up linear both;
-        animation-timeline: view();
+      .screen {
+        view-timeline: --screen block;
+        animation: screen-lift linear both;
+        animation-timeline: --screen;
         animation-range: entry 0% cover 45%;
       }
+      .screen video {
+        animation: open-up linear both;
+        animation-timeline: --screen;
+        animation-range: entry 0% cover 45%;
+      }
+    }
+  }
+  @keyframes screen-lift {
+    from {
+      transform: translateY(4rem);
+    }
+    to {
+      transform: none;
     }
   }
   @keyframes open-up {
     from {
       clip-path: inset(0 18% 0 18% round 14px);
-      transform: translateY(4rem);
     }
     to {
       clip-path: inset(0 0 0 0 round 0);
-      transform: none;
     }
   }
 
@@ -227,6 +249,16 @@ const { project } = Astro.props;
     }
     .more-note {
       grid-column: 1 / -1;
+    }
+  }
+  /* On a phone the two films stack, each large enough to read. */
+  @media (max-width: 560px) {
+    .tall {
+      grid-column: 1 / span 8;
+    }
+    .wide {
+      grid-column: 1 / -1;
+      margin-top: 0;
     }
   }
 </style>

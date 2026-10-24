@@ -331,29 +331,24 @@ const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<spa
     padding: 0;
     list-style: none;
   }
+  /* Each name is anchored in proportion to its own width (at 0 its left edge, at 1 its right),
+     so it never leaves the wave. */
   .events li {
     position: absolute;
     left: calc(var(--at) * 100%);
-    max-width: 40%;
-    overflow: hidden;
     color: var(--muted);
     font-size: var(--step-small);
     white-space: nowrap;
-    text-overflow: ellipsis;
     opacity: 0;
-    transform: translateY(6px);
+    transform: translate(calc(var(--at) * -100%), 6px);
     transition:
       opacity 240ms var(--ease-out),
       transform 240ms var(--ease-out);
   }
-  .events li:last-child {
-    right: 0;
-    left: auto;
-  }
   .events li:global(.is-on) {
     color: var(--text);
     opacity: 1;
-    transform: none;
+    transform: translate(calc(var(--at) * -100%), 0);
   }
   .listen-bar {
     display: flex;
@@ -362,9 +357,16 @@ const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<spa
     gap: 0.75rem 1rem;
     margin-top: 1.25rem;
   }
-  .play {
-    min-height: 2.5rem;
-    padding-inline: 1.1rem;
+  /* The panel is darker than the page, so the button takes a lighter fill to read as one. */
+  .listen .play {
+    min-height: 3rem;
+    padding-inline: 1.2rem;
+    background: #1f1f1f;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .listen .play:hover {
+      background: #2a2a2a;
+    }
   }
   .play[hidden],
   .play[hidden] + .play-note {
@@ -376,6 +378,13 @@ const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<spa
   .play-note {
     color: var(--muted);
     font-size: var(--step-small);
+    text-wrap: balance;
+  }
+  /* On a phone every second bar goes, so the rest keep a real width. */
+  @media (max-width: 560px) {
+    .bar:nth-child(2n) {
+      display: none;
+    }
   }
   /* While it plays, the lit bars breathe with the sound. */
   :global(.is-playing) .bar {

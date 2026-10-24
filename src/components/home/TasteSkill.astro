@@ -107,6 +107,7 @@ const OUTPUTS = [
     padding-top: var(--section);
     padding-bottom: var(--section);
     overflow: hidden;
+    overflow: clip;
   }
   .taste-head {
     row-gap: 2rem;
@@ -163,7 +164,7 @@ const OUTPUTS = [
   }
   .copy {
     display: none;
-    min-height: 2.5rem;
+    min-height: 2.75rem;
     padding: 0 1.1rem;
     border-radius: 999px;
     background: var(--paper-ink);
@@ -213,6 +214,10 @@ const OUTPUTS = [
     gap: 1.5rem;
     margin: 0;
     font-size: var(--step-body);
+  }
+  .taste-links a {
+    padding-block: 0.6rem;
+    margin-block: -0.6rem;
   }
 
   .specimens {
@@ -417,16 +422,26 @@ const OUTPUTS = [
     }
   }
 
-  @media (max-width: 900px) {
+  /* Only a phone is too narrow for the one-row capsule: there it fills the column and Copy
+     becomes a full-width bar. */
+  @media (max-width: 480px) {
     .install {
+      display: flex;
       flex-direction: column;
-      align-items: flex-start;
+      align-items: stretch;
+      width: 100%;
       gap: 0.75rem;
-      padding: 1rem 1.5rem;
+      padding: 1rem 1.25rem;
       border-radius: 1.5rem;
+    }
+    :global(.reveal) .copy {
+      justify-content: center;
     }
   }
   @media (max-width: 860px) {
+    .taste {
+      padding-bottom: calc(var(--section) * 0.5);
+    }
     .taste-h,
     .taste-copy {
       grid-column: 1 / -1;

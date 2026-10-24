@@ -2,6 +2,7 @@
 import "@fontsource-variable/geist";
 import "../styles/global.css";
 
+import Analytics from "@vercel/analytics/astro";
 import IconSprite from "../components/IconSprite.astro";
 import Nav from "../components/Nav.astro";
 
@@ -135,6 +136,8 @@ const vtNames = String.raw`(() => {
     <script>
       import "../scripts/background";
     </script>
+    <!-- Vercel Web Analytics: page views only, no cookies. Enable it in the Vercel project. -->
+    <Analytics />
   </body>
 </html>
 

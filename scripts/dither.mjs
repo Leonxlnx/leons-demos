@@ -61,12 +61,17 @@ function dither(values, width, tones) {
 
 let written = 0;
 for (const d of demos) {
-  const poster = (d.media.find((m) => m.video) ?? d.media[0])?.image;
+  // A local poster override (data/demos.json "poster") wins over the video's first frame.
+  const poster = d.poster ?? (d.media.find((m) => m.video) ?? d.media[0])?.image;
   if (!poster) continue;
   try {
-    const res = await fetch(small(poster), { signal: AbortSignal.timeout(20_000) });
-    if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-    const source = Buffer.from(await res.arrayBuffer());
+    let source;
+    if (poster.startsWith("/")) source = await readFile(new URL(`../public${poster}`, import.meta.url));
+    else {
+      const res = await fetch(small(poster), { signal: AbortSignal.timeout(20_000) });
+      if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+      source = Buffer.from(await res.arrayBuffer());
+    }
     for (const v of VARIANTS) {
       // gamma(1.15) resizes in a darker encoding, so thin bright lines keep their weight.
       const { data, info } = await sharp(source)
