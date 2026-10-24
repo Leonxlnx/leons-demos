@@ -2,11 +2,25 @@
 
 Leon Lin's personal site ([@LexnLin](https://x.com/LexnLin) · [GitHub](https://github.com/Leonxlnx)).
 
-- `/` is the portfolio. The first screen is his name over one strip of every demo with a usable video, most liked in
-  the middle: the strip scrolls sideways (drag, swipe, arrow keys), the frame in the centre is lit and plays its clip,
-  and clicking a dimmed frame brings it to the centre. Below it: Taste Skill with its install command, stars and
-  installs; an index of hand-picked open-source projects from [`data/projects.json`](data/projects.json);
-  recognition; and contact. The page logic is in `src/scripts/home.ts`.
+- `/` is the portfolio, one section component each in `src/components/home`:
+  - **Intro**: the hero, on paper. His name, and a collage that rises piece by piece from below the screen: Leon seen
+    from behind (a drawn silhouette, `public/home/me.png`), the three models he builds with as tiles behind his
+    head, and his guitar, Munich and his sports as grey photographs (`public/home`). The words on the left and the
+    pieces point at each other on hover; under a mouse the collage leans with the pointer. With motion allowed and a
+    hero that fits the screen, `src/scripts/intro.ts` pins the hero and the about section as one stage: scrolling,
+    the photographs leave, the tiles drop behind his shoulders and come up beside the about text as solid tilted
+    tiles. On phones and short screens the about section simply follows, and the pieces part as the hero scrolls away.
+  - **Taste Skill**: what it is, live stars and installs as odometers, the install command, and a band of pages
+    agents built with it that slides with the scroll.
+  - **TasteCode**, **earshot**, **cinetic**: one short section each on the dark ground. The TasteCode window stands up
+    as it scrolls in; earshot shows a listening timeline you can scrub, and Listen plays six seconds of sound made
+    in code with Web Audio; cinetic plays its films (`public/work/cinetic`, small H.264 encodes), the lead one
+    opening to the full width and developing its colour in the middle of the screen.
+  - **More on GitHub** (the index of hand-picked repos from [`data/projects.json`](data/projects.json)),
+    **Recognition**, **Demos** (the reel of dithered prints) and the contact footer.
+
+  Section entrances, the pause button, the Munich clocks, live stars and the reel are in `src/scripts/home.ts`;
+  shared primitives (frame, buttons, reveals) in `src/styles/home.css`.
 - `/demos` shows every demo he has shared on X as one minimal grid, most liked first. Each card shows the video or
   thumbnail, the title, likes, and links to the X post and any live demo or repo, plus a small Claude / OpenAI / Kimi
   logo for each tool it was made with. The grid can be filtered by category and by tool (Claude, Codex, Kimi; a demo
@@ -18,8 +32,8 @@ Videos autoplay muted, but at most four at a time (two on narrow screens): the m
 another once the page has loaded and scrolling has settled. Every other video is unloaded back to its poster. Posters
 are requested as resized WebP from `pbs.twimg.com`.
 
-Built with [Astro](https://astro.build) as a fully static site. The only client JS is the background and, on
-`/demos`, the filters and the video scheduler.
+Built with [Astro](https://astro.build) as a fully static site. Client JS is the background, the homepage scene and
+sections, and on `/demos` the filters and the video scheduler.
 
 The background is a WebGL2 port of two effects from
 [shader-effects-inc/shaders](https://github.com/shader-effects-inc/shaders) (MIT): `SimplexNoise` feeding `Dither`
@@ -45,7 +59,7 @@ Requires Node 22.12+. Vercel detects Astro automatically and needs no config (bu
 `node scripts/projects.mjs` and commit the result. It lists every public repo of Leonxlnx that is not a fork or
 archived, has a description and at least 20 stars (change `MIN_STARS` or `SKIP` in the script). Set `GITHUB_TOKEN` to
 avoid GitHub's unauthenticated rate limit. The homepage shows taste-skill in its own section and an index of the repos named in `SHOWN` in
-`src/pages/index.astro`, in that order; each line is the first sentence of the GitHub description unless `NOTES` in
+`src/pages/index.astro`, in that order (taste-skill, tastecode, earshot and cinetic have sections of their own); each line is the first sentence of the GitHub description unless `NOTES` in
 `src/lib/projects.ts` overrides it.
 
 Star counts are live: the build reads them from the GitHub API (falling back to the JSON offline or when rate
@@ -55,20 +69,19 @@ from GitHub's search API, at most once every ten minutes per visitor.
 The Taste Skill install count (`TASTE_INSTALLS` in `src/pages/index.astro`, from skills.sh) and the recognition table
 are written by hand in that file.
 
-## Strip previews
+## Pictures
 
-The homepage strip plays smaller encodes of each clip (about 360p, or 720p on large high-density screens) instead of
-the full video in `data/demos.json`. They live in `data/previews.json`, keyed by the media id in the video URL. After
-adding demos, run `node scripts/previews.mjs` (it reads the variants X serves for each post from the public FxTwitter
-API) and commit the result; a demo without an entry plays its full video. The strip never autoplays for
-reduced-motion, Save-Data or 2G/3G visitors, and a button under it pauses the clip and the closing reel.
+The posters in the homepage reel are shown as prints in four greys, dithered with the background's 4×4 Bayer matrix
+(`public/dither/{id}-paper.png`; `{id}.png` is the darker variant). After adding demos or when a poster changes, run
+`node scripts/dither.mjs` (it fetches every poster from `pbs.twimg.com`, rewrites all prints in about 40 seconds and
+uses `sharp`, which comes with Astro; it imports `src/lib/bayer.ts`, so it needs Node 22.18+ or
+`--experimental-strip-types`) and commit `public/dither`. `node scripts/previews.mjs` still writes
+`data/previews.json` (smaller encodes per clip) for future use; no page plays them right now.
 
-Strip frames away from the centre and the posters in the closing reel are shown as prints in four greys, dithered
-with the background's 4×4 Bayer matrix: `public/dither/{id}.png` for the strip and `{id}-paper.png` for the reel.
-After adding demos or when a poster changes, run `node scripts/dither.mjs` as well (it fetches every poster from
-`pbs.twimg.com`, rewrites all prints in about 40 seconds and uses `sharp`, which comes with Astro; it imports
-`src/lib/bayer.ts`, so it needs Node 22.18+ or `--experimental-strip-types`) and commit `public/dither`. A strip
-frame without a print shows its poster in dimmed grey.
+The hero silhouette is drawn by `node scripts/silhouette.mjs` (deterministic; `SEED`, `HEAD`, `LEN` and `BLUR` tune
+it). The four hero photographs are CC0 (rawpixel and the WordPress photo directory) and need no credit; replace them
+with your own any time, same file names, in grey. A pause button in the corner stops everything that moves on its
+own: the background, the reel, the films, the waveform and the floating collage.
 
 ## Updating the demos
 

@@ -265,7 +265,7 @@ const style = (p: Piece) =>
   /* ------------------------------------------------------------ hero */
 
   .hero {
-    --name: min(var(--step-monument), 30vh);
+    --name: min(18.4vw, 30vh, 25rem);
     display: grid;
     grid-template-rows: auto minmax(0, 1fr);
     height: 100svh;
@@ -275,7 +275,7 @@ const style = (p: Piece) =>
   }
   @supports (height: 1svh) {
     .hero {
-      --name: min(var(--step-monument), 30svh);
+      --name: min(18.4vw, 30svh, 25rem);
     }
   }
   .hero-top {
@@ -318,10 +318,13 @@ const style = (p: Piece) =>
      middle and stands on the bottom edge, so the figure is cut by the end of the screen. */
   .hero-body {
     position: relative;
+    width: 100%;
+    max-width: 1680px;
+    margin-inline: auto;
     container-type: size;
   }
   .collage {
-    --cw: min(100cqw - 2 * var(--pad), 62cqw, 142.8cqh - 1rem, 1120px);
+    --cw: min(100cqw - 2 * var(--pad), 62cqw, 142.8cqh - 1rem, 1500px);
     position: absolute;
     bottom: 0;
     left: 50%;
@@ -444,7 +447,7 @@ const style = (p: Piece) =>
     bottom: clamp(1.5rem, 4.5cqh, 3rem);
     z-index: 5;
     width: calc((100cqw - var(--cw, 62cqw)) / 2 - var(--pad) - 1rem);
-    --cw: min(100cqw - 2 * var(--pad), 62cqw, 142.8cqh - 1rem, 1120px);
+    --cw: min(100cqw - 2 * var(--pad), 62cqw, 142.8cqh - 1rem, 1500px);
   }
   .side-l {
     left: var(--pad);
@@ -587,8 +590,12 @@ const style = (p: Piece) =>
     left: var(--x);
     width: var(--w);
   }
+  /* The still tiles take their slot's tilt (the scene sets its own on the flying ones). */
   .slot .tile {
     --depth: 34px;
+    --rx: inherit;
+    --ry: inherit;
+    --rz: inherit;
   }
   .slot-name {
     display: block;
@@ -721,6 +728,14 @@ const style = (p: Piece) =>
   }
 
   /* ------------------------------------------------------------ narrower */
+
+  /* Wide screens have the height for a larger collage; the side columns keep enough room. */
+  @media (min-width: 1800px) {
+    .collage,
+    .side {
+      --cw: min(100cqw - 2 * var(--pad), 72cqw, 142.8cqh - 1rem, 1500px);
+    }
+  }
 
   @media (max-width: 1100px) {
     .collage {

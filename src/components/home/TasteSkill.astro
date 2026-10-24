@@ -32,10 +32,6 @@ const OUTPUTS = [
         A rulebook coding agents read before they write frontend, so what they build stops looking generated. Works with
         Claude Code, Codex, Cursor, Gemini CLI and more.
       </p>
-      <p class="taste-links" data-reveal="up" style="--d:140ms">
-        <a class="ink" href="https://www.tasteskill.dev" target="_blank" rel="noopener">tasteskill.dev</a>
-        <a class="ink" href={taste.url} target="_blank" rel="noopener">Repository</a>
-      </p>
     </div>
   </div>
 
@@ -84,6 +80,10 @@ const OUTPUTS = [
       </button>
       <span class="sr-only" role="status" aria-live="polite"></span>
     </div>
+    <p class="taste-links" data-reveal="up" style="--d:160ms">
+      <a class="ink" href="https://www.tasteskill.dev" target="_blank" rel="noopener">tasteskill.dev</a>
+      <a class="ink" href={taste.url} target="_blank" rel="noopener">Repository</a>
+    </p>
   </div>
 
   <div class="outputs" data-outputs>
@@ -134,6 +134,10 @@ const OUTPUTS = [
     text-wrap: pretty;
   }
   .install-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem 2rem;
     margin-top: clamp(2.5rem, 5vw, 4rem);
   }
   .install {
@@ -207,7 +211,7 @@ const OUTPUTS = [
   .taste-links {
     display: flex;
     gap: 1.5rem;
-    margin: 1.25rem 0 0;
+    margin: 0;
     font-size: var(--step-body);
   }
 
