@@ -693,8 +693,10 @@ const style = (p: Piece) =>
   :global(.scene) .about:not(.is-here) .about-copy {
     opacity: 0;
   }
+  /* In the scene the flying tiles stand in for these: they keep their boxes (intro.ts measures
+     them) but nothing inside them is rendered. */
   :global(.scene) .slot .tile {
-    visibility: hidden;
+    content-visibility: hidden;
   }
   /* The photographs and the ring arrive as the tiles land. */
   :global(.scene) .panel,

@@ -13,10 +13,9 @@ interface Props {
 }
 const { project } = Astro.props;
 
-// Screens wider than 700px play the 60fps masters untouched (H.264, faststart): Kiln and
-// Ledgerly at 1920x1080, Quire at 810x1440, twice its largest size. Screens up to 700px get a
-// 30fps cut of each (every second frame, H.264 CRF 23): Kiln and Ledgerly at 1280x720, Quire at
-// its full 810x1440. That is 2.5, 0.86 and 0.59 MB against 3.9, 1.5 and 0.99 MB at 60fps.
+// All films are 30fps H.264 (faststart, tune animation): light to decode while the page scrolls.
+// Screens wider than 700px get Kiln and Ledgerly at 1920x1080 and Quire at 810x1440, twice its
+// largest size; screens up to 700px get Kiln and Ledgerly at 1280x720 and Quire at 540x960.
 // Until a film plays, a still of it stands in: its first frame, the one the video opens on, as
 // AVIF at two widths and WebP for browsers without AVIF. Unlike a poster attribute it loads
 // lazily, and the script asks for it a screen before the film arrives.
@@ -33,8 +32,8 @@ const film = (name: string, w: number, h: number, sm: number, sizes: string) => 
   };
 };
 const KILN = film("kiln", 1920, 1080, 1280, "100vw");
-const QUIRE = film("quire", 810, 1440, 540, "(max-width: 560px) 62vw, (max-width: 860px) 40vw, min(25vw, 24rem)");
-const LEDGERLY = film("ledgerly", 1920, 1080, 1280, "(max-width: 560px) 100vw, min(66vw, 66rem)");
+const QUIRE = film("quire", 810, 1440, 540, "(max-width: 560px) 62vw, min(23vw, 24rem)");
+const LEDGERLY = film("ledgerly", 1920, 1080, 1280, "(max-width: 560px) 100vw, min(72vw, 76rem)");
 ---
 
 <section class="cin" aria-labelledby="cin-h">
@@ -369,31 +368,27 @@ const LEDGERLY = film("ledgerly", 1920, 1080, 1280, "(max-width: 560px) 100vw, m
     }
   }
 
+  /* The two smaller films stand side by side at one height: each column is as wide as its film's
+     aspect ratio, so the vertical one and the wide one share their top and bottom edges. */
   .more {
     display: grid;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 0.5625fr) minmax(0, 1.7778fr);
     column-gap: var(--gutter);
     row-gap: 2.5rem;
     align-items: start;
     margin-top: clamp(4rem, 8vw, 7rem);
   }
-  .tall {
-    grid-column: 1 / span 3;
-  }
   .tall .frame {
     aspect-ratio: 9 / 16;
     border-radius: 10px;
-  }
-  .wide {
-    grid-column: 5 / span 8;
-    margin-top: clamp(4rem, 12vw, 12rem);
   }
   .wide .frame {
     aspect-ratio: 16 / 9;
     border-radius: 10px;
   }
   .more-note {
-    grid-column: 5 / span 5;
+    grid-column: 2;
+    max-width: 34rem;
     margin: 0;
     color: var(--muted);
     font-size: var(--step-body);
@@ -404,25 +399,17 @@ const LEDGERLY = film("ledgerly", 1920, 1080, 1280, "(max-width: 560px) 100vw, m
     .cin-copy {
       grid-column: 1 / -1;
     }
-    .tall {
-      grid-column: 1 / span 5;
-    }
-    .wide {
-      grid-column: 6 / -1;
-      margin-top: 30%;
-    }
     .more-note {
       grid-column: 1 / -1;
     }
   }
   /* On a phone the two films stack, each large enough to read. */
   @media (max-width: 560px) {
-    .tall {
-      grid-column: 1 / span 8;
+    .more {
+      grid-template-columns: minmax(0, 1fr);
     }
-    .wide {
-      grid-column: 1 / -1;
-      margin-top: 0;
+    .tall {
+      width: 66%;
     }
   }
 </style>

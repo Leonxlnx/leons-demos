@@ -263,3 +263,55 @@ main {
     transform: none;
   }
 }
+
+/* ------------------------------------------------------------ rendering */
+
+/* Sections further down are skipped until they come near the screen: no layout, paint or
+   animation work for them on load or while far away. The sizes are their measured heights, so
+   the scrollbar barely moves when one renders; "auto" keeps the real size once it has been seen. */
+.tc,
+.ear,
+.cin,
+.oss,
+.recog,
+.demos {
+  content-visibility: auto;
+}
+.tc {
+  contain-intrinsic-size: auto 1254px;
+}
+.ear {
+  contain-intrinsic-size: auto 767px;
+}
+.cin {
+  contain-intrinsic-size: auto 2121px;
+}
+.oss {
+  contain-intrinsic-size: auto 762px;
+}
+.recog {
+  contain-intrinsic-size: auto 742px;
+}
+.demos {
+  contain-intrinsic-size: auto 648px;
+}
+@media (max-width: 560px) {
+  .tc {
+    contain-intrinsic-size: auto 918px;
+  }
+  .ear {
+    contain-intrinsic-size: auto 1101px;
+  }
+  .cin {
+    contain-intrinsic-size: auto 1602px;
+  }
+  .oss {
+    contain-intrinsic-size: auto 785px;
+  }
+  .recog {
+    contain-intrinsic-size: auto 893px;
+  }
+  .demos {
+    contain-intrinsic-size: auto 454px;
+  }
+}
