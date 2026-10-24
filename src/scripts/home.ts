@@ -41,7 +41,8 @@ if (motionButton && !reducedMotion) {
   const hero = document.querySelector("[data-intro]");
   if (hero && "IntersectionObserver" in window) {
     const marker = document.createElement("div");
-    marker.style.cssText = "position:absolute;top:120svh;height:1px;width:1px;pointer-events:none";
+    // An invisible probe, not a rule.
+    marker.style.cssText = "position:absolute;top:120svh;height:1px;width:1px;pointer-events:none"; // taste-skill-ignore
     marker.setAttribute("aria-hidden", "true");
     document.body.append(marker);
     new IntersectionObserver(([e]) => root.classList.toggle("past-hero", !e.isIntersecting && e.boundingClientRect.top < 0)).observe(marker);

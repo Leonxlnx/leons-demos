@@ -208,6 +208,20 @@ const style = (p: Piece) =>
             coding agents taste, a desktop app to run them, sound and films made from code. Away from the screen I play
             guitar, hockey and football.
           </p>
+          <ul class="ways">
+            {
+              [
+                ["Explore", "New models the week they ship, pushed until they break."],
+                ["Build", "Skills, apps and films, made in the open."],
+                ["Share", "Every demo goes on X, with how it was made."],
+              ].map(([h, t], i) => (
+                <li data-reveal="up" style={`--d:${260 + i * 80}ms`}>
+                  <h3>{h}</h3>
+                  <p>{t}</p>
+                </li>
+              ))
+            }
+          </ul>
         </div>
         <div class="models" data-models>
           {
@@ -253,7 +267,6 @@ const style = (p: Piece) =>
     --name: min(var(--step-monument), 30vh);
     display: grid;
     grid-template-rows: auto minmax(0, 1fr);
-    height: 100vh;
     height: 100svh;
     min-height: 34rem;
     padding-top: clamp(1.25rem, 3vw, 2rem);
@@ -486,7 +499,7 @@ const style = (p: Piece) =>
 
   .lede {
     margin: 0;
-    font-size: clamp(1.375rem, 0.9rem + 1.05vw, 2rem);
+    font-size: var(--step-lead);
     font-weight: 500;
     line-height: 1.12;
     letter-spacing: -0.025em;
@@ -515,7 +528,6 @@ const style = (p: Piece) =>
     position: relative;
     display: grid;
     align-items: center;
-    min-height: 100vh;
     min-height: 100svh;
     padding-block: var(--section, 8rem);
     overflow: clip;
@@ -531,7 +543,7 @@ const style = (p: Piece) =>
   }
   .about-h {
     margin: 0;
-    font-size: clamp(2.75rem, 1rem + 4.3vw, 5.75rem);
+    font-size: var(--step-heading);
     font-weight: 500;
     line-height: 1;
     letter-spacing: -0.045em;
@@ -541,6 +553,26 @@ const style = (p: Piece) =>
     margin: 2rem 0 0;
     font-size: clamp(1.0625rem, 0.98rem + 0.3vw, 1.25rem);
     line-height: 1.5;
+    text-wrap: pretty;
+  }
+  .ways {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--gutter);
+    margin: clamp(2.5rem, 5vh, 3.5rem) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ways h3 {
+    margin: 0;
+    font-size: var(--step-body);
+    font-weight: 500;
+  }
+  .ways p {
+    margin: 0.4rem 0 0;
+    color: var(--paper-muted);
+    font-size: var(--step-small);
+    line-height: 1.45;
     text-wrap: pretty;
   }
   .models {
@@ -570,13 +602,11 @@ const style = (p: Piece) =>
   /* intro.ts adds html.scene when it runs the pinned version: the two sections share one
      stage, the about tiles become the targets the hero tiles fly to, and their names wait. */
   :global(.scene) .intro {
-    height: 300vh;
-    height: 300svh;
+    height: 260svh;
   }
   :global(.scene) .stage {
     position: sticky;
     top: 0;
-    height: 100vh;
     height: 100svh;
     overflow: clip;
     background: var(--paper);
@@ -591,6 +621,16 @@ const style = (p: Piece) =>
   }
   :global(.scene) .about.is-here {
     pointer-events: auto;
+  }
+  /* Until the scene reaches it the about text is not there at all, so nothing reads it under
+     the hero. */
+  :global(.scene) .about:not(.is-here) .about-copy {
+    visibility: hidden;
+  }
+  /* Until the scene reaches it the about text is not there at all, so nothing reads it under
+     the hero. */
+  :global(.scene) .about:not(.is-here) .about-copy {
+    visibility: hidden;
   }
   :global(.scene) .slot .tile {
     visibility: hidden;
@@ -687,6 +727,13 @@ const style = (p: Piece) =>
     }
     .side {
       --cw: min(100cqw - 2 * var(--pad), 58cqw, 142.8cqh - 1rem);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .ways {
+      grid-template-columns: 1fr;
+      row-gap: 1.25rem;
     }
   }
 

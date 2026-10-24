@@ -6,7 +6,14 @@ import { DEMOS, VISIBLE_FILTERS, VISIBLE_TOOL_FILTERS } from "../lib/demos";
 ---
 
 <Base title="Demos · Leon Lin" description="AI-built demos by Leon Lin, ranked by likes." twimg>
-  <h1 class="sr-only">Demos</h1>
+  <section class="page-head" aria-labelledby="demos-title">
+    <h1 id="demos-title" class="page-title">
+      <span class="line"><span>Demos</span></span>
+    </h1>
+    <p class="page-note">
+      {DEMOS.length} things I built with AI and shared on X, from games to films. Ranked by likes; the ones on screen play.
+    </p>
+  </section>
   <div class="toolbar">
     <nav class="filters" aria-label="Filter by type" hidden={VISIBLE_FILTERS.length < 3}>
       {
@@ -45,6 +52,15 @@ import { DEMOS, VISIBLE_FILTERS, VISIBLE_TOOL_FILTERS } from "../lib/demos";
   <main class="grid">
     {DEMOS.map((d, i) => <Card demo={d} eager={i < 4} />)}
   </main>
+
+  <footer class="page-foot">
+    <a class="ink" href="/">Leon Lin</a>
+    <span class="page-foot-links">
+      <a class="ink" href="mailto:lexn.lin@gmail.com">Email</a>
+      <a class="ink" href="https://x.com/LexnLin" target="_blank" rel="noopener">X</a>
+      <a class="ink" href="https://github.com/Leonxlnx" target="_blank" rel="noopener">GitHub</a>
+    </span>
+  </footer>
 
   <script>
     import "../scripts/app";

@@ -41,11 +41,13 @@ const bars = Array.from({ length: N }, (_, i) => {
   return Math.min(1, v);
 });
 
+const esc = (t: string) => t.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/"/g, "&quot;");
 const LINES = [
   { cmd: "earshot describe enter.ogg", out: "0.56 s short transient. Sounds most like: a single mechanical keyboard key press" },
   { cmd: 'earshot find keys.ogg "a single mechanical key press"', out: "0:03.94-0:04.19 (0.24 s stroke, strong)" },
   { cmd: "earshot critique film.mp4", out: "VERDICT: close. 21 of 23 scored metrics in range" },
 ];
+const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<span class="out">${esc(l.out)}</span>`).join("\n\n");
 ---
 
 <section class="ear wrap" aria-labelledby="ear-h">
@@ -86,15 +88,7 @@ const LINES = [
         }
       </ol>
     </div>
-    <pre class="term"><code>{LINES.map((l) => (
-          <span class="cmd">
-            <span class="prompt">$ </span>
-            {l.cmd}
-            {"\n"}
-            <span class="out">{l.out}</span>
-            {"\n"}
-          </span>
-        ))}</code></pre>
+    <pre class="term"><code set:html={TERM} /></pre>
     <figcaption class="sr-only">A listening timeline as earshot draws it, and three commands with their answers from the earshot README.</figcaption>
   </figure>
 </section>
@@ -239,7 +233,8 @@ const LINES = [
     padding: 1.25rem 0 0;
     overflow-x: auto;
     border-top: 0;
-    font-size: 0.8125rem;
+    color: var(--text);
+    font-size: var(--step-small);
     line-height: 1.6;
     white-space: pre-wrap;
     scrollbar-width: none;
@@ -247,15 +242,8 @@ const LINES = [
   .term code {
     font-family: ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace;
   }
-  .cmd {
-    display: block;
-    color: var(--text);
-  }
-  .cmd + .cmd {
-    margin-top: 0.6rem;
-  }
-  .prompt,
-  .out {
+  .term :global(.prompt),
+  .term :global(.out) {
     color: var(--muted);
   }
   @media (prefers-reduced-motion: reduce) {

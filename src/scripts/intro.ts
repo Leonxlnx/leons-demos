@@ -5,7 +5,7 @@
  *   "Guitar" lifts the guitar, pointing at a tile lifts all three models and lights "AI".
  * - Under a mouse the collage leans with the pointer, each piece by its own depth.
  * - The scene: with motion allowed and a hero that fits the screen, html.scene pins the hero
- *   and the about section as one stage, 200svh of scroll long. Scrolling, the name and the
+ *   and the about section as one stage, 160svh of scroll long. Scrolling, the name and the
  *   side columns rise away, the photographs fly outward, Leon sinks, and the three tiles drop
  *   behind his shoulders, then come up beside the about text, thick and turned, where they
  *   follow the pointer and float. Progress is eased toward the scroll position each frame, so
@@ -155,25 +155,33 @@ function init(intro: HTMLElement) {
     const py = pointerOn ? pointer.y : 0;
 
     heroTop.style.transform = `translate3d(0, ${(-a * H * 0.32).toFixed(2)}px, 0)`;
-    heroTop.style.opacity = String(clamp(1 - seg(p, 0, 0.24) * 1.1));
+    const ho = clamp(1 - seg(p, 0, 0.24) * 1.1);
+    heroTop.style.opacity = String(ho);
+    heroTop.style.visibility = ho < 0.01 ? "hidden" : "";
     sides.forEach((s, i) => {
       const k = easeOut(seg(p, i * 0.03, 0.28 + i * 0.03));
       s.style.transform = `translate3d(0, ${(-k * H * 0.22).toFixed(2)}px, 0)`;
-      s.style.opacity = String(clamp(1 - k * 1.25));
+      const so = clamp(1 - k * 1.25);
+      s.style.opacity = String(so);
+      s.style.visibility = so < 0.01 ? "hidden" : "";
     });
 
     // Leon stands while the tiles drop behind him, then sinks below the edge.
     const sink = easeInOut(seg(p, 0.3, 0.68));
     me.style.transform = `translate3d(${(-px * 6).toFixed(2)}px, ${(sink * 70 + py * 4).toFixed(2)}%, 0)`;
-    me.style.opacity = String(clamp(1 - seg(p, 0.52, 0.68)));
+    const mo = clamp(1 - seg(p, 0.52, 0.68));
+    me.style.opacity = String(mo);
+    me.style.visibility = mo < 0.01 ? "hidden" : "";
 
     for (const f of scene.flyers) {
       const depth = parseFloat(f.el.dataset.depth || "1");
       const k = easeOut(seg(p, 0, 0.32));
       const x = f.dx * k * W * 0.42 + px * depth * 16;
-      const y = f.dy * k * H * 0.35 - k * H * 0.12 + py * depth * 12;
+      const y = Math.max(0, f.dy) * k * H * 0.3 + k * H * 0.1 + py * depth * 12;
       f.el.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) rotate(${(f.spin * k).toFixed(2)}deg) scale(${(1 + k * 0.18).toFixed(4)})`;
-      f.el.style.opacity = String(clamp(1 - seg(p, 0.04, 0.28)));
+      const o = clamp(1 - seg(p, 0.04, 0.28));
+      f.el.style.opacity = String(o);
+      f.el.style.visibility = o < 0.01 ? "hidden" : "";
     }
 
     const t = performance.now() / 1000;
@@ -253,6 +261,7 @@ function init(intro: HTMLElement) {
         for (const el of [me, heroTop, ...sides, ...pieces]) {
           el.style.transform = "";
           el.style.opacity = "";
+          el.style.visibility = "";
         }
         for (const m of scene.moves) m.tile.removeAttribute("style");
         about.classList.remove("is-here");

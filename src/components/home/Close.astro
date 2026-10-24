@@ -32,7 +32,7 @@ const reel = DEMOS.filter((d) => d.video && d.poster && !WEAK_POSTERS.has(d.id) 
 
 <section class="demos paper" aria-labelledby="demos-h">
   <div class="demos-head wrap">
-    <h2 id="demos-h" class="demos-h" data-reveal="line">
+    <h2 id="demos-h" class="demos-h drift" data-reveal="line">
       <span class="line"><span>Demos</span></span>
     </h2>
     <div class="demos-copy">
@@ -70,7 +70,7 @@ const reel = DEMOS.filter((d) => d.video && d.poster && !WEAK_POSTERS.has(d.id) 
 
 <footer class="close paper" aria-labelledby="close-h">
   <div class="contact wrap grid12">
-    <p class="contact-h" data-reveal="up">Building something, or want to talk about taste and AI? Write to me.</p>
+    <p class="contact-h" data-reveal="up">Building something? Let's talk.</p>
     <div class="contact-side">
       <p class="where" data-reveal="up" style="--d:80ms">
         <span>Munich, Germany</span>
@@ -117,7 +117,7 @@ const reel = DEMOS.filter((d) => d.video && d.poster && !WEAK_POSTERS.has(d.id) 
   .demos-h {
     grid-column: 1 / span 6;
     margin: 0;
-    font-size: var(--step-display);
+    font-size: var(--step-section);
     font-weight: 500;
     line-height: 0.9;
     letter-spacing: -0.055em;
@@ -209,7 +209,7 @@ const reel = DEMOS.filter((d) => d.video && d.poster && !WEAK_POSTERS.has(d.id) 
   .contact-h {
     grid-column: 1 / span 6;
     margin: 0;
-    font-size: clamp(1.75rem, 1rem + 2vw, 3rem);
+    font-size: clamp(1.75rem, 1rem + 2.6vw, 3.5rem);
     font-weight: 500;
     line-height: 1.08;
     letter-spacing: -0.035em;

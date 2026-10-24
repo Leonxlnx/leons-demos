@@ -186,10 +186,9 @@ video {
 .filters {
   display: flex;
   gap: 0.15rem;
-  padding: 0.2rem;
-  border: 1px solid var(--line);
+  padding: 0.25rem;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.6);
+  background: var(--surface);
 }
 .filters[hidden] {
   display: none;
@@ -227,7 +226,119 @@ video {
   gap: 0.5rem;
   max-width: 1680px;
   margin: 0 auto;
-  padding: 0 var(--pad) clamp(1rem, 2vw, 1.5rem);
+  padding: 0 var(--pad) clamp(1.75rem, 3vw, 2.75rem);
+}
+
+/* ------------------------------------------------------------------ page head */
+
+.page-head {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: 1.5rem;
+  align-items: end;
+  max-width: 1680px;
+  margin: 0 auto;
+  padding: clamp(2.5rem, 7vw, 6rem) var(--pad) clamp(2rem, 4vw, 3.5rem);
+}
+.page-title {
+  grid-column: 1 / span 7;
+  margin: 0 0 0 -0.04em;
+  font-size: var(--step-display);
+  font-weight: 500;
+  line-height: 0.86;
+  letter-spacing: -0.055em;
+}
+.page-title .line {
+  display: block;
+  overflow: clip;
+  padding-block: 0.06em;
+  margin-block: -0.06em;
+}
+.page-title .line > span {
+  display: block;
+}
+.page-note {
+  grid-column: 8 / -1;
+  max-width: 30ch;
+  margin: 0;
+  padding-bottom: 0.4rem;
+  font-size: var(--step-lead);
+  line-height: 1.28;
+  letter-spacing: -0.015em;
+  text-wrap: pretty;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .js .page-title .line > span {
+    transform: translateY(105%);
+    animation: title-up var(--t-hero) var(--ease-out) 120ms forwards;
+  }
+  .js .page-note,
+  .js .toolbar {
+    opacity: 0;
+    animation: fade-up 700ms var(--ease-out) 300ms forwards;
+  }
+  .js .toolbar {
+    animation-delay: 380ms;
+  }
+  .vt .page-title .line > span,
+  .vt .page-note,
+  .vt .toolbar {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+}
+@keyframes title-up {
+  to {
+    transform: none;
+  }
+}
+@keyframes fade-up {
+  from {
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (max-width: 760px) {
+  .page-title,
+  .page-note {
+    grid-column: 1 / -1;
+  }
+}
+
+.page-foot {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 1680px;
+  margin: 0 auto;
+  padding: clamp(3rem, 8vw, 6rem) var(--pad) 2.5rem;
+  color: var(--muted);
+  font-size: var(--step-body);
+}
+.page-foot-links {
+  display: flex;
+  gap: 1.5rem;
+}
+.page-foot .ink {
+  text-decoration: underline;
+  text-decoration-thickness: 0.07em;
+  text-underline-offset: 0.22em;
+  text-decoration-color: transparent;
+  transition:
+    text-decoration-color var(--t-hover) ease,
+    color var(--t-hover) ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .page-foot .ink:hover {
+    color: var(--text);
+    text-decoration-color: currentColor;
+  }
 }
 
 @media (max-width: 900px) {
@@ -254,37 +365,30 @@ video {
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
-  gap: clamp(0.9rem, 1.6vw, 1.25rem);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  gap: clamp(2rem, 3vw, 3rem) clamp(0.9rem, 1.6vw, 1.5rem);
   max-width: 1680px;
   margin: 0 auto;
   padding: 0 var(--pad) clamp(2rem, 6vw, 4rem);
 }
 
+/* A card is a picture with its caption under it, on the page itself: no box, no outline. */
 .card {
   position: relative;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
-  border-radius: 12px;
-  background: var(--card);
-  border: 1px solid var(--line);
-  transition: border-color 0.3s;
   content-visibility: auto;
   contain-intrinsic-size: auto 330px;
 }
 .card[hidden] {
   display: none;
 }
-.card:hover {
-  border-color: var(--line-2);
-}
-
 .media {
   position: relative;
   aspect-ratio: 16 / 10;
   overflow: hidden;
-  background: #111;
+  border-radius: 10px;
+  background: var(--surface);
 }
 .media img,
 .media video {
@@ -297,12 +401,15 @@ video {
 .media img {
   transition: transform 0.8s var(--ease);
 }
-.card:hover .media img {
+.card:hover .media img,
+.card:hover .media video {
   transform: scale(1.03);
 }
 .media video {
   opacity: 0;
-  transition: opacity 0.4s;
+  transition:
+    opacity 0.4s,
+    transform 0.8s var(--ease);
 }
 .media.playing video {
   opacity: 1;
@@ -312,13 +419,13 @@ video {
   display: flex;
   flex-direction: column;
   flex: 1;
-  gap: 0.75rem;
-  padding: 0.8rem 0.9rem 0.9rem;
+  gap: 0.6rem;
+  padding: 0.85rem 0 0;
 }
 
 .title {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: var(--step-body);
   font-weight: 500;
   line-height: 1.35;
   letter-spacing: -0.005em;
@@ -337,8 +444,8 @@ video {
 }
 .title a:focus-visible::after {
   outline: 2px solid #fff;
-  outline-offset: -2px;
-  border-radius: 12px;
+  outline-offset: 4px;
+  border-radius: 10px;
 }
 
 .foot {
@@ -363,9 +470,7 @@ video {
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  margin-left: 0.3rem;
-  padding-left: 0.6rem;
-  border-left: 1px solid var(--line-2);
+  margin-left: 0.6rem;
   color: #7a7a7a;
 }
 
@@ -383,32 +488,35 @@ video {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 1.75rem;
-  padding: 0 0.7rem;
+  height: 2rem;
+  padding: 0 0.85rem;
   border-radius: 999px;
-  border: 1px solid var(--line-2);
-  font-size: 0.75rem;
+  background: var(--surface);
+  font-size: 0.8125rem;
   font-weight: 500;
   color: #d4d4d4;
   white-space: nowrap;
-  transition: color 0.2s, background 0.2s, border-color 0.2s;
+  transition:
+    color 0.2s,
+    background 0.2s,
+    transform var(--t-press) var(--ease-out);
+}
+.btn:active {
+  transform: scale(0.96);
 }
 .btn:hover {
   color: #000;
   background: #fff;
-  border-color: #fff;
 }
 .btn--primary {
   color: #000;
   background: #fff;
-  border-color: #fff;
 }
 .btn--primary:hover {
   background: #cfcfcf;
-  border-color: #cfcfcf;
 }
 .btn--icon {
-  width: 1.75rem;
+  width: 2rem;
   padding: 0;
   color: var(--muted);
 }

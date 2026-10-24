@@ -14,8 +14,35 @@
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: var(--gutter);
 }
+:root {
+  /* Section names (Taste Skill, TasteCode, Demos) and headings (about, GitHub, Recognition). */
+  --step-section: clamp(3.25rem, 0.6rem + 8.2vw, 9.5rem);
+  --step-heading: clamp(2.5rem, 1rem + 4vw, 5.5rem);
+}
 main {
   --section: clamp(6rem, 12vw, 12rem);
+  overflow-x: clip;
+}
+
+/* Section names slide in from the right as they come up the screen, tied to the scroll, on top
+   of their own line reveal. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .work-h,
+    .drift {
+      animation: name-drift linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 45%;
+    }
+  }
+}
+@keyframes name-drift {
+  from {
+    translate: 9vw 0;
+  }
+  to {
+    translate: 0 0;
+  }
 }
 
 /* A masked line: its text rises out of the line's own floor. */
@@ -59,7 +86,7 @@ main {
    the actions. */
 .work-h {
   margin: 0;
-  font-size: clamp(3.25rem, 0.8rem + 7.6vw, 8.25rem);
+  font-size: var(--step-section);
   font-weight: 500;
   line-height: 0.92;
   letter-spacing: -0.055em;
@@ -144,16 +171,19 @@ main {
   }
 }
 
-/* A text link with an underline that draws in on hover. */
+/* A text link: underlined at rest, the underline lifts away on hover. */
 .ink {
-  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 0.07em no-repeat;
-  padding-bottom: 0.12em;
-  transition: background-size var(--t-ui) var(--ease-out);
+  text-decoration: underline;
+  text-decoration-thickness: 0.07em;
+  text-underline-offset: 0.22em;
+  text-decoration-color: currentColor;
+  transition:
+    text-decoration-color var(--t-hover) ease,
+    color var(--t-hover) ease;
 }
 @media (hover: hover) and (pointer: fine) {
   .ink:hover {
-    background-size: 0% 0.07em;
-    background-position: 100% 100%;
+    text-decoration-color: transparent;
   }
 }
 

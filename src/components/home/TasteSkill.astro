@@ -24,7 +24,7 @@ const OUTPUTS = [
 
 <section class="taste paper" aria-labelledby="taste-h">
   <div class="wrap grid12 taste-head">
-    <h2 id="taste-h" class="taste-h" data-reveal="line">
+    <h2 id="taste-h" class="taste-h drift" data-reveal="line">
       <span class="line"><span>Taste Skill</span></span>
     </h2>
     <div class="taste-copy">
@@ -32,20 +32,7 @@ const OUTPUTS = [
         A rulebook coding agents read before they write frontend, so what they build stops looking generated. Works with
         Claude Code, Codex, Cursor, Gemini CLI and more.
       </p>
-      <div class="install" data-reveal="fade" style="--d:140ms">
-        <span class="typed" style={`--chars:${INSTALL.length}`}>
-          <code>{INSTALL}</code>
-          <span class="caret" aria-hidden="true"></span>
-        </span>
-        <button class="copy" type="button" data-copy={INSTALL}>
-          <span class="roll">
-            <span>Copy</span>
-            <span aria-hidden="true">Copied</span>
-          </span>
-        </button>
-        <span class="sr-only" role="status" aria-live="polite"></span>
-      </div>
-      <p class="taste-links" data-reveal="up" style="--d:210ms">
+      <p class="taste-links" data-reveal="up" style="--d:140ms">
         <a class="ink" href="https://www.tasteskill.dev" target="_blank" rel="noopener">tasteskill.dev</a>
         <a class="ink" href={taste.url} target="_blank" rel="noopener">Repository</a>
       </p>
@@ -83,6 +70,22 @@ const OUTPUTS = [
     }
   </div>
 
+  <div class="wrap install-row">
+    <div class="install" data-reveal="fade" style="--d:80ms">
+      <span class="typed" style={`--chars:${INSTALL.length}`}>
+        <code>{INSTALL}</code>
+        <span class="caret" aria-hidden="true"></span>
+      </span>
+      <button class="copy" type="button" data-copy={INSTALL}>
+        <span class="roll">
+          <span>Copy</span>
+          <span aria-hidden="true">Copied</span>
+        </span>
+      </button>
+      <span class="sr-only" role="status" aria-live="polite"></span>
+    </div>
+  </div>
+
   <div class="outputs" data-outputs>
     <p class="outputs-cap wrap" data-reveal="up">Pages coding agents built with it</p>
     <ul class="band" aria-label="Pages built with Taste Skill">
@@ -112,7 +115,7 @@ const OUTPUTS = [
   .taste-h {
     grid-column: 1 / span 7;
     margin: 0;
-    font-size: clamp(3.5rem, 0.6rem + 8.4vw, 9.75rem);
+    font-size: var(--step-section);
     font-weight: 500;
     line-height: 0.9;
     letter-spacing: -0.055em;
@@ -130,12 +133,14 @@ const OUTPUTS = [
     letter-spacing: -0.015em;
     text-wrap: pretty;
   }
+  .install-row {
+    margin-top: clamp(2.5rem, 5vw, 4rem);
+  }
   .install {
     display: inline-flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 0.5rem 1rem;
-    margin-top: 1.75rem;
     padding: 0.375rem 0.375rem 0.375rem 1.25rem;
     border-radius: 999px;
     background: var(--paper-2);
@@ -202,7 +207,7 @@ const OUTPUTS = [
   .taste-links {
     display: flex;
     gap: 1.5rem;
-    margin: 1.5rem 0 0;
+    margin: 1.25rem 0 0;
     font-size: var(--step-body);
   }
 
@@ -270,7 +275,7 @@ const OUTPUTS = [
 
   /* The band of pages: it travels left while the section crosses the screen. */
   .outputs {
-    margin-top: var(--section);
+    margin-top: clamp(4rem, 8vw, 7.5rem);
   }
   .outputs-cap {
     margin: 0 auto 1.5rem;
