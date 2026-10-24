@@ -1,23 +1,15 @@
 /*
- * Homepage: the demo strip, section entrances, the copy button, live star counts and the
- * closing reel.
- *
- * The strip is a native horizontal scroller with scroll snapping. The frame nearest its
- * centre is lit. While the strip moves, captions keep quiet and a clip you pass is only
- * paused; once it rests, the lit frame's clip plays (a preview encode) and every other clip
- * is unloaded back to its poster, so at most one decoder holds a source at rest. Mouse users
- * can drag it, clicking a dim frame brings it to the centre, and the strip is one tab stop
- * whose frames are stepped through with the arrow keys. Reduced-motion and data-saving
- * visitors keep the posters.
+ * Homepage: section entrances, the pause button, the Munich clocks, the copy button, live star
+ * counts and the closing reel. The hero and about scene has its own script (intro.ts).
  */
 
 import { compact } from "../lib/format";
 import { column, glyphs } from "../lib/odometer";
 import { setActivity } from "./activity";
 
-// Arriving by a view transition, everything here waits until it has finished: the strip is
-// already in its resting state from the inline script, and setting up now would steal frames
-// from the morph. The head script in Base.astro leaves the transition's finished promise here.
+// Arriving by a view transition, everything here waits until it has finished, so setting up
+// does not steal frames from the morph. The head script in Base.astro leaves the transition's
+// finished promise here.
 const transition = (window as { __vt?: unknown }).__vt;
 if (transition) await Promise.resolve(transition).catch(() => {});
 
@@ -26,295 +18,65 @@ if (transition) await Promise.resolve(transition).catch(() => {});
 document.documentElement.classList.add("reveal");
 
 const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
-const connection = (navigator as Navigator & { connection?: { saveData?: boolean; effectiveType?: string } }).connection;
-const saveData =
-  !!connection?.saveData ||
-  /(^|-)2g$|^3g$/.test(connection?.effectiveType ?? "") ||
-  matchMedia("(prefers-reduced-data: reduce)").matches;
 const finePointer = matchMedia("(hover: hover) and (pointer: fine)").matches;
-const scrollTimelines = CSS.supports("animation-timeline: view()");
-const behavior: ScrollBehavior = reducedMotion ? "auto" : "smooth";
 const root = document.documentElement;
-
-/* ------------------------------------------------------------------ posters */
-
-// A poster that fails to load leaves the frame's own background instead of a broken icon.
-for (const img of document.querySelectorAll<HTMLImageElement>(".frame img, .reel img")) {
-  const hide = () => (img.style.visibility = "hidden");
-  if (img.complete && img.naturalWidth === 0 && img.currentSrc) hide();
-  else img.addEventListener("error", hide, { once: true });
-}
-
-/* ------------------------------------------------------------------ strip */
-
-const strip = document.querySelector<HTMLElement>(".strip");
-const frames = strip ? Array.from(strip.querySelectorAll<HTMLElement>(".frame")) : [];
-const motionButton = document.querySelector<HTMLButtonElement>(".motion");
 let paused = false;
 
-if (strip && frames.length) {
-  try {
-    initStrip(strip);
-  } catch (err) {
-    strip.classList.remove("is-live");
-    console.error(err);
+/* ------------------------------------------------------------------ pause */
+
+// One button pauses everything that moves on its own: the background, the reel, the films and
+// the waveform (WCAG 2.2.2). Its name stays "Pause …" and aria-pressed carries the state.
+const motionButton = document.querySelector<HTMLButtonElement>(".motion");
+if (motionButton && !reducedMotion) {
+  motionButton.hidden = false;
+  const icon = motionButton.querySelector("use")!;
+  motionButton.addEventListener("click", () => {
+    paused = !paused;
+    root.classList.toggle("motion-paused", paused);
+    setActivity({ paused });
+    motionButton.setAttribute("aria-pressed", String(paused));
+    icon.setAttribute("href", paused ? "#i-play" : "#i-pause");
+  });
+  // It appears once the hero has gone, where the moving parts are.
+  const hero = document.querySelector("[data-intro]");
+  if (hero && "IntersectionObserver" in window) {
+    const marker = document.createElement("div");
+    marker.style.cssText = "position:absolute;top:120svh;height:1px;width:1px;pointer-events:none";
+    marker.setAttribute("aria-hidden", "true");
+    document.body.append(marker);
+    new IntersectionObserver(([e]) => root.classList.toggle("past-hero", !e.isIntersecting && e.boundingClientRect.top < 0)).observe(marker);
+  }
+  // At the end of the page it would sit on the email; it steps aside there.
+  const close = document.querySelector(".close");
+  if (close && "IntersectionObserver" in window) {
+    new IntersectionObserver(([e]) => root.classList.toggle("at-close", e.isIntersecting), { rootMargin: "0px 0px -40% 0px" }).observe(close);
   }
 }
 
-function initStrip(strip: HTMLElement) {
-  const links = frames.map((f) => f.querySelector("a")!);
-  const broken = new WeakSet<HTMLVideoElement>();
-  let lit: HTMLElement | null = null;
-  let ready = false;
-  let visible = true;
-  let moving = false;
-  let firstStart = 0;
+/* ------------------------------------------------------------------ clocks */
 
-  const centreOf = (f: HTMLElement) => f.offsetLeft + f.offsetWidth / 2;
-  const targetFor = (f: HTMLElement) => centreOf(f) - strip.clientWidth / 2;
-  const frameOf = (el: EventTarget | null) => (el instanceof Element ? el.closest<HTMLElement>(".frame") : null);
-  const videoOf = (f: HTMLElement | null) => f?.querySelector("video") ?? null;
-
-  function nearest(c = strip.scrollLeft + strip.clientWidth / 2): HTMLElement {
-    return frames.reduce((a, b) => (Math.abs(centreOf(b) - c) < Math.abs(centreOf(a) - c) ? b : a));
-  }
-
-  /** The preview encode that fits the frame: about 360p on phones and at 1x, 720p above. */
-  function source(v: HTMLVideoElement): string {
-    const { sd, hd, src } = v.dataset;
-    const pixels = (v.closest("a")?.clientHeight ?? 0) * devicePixelRatio;
-    const big = innerWidth > 700 && pixels > 480;
-    return (big ? hd : sd) || sd || hd || src!;
-  }
-
-  /** Unloads a clip back to its poster. */
-  function release(f: HTMLElement) {
-    const v = videoOf(f);
-    f.classList.remove("playing");
-    if (!v || !v.hasAttribute("src")) return;
-    v.pause();
-    v.removeAttribute("src");
-    v.load();
-  }
-
-  function play(f: HTMLElement) {
-    const v = videoOf(f);
-    if (!v || broken.has(v) || !ready || !visible || paused || saveData || reducedMotion || document.hidden) return;
-    if (!v.hasAttribute("src")) {
-      v.src = source(v);
-      const show = () => lit === f && v.hasAttribute("src") && f.classList.add("playing");
-      if (typeof v.requestVideoFrameCallback === "function") v.requestVideoFrameCallback(show);
-      else v.addEventListener("playing", show, { once: true });
-      v.addEventListener(
-        "error",
-        () => {
-          broken.add(v);
-          release(f);
-          setActivity({ videos: 0 });
-        },
-        { once: true },
-      );
-    } else if (!f.classList.contains("playing")) {
-      // Its first frame arrived while another frame was lit, so `show` declined then.
-      if (v.readyState >= 2) f.classList.add("playing");
-      else v.addEventListener("playing", () => lit === f && f.classList.add("playing"), { once: true });
+const clocks = Array.from(document.querySelectorAll<HTMLTimeElement>("[data-clock]"));
+if (clocks.length) {
+  const fmt = new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Berlin", hour: "2-digit", minute: "2-digit" });
+  const tick = () => {
+    const now = new Date();
+    for (const c of clocks) {
+      c.textContent = fmt.format(now);
+      c.dateTime = now.toISOString();
+      c.hidden = false;
     }
-    v.play().catch(() => {});
-    setActivity({ videos: 1 });
-  }
-
-  function stop() {
-    clearTimeout(firstStart);
-    videoOf(lit)?.pause();
-    setActivity({ videos: 0 });
-  }
-
-  /** Moves the lit state. A clip passed on the way is paused, not unloaded. */
-  let developTimer = 0;
-  function light(f: HTMLElement) {
-    if (lit === f) return;
-    if (lit) {
-      videoOf(lit)?.pause();
-      lit.classList.remove("is-lit", "is-developing");
-      lit.querySelector("a")?.setAttribute("tabindex", "-1");
-    }
-    lit = f;
-    f.classList.add("is-lit");
-    f.querySelector("a")!.tabIndex = 0;
-    // Without scroll timelines the colour develops on a short clock instead of with the hand.
-    // Only the lit frame develops: a frame passed in a flick drops back to its print at once.
-    if (!scrollTimelines && !reducedMotion) {
-      clearTimeout(developTimer);
-      f.classList.add("is-developing");
-      developTimer = window.setTimeout(() => f.classList.remove("is-developing"), 260);
-    }
-  }
-
-  /** At rest: the lit clip plays and every other clip lets go of its source. */
-  function settle() {
-    moving = false;
-    strip.dataset.state = "settled";
-    if (!lit) return;
-    for (const f of frames) if (f !== lit) release(f);
-    if (ready) play(lit);
-  }
-
-  // One tab stop: only the lit frame is in the tab order; arrow keys move between frames.
-  links.forEach((a) => (a.tabIndex = -1));
-  strip.classList.add("is-live");
-  light(nearest());
-
-  let raf = 0;
-  let settleTimer = 0;
-  const hasScrollEnd = "onscrollend" in window;
-  strip.addEventListener(
-    "scroll",
-    () => {
-      if (!moving) {
-        moving = true;
-        strip.dataset.state = "moving";
-      }
-      cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => light(nearest()));
-      if (!hasScrollEnd) {
-        clearTimeout(settleTimer);
-        settleTimer = window.setTimeout(() => !strip.classList.contains("is-dragging") && settle(), 140);
-      }
-    },
-    { passive: true },
-  );
-  if (hasScrollEnd) strip.addEventListener("scrollend", () => !strip.classList.contains("is-dragging") && settle());
-
-  // A pointer click on a frame that was dim when the press began centres it; a click on the
-  // lit frame, or Enter on the focused one, opens its post.
-  let pressLit: HTMLElement | null = null;
-  strip.addEventListener("pointerdown", () => (pressLit = lit), true);
-  strip.addEventListener("click", (e) => {
-    const f = frameOf(e.target);
-    if (!f || e.detail === 0) return;
-    if (dragged || f !== pressLit) {
-      e.preventDefault();
-      if (!dragged) strip.scrollTo({ left: targetFor(f), behavior });
-    }
-  });
-
-  // Keyboard focus centres its frame. Pointer focus does not, or a press would start a scroll.
-  strip.addEventListener("focusin", (e) => {
-    const f = frameOf(e.target);
-    if (f && f !== lit && (e.target as Element).matches(":focus-visible")) {
-      strip.scrollTo({ left: targetFor(f), behavior });
-    }
-  });
-  strip.addEventListener("keydown", (e) => {
-    const i = links.indexOf(document.activeElement as HTMLAnchorElement);
-    if (i < 0) return;
-    const step = { ArrowLeft: -1, ArrowRight: 1, Home: -i, End: links.length - 1 - i }[e.key];
-    const next = step === undefined ? undefined : links[i + step];
-    if (!next || next === links[i]) return;
-    e.preventDefault();
-    next.focus({ preventScroll: true });
-  });
-
-  // Mouse drag. Touch and trackpads scroll natively.
-  let dragged = false;
-  // The cleanup of a throw's glide still in flight; a new drag cancels it, or it would bring
-  // snapping back in the middle of that drag.
-  let cancelGlide: (() => void) | null = null;
-  strip.addEventListener("pointerdown", (e) => {
-    if (e.pointerType !== "mouse" || e.button !== 0) return;
-    dragged = false;
-    const startX = e.clientX;
-    const startLeft = strip.scrollLeft;
-    let lastX = e.clientX;
-    let lastT = e.timeStamp;
-    let velocity = 0;
-    const move = (m: PointerEvent) => {
-      const dx = m.clientX - startX;
-      if (!dragged && Math.abs(dx) < 6) return;
-      if (!dragged) {
-        dragged = true;
-        cancelGlide?.();
-        strip.classList.add("is-dragging");
-      }
-      velocity = (m.clientX - lastX) / Math.max(1, m.timeStamp - lastT);
-      lastX = m.clientX;
-      lastT = m.timeStamp;
-      strip.scrollLeft = startLeft - dx;
-    };
-    const up = (u: PointerEvent) => {
-      removeEventListener("pointermove", move);
-      removeEventListener("pointerup", up);
-      removeEventListener("pointercancel", up);
-      if (!dragged) return;
-      // A throw carries a little further; a drag that came to rest before release does not.
-      if (u.timeStamp - lastT > 80) velocity = 0;
-      const f = nearest(strip.scrollLeft - velocity * 220 + strip.clientWidth / 2);
-      strip.scrollTo({ left: targetFor(f), behavior });
-      // Snapping comes back once the glide has finished, or it would cut the glide short.
-      const cancel = () => {
-        clearTimeout(fallback);
-        strip.removeEventListener("scrollend", done);
-        if (cancelGlide === cancel) cancelGlide = null;
-      };
-      const done = () => {
-        cancel();
-        strip.classList.remove("is-dragging");
-        settle();
-      };
-      const fallback = setTimeout(done, 900);
-      strip.addEventListener("scrollend", done);
-      cancelGlide = cancel;
-      setTimeout(() => (dragged = false), 0);
-    };
-    addEventListener("pointermove", move);
-    addEventListener("pointerup", up);
-    addEventListener("pointercancel", up);
-  });
-  strip.addEventListener("dragstart", (e) => e.preventDefault());
-
-  // Clips play only while the strip is on screen and the tab is visible.
-  new IntersectionObserver(
-    ([entry]) => {
-      visible = entry.isIntersecting;
-      if (visible && lit && !moving) play(lit);
-      else stop();
-    },
-    { threshold: 0.35 },
-  ).observe(strip);
-  document.addEventListener("visibilitychange", () => (document.hidden ? stop() : lit && !moving && play(lit)));
-
-  // Nothing downloads before the page itself has loaded; the first clip then starts a beat later.
-  const start = () => {
-    ready = true;
-    light(nearest());
-    firstStart = window.setTimeout(() => !moving && lit && play(lit), 450);
   };
-  const idle = () => ("requestIdleCallback" in window ? requestIdleCallback(start, { timeout: 1500 }) : setTimeout(start, 300));
-  if (document.readyState === "complete") idle();
-  else addEventListener("load", idle, { once: true });
-
-  // Pause button: stops the clip, the closing reel and the background (WCAG 2.2.2). Its name
-  // stays "Pause …" and aria-pressed carries the state, as a toggle button should.
-  if (motionButton && !reducedMotion) {
-    motionButton.hidden = false;
-    const icon = motionButton.querySelector("use")!;
-    motionButton.addEventListener("click", () => {
-      paused = !paused;
-      root.classList.toggle("motion-paused", paused);
-      setActivity({ paused });
-      motionButton.setAttribute("aria-pressed", String(paused));
-      icon.setAttribute("href", paused ? "#i-play" : "#i-pause");
-      if (paused) stop();
-      else if (lit && !moving) play(lit);
-    });
-  }
+  tick();
+  setInterval(tick, 10_000);
 }
 
 /* ------------------------------------------------------------------ entrances */
 
 // Each block gets .is-in once, the first time it is on screen. A batch that arrives together
 // staggers through --b (at most four steps), so a fast scroll never queues a long cascade.
-const revealed = document.querySelectorAll<HTMLElement>("[data-reveal], [data-odo]");
+// Blocks inside a held section ([data-hold], the about text while the scene runs) are left to
+// their scene.
+const revealed = Array.from(document.querySelectorAll<HTMLElement>("[data-reveal], [data-odo]")).filter((el) => !el.closest("[data-hold]"));
 if ("IntersectionObserver" in window) {
   const reveal = (threshold: number) => {
     const io = new IntersectionObserver(
@@ -496,7 +258,6 @@ if (starred.length) {
       )
       .finally(() => (busy = false));
   };
-  // After load and idle, so the request never competes with the strip's first clip.
   const idle = () => ("requestIdleCallback" in window ? requestIdleCallback(refresh, { timeout: 3000 }) : setTimeout(refresh, 0));
   if (document.readyState === "complete") idle();
   else addEventListener("load", idle, { once: true });
@@ -524,9 +285,13 @@ if (reel && finePointer && "IntersectionObserver" in window) {
   );
   near.observe(reel);
 }
+for (const img of document.querySelectorAll<HTMLImageElement>(".reel img")) {
+  const hide = () => (img.style.visibility = "hidden");
+  if (img.complete && img.naturalWidth === 0 && img.currentSrc) hide();
+  else img.addEventListener("error", hide, { once: true });
+}
 if (reel && track && !reducedMotion && "IntersectionObserver" in window) {
   reel.classList.add("is-js");
-  const close = reel.closest("footer") ?? reel;
   const BASE = 26; // px per second
   let x = 0;
   let speed = BASE;
@@ -554,7 +319,7 @@ if (reel && track && !reducedMotion && "IntersectionObserver" in window) {
     const dt = Math.min(0.064, (now - last) / 1000);
     last = now;
     boost *= Math.pow(0.03, dt);
-    const held = hovering || paused || root.classList.contains("motion-paused") || close.matches(":focus-within");
+    const held = hovering || paused || root.classList.contains("motion-paused") || reel.matches(":focus-within");
     const target = held ? 0 : BASE + boost;
     speed += (target - speed) * (1 - Math.pow(1 - 0.08, dt * 60));
     x -= speed * dt;

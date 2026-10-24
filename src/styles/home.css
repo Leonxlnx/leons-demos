@@ -1,0 +1,304 @@
+/*
+ * Homepage primitives shared by the section components in src/components/home: the frame,
+ * masked lines, paper sections, buttons and the reveal system that home.ts drives.
+ */
+
+.wrap {
+  width: 100%;
+  max-width: 1680px;
+  margin-inline: auto;
+  padding-inline: var(--pad);
+}
+.grid12 {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--gutter);
+}
+main {
+  --section: clamp(6rem, 12vw, 12rem);
+}
+
+/* A masked line: its text rises out of the line's own floor. */
+.line {
+  display: block;
+  overflow: clip;
+  padding-block: 0.06em;
+  margin-block: -0.06em;
+}
+.line > span {
+  display: block;
+}
+
+/* Paper: the light material. The page tokens are remapped inside it, so shared parts (the nav,
+   buttons, muted text) take the paper colours without their own rules. */
+.paper {
+  --text: var(--paper-ink);
+  --muted: var(--paper-muted);
+  --surface: var(--paper-2);
+  background: var(--paper);
+  color: var(--paper-ink);
+  color-scheme: light;
+}
+.paper :focus-visible {
+  outline-color: var(--paper-ink);
+}
+.paper ::selection {
+  background: var(--paper-ink);
+  color: var(--paper);
+}
+
+.h2 {
+  margin: 0;
+  font-size: var(--step-lead);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+/* The work sections share one voice: a large name, one line at lead size, a quieter note and
+   the actions. */
+.work-h {
+  margin: 0;
+  font-size: clamp(3.25rem, 0.8rem + 7.6vw, 8.25rem);
+  font-weight: 500;
+  line-height: 0.92;
+  letter-spacing: -0.055em;
+  white-space: nowrap;
+}
+.work-p {
+  margin: 0;
+  max-width: 24ch;
+  font-size: var(--step-lead);
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+.work-meta {
+  margin: 1rem 0 0;
+  max-width: 40ch;
+  color: var(--muted);
+  font-size: var(--step-body);
+  line-height: 1.5;
+  text-wrap: pretty;
+}
+.work-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.75rem;
+}
+
+/* ------------------------------------------------------------ buttons */
+
+.button {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3rem;
+  padding: 0 1.5rem;
+  border-radius: 999px;
+  background: var(--text);
+  color: var(--bg);
+  font-size: var(--step-body);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
+  transition:
+    transform var(--t-press) var(--ease-out),
+    background-color var(--t-hover) ease,
+    color var(--t-hover) ease;
+}
+.paper .button {
+  color: var(--paper);
+}
+.button.quiet {
+  background: var(--surface);
+  color: var(--text);
+}
+.button .icon {
+  transition: transform var(--t-ui) var(--ease-out);
+}
+.button:active {
+  transform: scale(0.97);
+}
+@media (hover: hover) and (pointer: fine) {
+  .button:hover {
+    background: #c9c9c9;
+  }
+  .paper .button:hover {
+    background: #333;
+  }
+  .button.quiet:hover {
+    background: #262626;
+  }
+  .paper .button.quiet:hover {
+    background: #d4d4d4;
+  }
+  .button:hover .icon-go {
+    transform: translateX(3px);
+  }
+  .button:hover .icon-out {
+    transform: translate(2px, -2px);
+  }
+}
+
+/* A text link with an underline that draws in on hover. */
+.ink {
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 0.07em no-repeat;
+  padding-bottom: 0.12em;
+  transition: background-size var(--t-ui) var(--ease-out);
+}
+@media (hover: hover) and (pointer: fine) {
+  .ink:hover {
+    background-size: 0% 0.07em;
+    background-position: 100% 100%;
+  }
+}
+
+/* ------------------------------------------------------------ reveals */
+
+/* Hidden states exist only once the page script has run (html.reveal) and only with motion
+   allowed; transitions live on the revealed state, so nothing ever plays backwards. --b staggers
+   a batch, --d offsets an item. */
+@media screen and (prefers-reduced-motion: no-preference) {
+  .reveal [data-reveal="line"] .line > span {
+    transform: translateY(105%);
+  }
+  .reveal [data-reveal="line"].is-in .line > span {
+    transform: none;
+    transition: transform var(--t-reveal) var(--ease-out) calc(var(--d, 0ms) + var(--b, 0) * var(--stagger) + var(--l, 0) * 90ms);
+  }
+  .reveal [data-reveal="up"] {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  .reveal [data-reveal="up"].is-in {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 900ms var(--ease-out),
+      transform 900ms var(--ease-out);
+    transition-delay: calc(var(--d, 0ms) + var(--b, 0) * var(--stagger));
+  }
+  .reveal [data-reveal="fade"] {
+    opacity: 0;
+  }
+  .reveal [data-reveal="fade"].is-in {
+    opacity: 1;
+    transition: opacity var(--t-ui) ease var(--d, 0ms);
+  }
+  /* Pictures develop: they arrive through the Bayer tiles, one threshold per step. */
+  .reveal [data-reveal="print"] {
+    mask-image: var(--m0);
+    mask-size: 12px 12px;
+  }
+  .reveal [data-reveal="print"].is-in {
+    mask-image: none;
+    animation: develop calc(8 * var(--step-fast)) steps(1, jump-end) both;
+    animation-delay: var(--d, 0ms);
+  }
+
+  /* Index rows: the name rises, its note and stars develop through the dither's greys. */
+  .reveal [data-reveal="entry"] .entry-name > span {
+    transform: translateY(105%);
+  }
+  .reveal [data-reveal="entry"]:not(.is-in) .entry-note,
+  .reveal [data-reveal="entry"]:not(.is-in) .entry-stars {
+    opacity: 0;
+  }
+  .reveal [data-reveal="entry"].is-in .entry-name > span {
+    transform: none;
+    transition: transform 700ms var(--ease-out) calc(var(--b, 0) * var(--stagger));
+  }
+  .reveal [data-reveal="entry"].is-in .entry-note,
+  .reveal [data-reveal="entry"].is-in .entry-stars {
+    animation: tone-muted calc(3 * var(--step-fast)) steps(3, jump-none) backwards;
+    animation-delay: calc(120ms + var(--b, 0) * var(--stagger));
+  }
+
+  /* Recognition rows enter in reading order and develop in tone; the fill lands in one step. */
+  .reveal [data-reveal="row"]:not(.is-in) {
+    opacity: 0;
+  }
+  .reveal tr.alt[data-reveal="row"]:not(.is-in) {
+    background: transparent;
+  }
+  .reveal [data-reveal="row"].is-in th {
+    animation: tone-text calc(3 * var(--step-fast)) steps(3, jump-none) backwards;
+    animation-delay: calc(var(--b, 0) * var(--stagger));
+  }
+  .reveal [data-reveal="row"].is-in .grp,
+  .reveal [data-reveal="row"].is-in .res {
+    animation: tone-muted calc(3 * var(--step-fast)) steps(3, jump-none) backwards;
+    animation-delay: calc(var(--stagger) + var(--b, 0) * var(--stagger));
+  }
+  .reveal tr.alt[data-reveal="row"].is-in {
+    animation: fill-on 1ms step-end backwards;
+    animation-delay: calc(var(--b, 0) * var(--stagger));
+  }
+}
+
+@keyframes line-up {
+  to {
+    transform: none;
+  }
+}
+@keyframes rise {
+  from {
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes develop {
+  0% {
+    mask-image: var(--m1);
+  }
+  12.5% {
+    mask-image: var(--m2);
+  }
+  25% {
+    mask-image: var(--m3);
+  }
+  37.5% {
+    mask-image: var(--m4);
+  }
+  50% {
+    mask-image: var(--m5);
+  }
+  62.5% {
+    mask-image: var(--m6);
+  }
+  75% {
+    mask-image: var(--m7);
+  }
+  87.5%,
+  100% {
+    mask-image: none;
+  }
+}
+@keyframes tone-muted {
+  from {
+    color: #262626;
+  }
+  to {
+    color: var(--muted);
+  }
+}
+@keyframes tone-text {
+  from {
+    color: #262626;
+  }
+  to {
+    color: var(--text);
+  }
+}
+@keyframes fill-on {
+  from {
+    background-color: transparent;
+  }
+}

@@ -21,6 +21,17 @@ const NOTES: Record<string, string> = {
   "prompt-library": "Desktop app to organize your AI prompts",
   "kimi-code-desktop": "Unofficial Windows desktop app for Kimi Code CLI",
   "motion-recreation": "Motion-design recreation in JS, Canvas and WebGL, by GPT 6 Astra",
+  earshot: "Ears for coding agents: let AI hear, review and make sound",
+  athenaion: "An ancient Greek world built entirely in code with three.js",
+  "open-water": "A real-time ocean in pure WebGL2, with weather and sound",
+  shanshui: "Ten ink-wash landscapes painted and animated in code",
+  "procedural-alpine-lake": "A one-minute alpine lake film rendered entirely from code",
+  "golden-temple": "A golden-hour temple in three.js, rendered into a 70 second film",
+  "imagegen-skills": "Image-generation skills for coding agents",
+  "agentic-ai-prompt-research": "Research into how agentic coding assistants work",
+  "claude-of-duty": "A tactical FPS in the browser, every texture and sound generated",
+  "sakura-realm": "A procedural cherry blossom landscape in the browser",
+  lumenshaders: "LUMEN, a generative shader studio with nine WebGL2 modes",
 };
 
 const OWNER = "Leonxlnx";

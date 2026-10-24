@@ -2,55 +2,85 @@
   {
     "name": "taste-skill",
     "description": "Agent skills that give coding agents taste: art direction, reference images and a browser check instead of generic AI pages",
-    "stars": 97198,
+    "stars": 101612,
     "url": "https://github.com/Leonxlnx/taste-skill"
   },
   {
     "name": "unlazy",
     "description": "Anti-laziness skill for AI agents. Core: the Depth Tree method, which splits a task N layers deep and gives every leaf the full time budget of the whole task, so effort multiplies with depth. Grounded in 2025-2026 research on model laziness, underthinking and premature completion.",
-    "stars": 3948,
+    "stars": 4074,
     "url": "https://github.com/Leonxlnx/unlazy"
   },
   {
     "name": "agentic-ai-prompt-research",
     "description": "Research into how agentic AI coding assistants work. Reconstructed prompt patterns, agent coordination, and security classification",
-    "stars": 2552,
+    "stars": 2556,
     "url": "https://github.com/Leonxlnx/agentic-ai-prompt-research"
   },
   {
-    "name": "lumenshaders",
-    "description": "LUMEN, a generative shader studio. 9 WebGL2 art modes plus synth style blending, perfect-loop animation, gradient sets, share codes and PNG/WebM/GIF export. Zero dependencies.",
-    "stars": 360,
-    "url": "https://github.com/Leonxlnx/lumenshaders"
-  },
-  {
-    "name": "tastecode",
-    "description": "Personal Harness - a beautiful, adaptive control panel for AI coding agents. Windows-first, design-agent powered.",
-    "stars": 356,
-    "url": "https://github.com/Leonxlnx/tastecode"
+    "name": "earshot",
+    "description": "Ears for coding agents: let AI hear, review and make sound. CPU-only, open source.",
+    "stars": 2453,
+    "url": "https://github.com/Leonxlnx/earshot"
   },
   {
     "name": "cinetic",
     "description": "Cinematic launch films and motion design from code, directed by your coding agent.",
-    "stars": 226,
+    "stars": 814,
     "url": "https://github.com/Leonxlnx/cinetic"
+  },
+  {
+    "name": "tastecode",
+    "description": "Personal Harness - a beautiful, adaptive control panel for AI coding agents. Windows-first, design-agent powered.",
+    "stars": 404,
+    "url": "https://github.com/Leonxlnx/tastecode"
+  },
+  {
+    "name": "lumenshaders",
+    "description": "LUMEN, a generative shader studio. 9 WebGL2 art modes plus synth style blending, perfect-loop animation, gradient sets, share codes and PNG/WebM/GIF export. Zero dependencies.",
+    "stars": 363,
+    "url": "https://github.com/Leonxlnx/lumenshaders"
+  },
+  {
+    "name": "athenaion",
+    "description": "A massive ancient Greek world built entirely in code with three.js. Zero assets, made with Claude Code (Opus 5.5)",
+    "stars": 288,
+    "url": "https://github.com/Leonxlnx/athenaion"
   },
   {
     "name": "prompt-library",
     "description": "A clean, open-source desktop app to organize and manage your AI prompts. Built with Electron.",
-    "stars": 146,
+    "stars": 149,
     "url": "https://github.com/Leonxlnx/prompt-library"
+  },
+  {
+    "name": "golden-temple",
+    "description": "A golden-hour Japanese temple built entirely in code with three.js. No models, no textures, no HDRIs. Rendered offline into a 70s 1080p60 film",
+    "stars": 102,
+    "url": "https://github.com/Leonxlnx/golden-temple"
+  },
+  {
+    "name": "open-water",
+    "description": "Physically based real-time ocean in pure WebGL2: FFT waves, volumetric clouds, rain, squalls, lightning and sound. No image assets.",
+    "stars": 95,
+    "url": "https://github.com/Leonxlnx/open-water"
   },
   {
     "name": "todobar",
     "description": "A right-edge todo sidebar for macOS and Windows.",
-    "stars": 65,
+    "stars": 66,
     "url": "https://github.com/Leonxlnx/todobar"
+  },
+  {
+    "name": "shanshui",
+    "description": "Ten Chinese ink-wash landscapes painted and animated entirely in code (WebGL2 + Canvas2D), cut into a one-minute film with a synthesized soundtrack.",
+    "stars": 51,
+    "url": "https://github.com/Leonxlnx/shanshui"
   },
   {
     "name": "claude-of-duty",
     "description": "Browser-native tactical FPS on three.js r180. One map, one match, no assets: every texture, sound and cloud is generated at runtime. Hand-built WebGL2 render graph, custom physics, procedural Web Audio.",
-    "stars": 46,
+    "stars": 47,
     "url": "https://github.com/Leonxlnx/claude-of-duty"
   },
   {
@@ -60,27 +90,39 @@
     "url": "https://github.com/Leonxlnx/kimi-code-desktop"
   },
   {
+    "name": "procedural-alpine-lake",
+    "description": "A 60 second cinematic alpine lake film rendered entirely from code. Procedural terrain, GPU erosion, forest, water, sky and a fully synthesized soundtrack in Python and GLSL.",
+    "stars": 42,
+    "url": "https://github.com/Leonxlnx/procedural-alpine-lake"
+  },
+  {
+    "name": "motion-recreation",
+    "description": "Editable motion-design recreation built with Astra, JavaScript, Canvas and WebGL.",
+    "stars": 31,
+    "url": "https://github.com/Leonxlnx/motion-recreation"
+  },
+  {
+    "name": "imagegen-skills",
+    "description": "Design image-generation skills for coding agents: website comps, mobile app screens, brand kits, and image-to-code.",
+    "stars": 30,
+    "url": "https://github.com/Leonxlnx/imagegen-skills"
+  },
+  {
     "name": "level-devil",
     "description": "Browser-based Level Devil fan recreation — rage platformer with perfectly planned traps. Pure HTML/CSS/JS.",
     "stars": 28,
     "url": "https://github.com/Leonxlnx/level-devil"
   },
   {
-    "name": "motion-recreation",
-    "description": "Editable motion-design recreation built with Astra, JavaScript, Canvas and WebGL.",
-    "stars": 27,
-    "url": "https://github.com/Leonxlnx/motion-recreation"
-  },
-  {
-    "name": "golden-temple",
-    "description": "A golden-hour Japanese temple built entirely in code with three.js. No models, no textures, no HDRIs. Rendered offline into a 70s 1080p60 film",
-    "stars": 25,
-    "url": "https://github.com/Leonxlnx/golden-temple"
-  },
-  {
     "name": "sakura-realm",
     "description": "Real-time procedural cherry blossom landscape in the browser. Volumetric sky, dynamic weather, endless wind-driven meadow, and a fully generated sakura tree. Zero art assets: every texture synthesised at runtime, every mesh built in code. three.js + WebGL2.",
-    "stars": 22,
+    "stars": 24,
     "url": "https://github.com/Leonxlnx/sakura-realm"
+  },
+  {
+    "name": "image-sorter-app",
+    "description": "Open-source Android app for sorting and cleaning up your photo library with fast swipe gestures.",
+    "stars": 20,
+    "url": "https://github.com/Leonxlnx/image-sorter-app"
   }
 ]

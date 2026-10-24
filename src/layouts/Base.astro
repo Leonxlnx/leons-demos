@@ -20,8 +20,10 @@ interface Props {
    * by then.
    */
   expect?: string;
+  /** Browser chrome colour: the page's first ground. */
+  theme?: string;
 }
-const { title, description, twimg = false, header = true, jsonLd, expect } = Astro.props;
+const { title, description, twimg = false, header = true, jsonLd, expect, theme = "#000000" } = Astro.props;
 const path = Astro.url.pathname.replace(/\/$/, "") || "/";
 const canonical = Astro.site ? new URL(path, Astro.site).href : undefined;
 const ogImage = Astro.site ? new URL("/og.png", Astro.site).href : "/og.png";
@@ -92,7 +94,7 @@ const vtNames = String.raw`(() => {
     {twimg && <meta name="referrer" content="no-referrer" />}
     <title>{title}</title>
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content={theme} />
     <meta name="color-scheme" content="dark" />
     {canonical && <link rel="canonical" href={canonical} />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />

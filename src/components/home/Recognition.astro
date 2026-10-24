@@ -1,0 +1,156 @@
+---
+/* Recognition: the Taste Skill programmes and competition results, as one table. */
+interface Row {
+  what: string;
+  url?: string;
+  result: string;
+  lang?: string;
+}
+const recognition: { group: string; rows: Row[] }[] = [
+  {
+    group: "Taste Skill",
+    rows: [
+      { what: "Vercel Open Source Program", url: "https://vercel.com/blog/vercel-open-source-program-spring-2026-cohort", result: "Spring 2026 cohort" },
+      { what: "Google Labs Stitch Skills", url: "https://github.com/google-labs-code/stitch-skills/pull/38", result: "taste-design merged" },
+    ],
+  },
+  {
+    group: "Competitions",
+    rows: [
+      { what: "LovHack Season 1", result: "2nd place" },
+      { what: "Landeswettbewerb Mathematik Bayern", result: "Landessieger", lang: "de" },
+      { what: "European Statistics Competition", result: "4th in national round 2, qualified for Europe" },
+      { what: "Pangea Mathematics Final 2024", result: "Gold" },
+    ],
+  },
+];
+
+// Rows alternate a fill across the whole table, not per group.
+let row = 0;
+const groups = recognition.map((g) => ({ ...g, rows: g.rows.map((r) => ({ ...r, alt: row++ % 2 === 0 })) }));
+---
+
+<section class="recog wrap" aria-labelledby="recog-h">
+  <h2 id="recog-h" class="recog-h" data-reveal="line">
+    <span class="line"><span>Recognition</span></span>
+  </h2>
+  <table class="table" aria-labelledby="recog-h">
+    {
+      groups.map((g) => (
+        <tbody>
+          {g.rows.map((r, i) => (
+            <tr class:list={[r.alt && "alt"]} data-reveal="row">
+              <td class:list={["grp", i === 0 && "first"]}>
+                <span class:list={[i > 0 && "sr-only"]}>{g.group}</span>
+              </td>
+              <th scope="row">
+                {r.url ? (
+                  <a href={r.url} target="_blank" rel="noopener">
+                    {r.what}
+                  </a>
+                ) : (
+                  r.what
+                )}
+              </th>
+              <td class="res" lang={r.lang}>
+                {r.result}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      ))
+    }
+  </table>
+</section>
+
+<style>
+  .recog {
+    padding-block: var(--section) var(--section);
+  }
+  .recog-h {
+    margin: 0;
+    font-size: var(--step-index);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.045em;
+  }
+  /* The row fills bleed 1rem past the text, so the text keeps the page's two lines. */
+  .table {
+    width: calc(100% + 2rem);
+    margin: 2.5rem -1rem 0;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: var(--step-body);
+    line-height: 1.4;
+  }
+  .table th,
+  .table td {
+    padding: 0.95rem 1rem;
+    text-align: left;
+    vertical-align: baseline;
+  }
+  .table th {
+    font-weight: 500;
+    padding-left: calc(var(--gutter) / 2);
+  }
+  .table tr.alt {
+    background: var(--surface);
+  }
+  .table a {
+    text-decoration: underline;
+    text-decoration-thickness: 0.07em;
+    text-underline-offset: 0.22em;
+    text-decoration-color: transparent;
+    transition: text-decoration-color var(--t-hover) ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .table a:hover {
+      text-decoration-color: currentColor;
+    }
+  }
+  .grp {
+    width: 50%;
+    color: var(--muted);
+  }
+  .res {
+    width: 25%;
+    text-align: right !important;
+    color: var(--muted);
+  }
+  /* On a phone each row is a two-line block; the groups are told apart by space, not fills. */
+  @media (max-width: 700px) {
+    .table,
+    .table tbody,
+    .table tr,
+    .table th,
+    .table td {
+      display: block;
+      width: auto;
+    }
+    .table {
+      margin-inline: 0;
+    }
+    .table tbody + tbody {
+      margin-top: 2.5rem;
+    }
+    .table tr {
+      padding-block: 0.7rem;
+    }
+    .table tr.alt {
+      background: none;
+    }
+    .table th,
+    .table td {
+      padding: 0;
+    }
+    .table td.grp:not(.first) {
+      display: none;
+    }
+    .table td.grp {
+      margin: 0 0 0.5rem;
+    }
+    .res {
+      text-align: left !important;
+    }
+  }
+</style>

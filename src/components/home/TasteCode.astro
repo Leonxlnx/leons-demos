@@ -1,0 +1,128 @@
+---
+/*
+ * TasteCode: the app itself. Its window lies back in perspective and stands up as it scrolls
+ * into the middle of the screen.
+ */
+import Icon from "../Icon.astro";
+import { compact } from "../../lib/format";
+import type { ViewProject } from "../../lib/projects";
+
+interface Props {
+  project: ViewProject;
+}
+const { project } = Astro.props;
+---
+
+<section class="tc wrap" aria-labelledby="tc-h">
+  <div class="tc-head">
+    <div class="tc-name">
+      <img class="tc-icon" src="/work/tastecode-icon.webp" alt="" width="192" height="192" loading="lazy" decoding="async" data-reveal="up" />
+      <h2 id="tc-h" class="work-h" data-reveal="line">
+        <span class="line"><span>TasteCode</span></span>
+      </h2>
+    </div>
+    <div class="tc-copy">
+      <p class="work-p" data-reveal="up" style="--d:80ms">Taste Skill as a desktop app, with a design agent built in.</p>
+      <p class="work-meta" data-reveal="up" style="--d:140ms">
+        Codex, Claude Code and Grok in one local workspace. Windows and macOS, free and open source.
+      </p>
+      <div class="work-actions" data-reveal="up" style="--d:200ms">
+        <a class="button" href="https://github.com/Leonxlnx/tastecode/releases/latest" target="_blank" rel="noopener">
+          Download
+          <Icon name="arrow-up-right" size={16} />
+        </a>
+        <a class="button quiet" href={project.url} target="_blank" rel="noopener">
+          <Icon name="star" size={14} />
+          <span data-repo={project.repo}><span class="count">{compact(project.stars)}</span></span>
+          <span class="sr-only">stars on GitHub</span>
+        </a>
+      </div>
+    </div>
+  </div>
+  <div class="tc-stage">
+    <figure class="tc-window">
+      <img
+        src="/work/tastecode-app.webp"
+        alt="The TasteCode window: projects on the left, a chat with Codex, a terminal and the composer with Ask first and Design"
+        width="1280"
+        height="720"
+        loading="lazy"
+        decoding="async"
+      />
+    </figure>
+  </div>
+</section>
+
+<style>
+  .tc {
+    padding-top: var(--section);
+  }
+  .tc-head {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    row-gap: 2rem;
+    align-items: end;
+  }
+  .tc-name {
+    display: flex;
+    grid-column: 1 / span 7;
+    align-items: center;
+    gap: clamp(1rem, 2vw, 1.75rem);
+  }
+  .tc-icon {
+    flex: none;
+    width: clamp(3.5rem, 6vw, 6rem);
+    height: auto;
+    border-radius: 22%;
+  }
+  .tc-copy {
+    grid-column: 8 / -1;
+  }
+  .tc-stage {
+    margin-top: clamp(3rem, 6vw, 5rem);
+    perspective: 1600px;
+    perspective-origin: 50% 0%;
+  }
+  .tc-window {
+    margin: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #111;
+    transform-origin: 50% 100%;
+  }
+  .tc-window img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+  /* The window lies back and stands up as it reaches the middle of the screen. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      .tc-window {
+        animation: stand-up linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 50%;
+      }
+    }
+  }
+  @keyframes stand-up {
+    from {
+      transform: rotateX(32deg) scale(0.86) translateY(4rem);
+      opacity: 0.4;
+    }
+    to {
+      transform: none;
+      opacity: 1;
+    }
+  }
+  @media (max-width: 860px) {
+    .tc-name,
+    .tc-copy {
+      grid-column: 1 / -1;
+    }
+    .tc-window {
+      border-radius: 8px;
+    }
+  }
+</style>

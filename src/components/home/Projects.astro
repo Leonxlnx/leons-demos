@@ -1,0 +1,197 @@
+---
+/* More on GitHub: the open-source index. Each row is a link; pointing at it lays a band behind it. */
+import Icon from "../Icon.astro";
+import { compact } from "../../lib/format";
+import type { ViewProject } from "../../lib/projects";
+
+interface Props {
+  projects: ViewProject[];
+}
+const { projects } = Astro.props;
+---
+
+<section class="oss wrap" aria-labelledby="oss-h">
+  <div class="oss-head">
+    <h2 id="oss-h" class="oss-h" data-reveal="line">
+      <span class="line"><span>More on GitHub</span></span>
+    </h2>
+    <a class="ink all" href="https://github.com/Leonxlnx" target="_blank" rel="noopener" data-reveal="up">All repositories</a>
+  </div>
+  <ul class="index">
+    {
+      projects.map((p) => (
+        <li data-reveal="entry">
+          <a class="entry" href={p.url} target="_blank" rel="noopener">
+            <span class="entry-name">
+              <span>{p.name}</span>
+            </span>
+            <span class="entry-note">{p.note}</span>
+            <span class="entry-stars" data-repo={p.repo}>
+              <Icon name="star" size={14} />
+              <span class="count">{compact(p.stars)}</span>
+              <span class="sr-only">stars</span>
+            </span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .oss {
+    padding-top: var(--section);
+  }
+  .oss-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .oss-h {
+    margin: 0;
+    font-size: var(--step-index);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.045em;
+  }
+  .all {
+    color: var(--muted);
+    font-size: var(--step-body);
+    transition: color var(--t-hover) ease;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .all:hover {
+      color: var(--text);
+    }
+  }
+  .index {
+    margin: 2.5rem 0 0;
+    padding: 0;
+    list-style: none;
+  }
+  .entry {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    align-items: baseline;
+    padding-block: clamp(0.55rem, 1.1vw, 0.9rem);
+    isolation: isolate;
+  }
+  /* Pointing at an entry lays a filled band behind its row and brings its note up to full ink. */
+  .entry::before {
+    content: "";
+    position: absolute;
+    inset: 0 -1rem;
+    z-index: -1;
+    background: var(--surface);
+    opacity: 0;
+    transition: opacity var(--t-hover) ease;
+  }
+  .entry:focus-visible {
+    outline-offset: 0;
+  }
+  .entry-name {
+    display: block;
+    grid-column: 1 / 7;
+    overflow: clip;
+    padding-bottom: 0.14em;
+    margin-bottom: -0.14em;
+    font-size: clamp(1.75rem, 0.9rem + 2.5vw, 3.25rem);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.045em;
+    white-space: nowrap;
+  }
+  .entry-name > span {
+    display: block;
+    transition: translate var(--t-ui) var(--ease-out);
+  }
+  .entry-note {
+    grid-column: 7 / 12;
+    color: var(--muted);
+    font-size: var(--step-body);
+    line-height: 1.45;
+    text-wrap: pretty;
+    transition: color var(--t-hover) ease;
+  }
+  .entry-stars {
+    display: inline-flex;
+    grid-column: 12;
+    justify-self: end;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--muted);
+    font-size: var(--step-body);
+    font-variant-numeric: tabular-nums;
+    transition: color var(--t-hover) ease;
+  }
+  .entry:focus-visible::before {
+    opacity: 1;
+  }
+  .entry:focus-visible .entry-note,
+  .entry:focus-visible .entry-stars {
+    color: var(--text);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .entry:hover::before {
+      opacity: 1;
+    }
+    .entry:hover .entry-name > span {
+      translate: 0.5rem 0;
+    }
+    .entry:hover .entry-note,
+    .entry:hover .entry-stars {
+      color: var(--text);
+    }
+  }
+  /* On touch there is no hover: the row crossing the middle of the screen gets the band. */
+  @supports (animation-timeline: view()) {
+    @media (hover: none) {
+      .entry {
+        view-timeline: --row block;
+      }
+      .entry::before {
+        transition: none;
+        animation: band linear both;
+        animation-timeline: --row;
+        animation-range: cover 40% cover 60%;
+      }
+    }
+  }
+  @keyframes band {
+    0%,
+    100% {
+      opacity: 0;
+    }
+    35%,
+    65% {
+      opacity: 1;
+    }
+  }
+  @media (max-width: 1100px) {
+    .entry-name {
+      grid-column: 1 / -1;
+    }
+    .entry-note {
+      grid-column: 1 / 11;
+      margin-top: 0.4rem;
+    }
+    .entry-stars {
+      grid-column: 11 / -1;
+    }
+  }
+  @media (max-width: 700px) {
+    .entry-name {
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+    .entry-note {
+      grid-column: 1 / 10;
+    }
+    .entry-stars {
+      grid-column: 10 / -1;
+    }
+  }
+</style>

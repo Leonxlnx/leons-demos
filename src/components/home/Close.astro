@@ -1,0 +1,296 @@
+---
+/*
+ * The close: the demos, as a reel of dithered prints that develop their colour under the mouse
+ * and a way into /demos, then the reach-out footer, which ends on the email set as large as
+ * the name: its last line's descender is the last row of the page.
+ */
+import { existsSync } from "node:fs";
+import { join } from "node:path";
+import Icon from "../Icon.astro";
+import { DEMOS, type ViewDemo } from "../../lib/demos";
+
+interface Props {
+  email: string;
+}
+const { email } = Astro.props;
+const [user, domain] = email.split("@");
+
+// Demos whose first video frame is black, blank or blurred, and white-ground posters, which
+// vanish into the paper. They stay on /demos.
+const WEAK_POSTERS = new Set(["2104148233106723099", "2103194052850241739", "2103069626473341273", "2091550626421338325", "2081438372447350957"]);
+const LIGHT_POSTERS = new Set(["2106101651010449796", "2107922902423417199"]);
+const REEL_H = 150;
+
+const size = (d: ViewDemo) => {
+  const m = d.video?.match(/\/(\d{3,4})x(\d{3,4})\//);
+  return m ? { w: Number(m[1]), h: Number(m[2]) } : { w: 1600, h: 900 };
+};
+const ratio = (d: ViewDemo) => size(d).w / size(d).h;
+const print = (id: string) => (existsSync(join(process.cwd(), "public", "dither", `${id}-paper.png`)) ? `/dither/${id}-paper.png` : null);
+const reel = DEMOS.filter((d) => d.video && d.poster && !WEAK_POSTERS.has(d.id) && !LIGHT_POSTERS.has(d.id)).slice(0, 14);
+---
+
+<section class="demos paper" aria-labelledby="demos-h">
+  <div class="demos-head wrap">
+    <h2 id="demos-h" class="demos-h" data-reveal="line">
+      <span class="line"><span>Demos</span></span>
+    </h2>
+    <div class="demos-copy">
+      <p data-reveal="up" style="--d:80ms">Everything I've shared on X, from games to films, ranked by likes.</p>
+      <a class="button" href="/demos" data-reveal="up" style="--d:160ms">
+        See all {DEMOS.length} demos
+        <Icon name="arrow" size={16} />
+      </a>
+    </div>
+  </div>
+  <a class="reel" href="/demos" aria-label={`All ${DEMOS.length} demos`} tabindex="-1">
+    <span class="reel-track">
+      {
+        [0, 1].map(() =>
+          reel.map((d) => {
+            const paper = print(d.id);
+            const w = Math.round(REEL_H * ratio(d));
+            const colour = `${d.poster!.replace(/\?.*$/, "")}?format=webp&name=360x360`;
+            return paper ? (
+              <span class="reel-item" style={`--r:${ratio(d).toFixed(4)}`}>
+                <img class="paper-print" src={paper} alt="" width={w} height={REEL_H} loading="lazy" decoding="async" />
+                <img class="tint" data-src={colour} alt="" width={w} height={REEL_H} decoding="async" />
+              </span>
+            ) : (
+              <span class="reel-item" style={`--r:${ratio(d).toFixed(4)}`}>
+                <img src={colour} alt="" width={w} height={REEL_H} loading="lazy" decoding="async" />
+              </span>
+            );
+          }),
+        )
+      }
+    </span>
+  </a>
+</section>
+
+<footer class="close paper" aria-labelledby="close-h">
+  <div class="contact wrap grid12">
+    <p class="contact-h" data-reveal="up">Building something, or want to talk about taste and AI? Write to me.</p>
+    <div class="contact-side">
+      <p class="where" data-reveal="up" style="--d:80ms">
+        <span>Munich, Germany</span>
+        <time class="clock" data-clock hidden></time>
+      </p>
+      <ul class="pills">
+        <li data-reveal="up" style="--d:150ms">
+          <a class="button quiet" href="https://x.com/LexnLin" target="_blank" rel="noopener">
+            <Icon name="x" size={15} />
+            @LexnLin
+          </a>
+        </li>
+        <li data-reveal="up" style="--d:220ms">
+          <a class="button quiet" href="https://github.com/Leonxlnx" target="_blank" rel="noopener">
+            <Icon name="github" size={16} />
+            Leonxlnx
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <h2 id="close-h" class="email wrap" data-reveal="line">
+    <a href={`mailto:${email}`} aria-label={`Email ${email}`}>
+      <span class="line"><span>{user}@</span></span><span class="line" style="--l:1"><span>{domain}</span></span>
+    </a>
+  </h2>
+</footer>
+
+<style>
+  /* ------------------------------------------------------------ demos */
+
+  .demos {
+    padding-block: var(--section) clamp(3rem, 6vw, 5rem);
+    overflow-x: clip;
+  }
+  .demos-head {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    row-gap: 2rem;
+    align-items: end;
+    margin-bottom: clamp(2.5rem, 5vw, 4rem);
+  }
+  .demos-h {
+    grid-column: 1 / span 6;
+    margin: 0;
+    font-size: var(--step-display);
+    font-weight: 500;
+    line-height: 0.9;
+    letter-spacing: -0.055em;
+  }
+  .demos-copy {
+    display: flex;
+    grid-column: 8 / -1;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    padding-bottom: 0.5rem;
+  }
+  .demos-copy p {
+    margin: 0;
+    max-width: 28ch;
+    font-size: var(--step-lead);
+    line-height: 1.3;
+    letter-spacing: -0.015em;
+  }
+  .reel {
+    display: block;
+    overflow: hidden;
+  }
+  .reel-track {
+    display: flex;
+    gap: 8px;
+    width: max-content;
+  }
+  .reel-item {
+    position: relative;
+    display: block;
+    flex: none;
+    height: clamp(150px, 22svh, 240px);
+    aspect-ratio: var(--r);
+  }
+  .reel-item img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .reel-item .tint {
+    mask-image: var(--m0);
+    mask-size: 12px 12px;
+  }
+  .reel-item .tint:not([src]) {
+    visibility: hidden;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .reel-item:hover .tint {
+      mask-image: none;
+      animation: develop 240ms steps(1, jump-end) both;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .reel-track {
+      animation: reel 90s linear infinite;
+    }
+    /* With the page script the reel is driven by hand: it speeds up with the scroll. */
+    .reel:global(.is-js) .reel-track {
+      animation: none;
+      will-change: transform;
+    }
+    .reel:hover .reel-track,
+    :global(.motion-paused) .reel-track {
+      animation-play-state: paused;
+    }
+  }
+  @keyframes reel {
+    to {
+      transform: translateX(calc(-50% - 4px));
+    }
+  }
+
+  /* ------------------------------------------------------------ close */
+
+  /* The close ends on the email: its last line's descender is the last row of the page. */
+  .close {
+    display: flex;
+    flex-direction: column;
+    padding-top: clamp(4rem, 9vw, 8rem);
+    overflow-x: clip;
+  }
+  .contact {
+    row-gap: 2rem;
+    align-items: end;
+  }
+  .contact-h {
+    grid-column: 1 / span 6;
+    margin: 0;
+    font-size: clamp(1.75rem, 1rem + 2vw, 3rem);
+    font-weight: 500;
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
+  }
+  .contact-side {
+    display: flex;
+    grid-column: 8 / -1;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.25rem;
+  }
+  .where {
+    display: flex;
+    gap: 0.6rem;
+    margin: 0;
+    color: var(--paper-muted);
+    font-size: var(--step-body);
+  }
+  .where span {
+    color: var(--paper-ink);
+  }
+  .clock {
+    font-variant-numeric: tabular-nums;
+  }
+  .pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  /* In a 0.86 line box the baseline sits 0.785em down and the g's tail ends 0.095em below the
+     box, so the last line's padding makes that tail the page's final row. */
+  .email {
+    margin: clamp(3rem, 7svh, 5rem) 0 0;
+    font-size: var(--step-monument);
+    font-weight: 500;
+    line-height: 0.86;
+    letter-spacing: -0.055em;
+  }
+  .email a {
+    display: block;
+    margin-left: -0.045em;
+    overflow-wrap: anywhere;
+    transition: color var(--t-hover) ease;
+  }
+  .email a:focus-visible {
+    outline-offset: -4px;
+  }
+  .email .line:last-child {
+    padding-bottom: 0.095em;
+    margin-bottom: 0;
+  }
+  @media (min-width: 701px) {
+    /* The email steps down the page like the two lines of a name. */
+    .email .line:last-child {
+      text-align: right;
+    }
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .email a:hover {
+      color: var(--paper-muted);
+    }
+  }
+
+  @media (max-width: 860px) {
+    .demos-h,
+    .demos-copy,
+    .contact-h,
+    .contact-side {
+      grid-column: 1 / -1;
+    }
+    .reel-item {
+      height: 120px;
+    }
+  }
+  @media (max-width: 700px) {
+    .email {
+      font-size: calc((100vw - 2 * var(--pad)) / 4.36);
+    }
+  }
+</style>

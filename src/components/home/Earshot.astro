@@ -1,0 +1,272 @@
+---
+/*
+ * earshot: ears for coding agents. Its picture is a listening: a waveform with a playhead that
+ * sweeps it, the events it hears named as they pass, and the commands an agent runs, taken from
+ * the README. Under a mouse the playhead follows the pointer.
+ */
+import Icon from "../Icon.astro";
+import { compact } from "../../lib/format";
+import type { ViewProject } from "../../lib/projects";
+
+interface Props {
+  project: ViewProject;
+}
+const { project } = Astro.props;
+
+// A 22 second take, drawn like the launch film's: a run of key presses, notes, pops, two
+// whooshes and a ding. Bars are the envelope at 120 points, deterministic.
+const N = 120;
+let seed = 5;
+const rnd = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
+const events = [
+  { at: 0.04, kind: "key", label: "mechanical key press" },
+  { at: 0.2, kind: "note", label: "glockenspiel note" },
+  { at: 0.36, kind: "pop", label: "bubble pop" },
+  { at: 0.5, kind: "whoosh", label: "fast air whoosh" },
+  { at: 0.7, kind: "whoosh", label: "fast air whoosh" },
+  { at: 0.9, kind: "note", label: "ding" },
+];
+const bars = Array.from({ length: N }, (_, i) => {
+  const t = i / (N - 1);
+  let v = 0.06 + rnd() * 0.05;
+  // key presses: a fast run of spikes early on
+  if (t > 0.03 && t < 0.15 && i % 2 === 0) v = Math.max(v, 0.35 + rnd() * 0.25);
+  for (const e of events) {
+    const d = t - e.at;
+    if (e.kind === "note" && d > 0 && d < 0.07) v = Math.max(v, 0.75 * Math.exp(-d * 40) + rnd() * 0.05);
+    if (e.kind === "pop" && Math.abs(d) < 0.015) v = Math.max(v, 0.6);
+    if (e.kind === "whoosh" && Math.abs(d) < 0.08) v = Math.max(v, 0.9 * Math.exp(-((d * 18) ** 2)) + rnd() * 0.06);
+  }
+  if (t > 0.5 && t < 0.62) v = Math.max(v, 0.32 + rnd() * 0.3);
+  return Math.min(1, v);
+});
+
+const LINES = [
+  { cmd: "earshot describe enter.ogg", out: "0.56 s short transient. Sounds most like: a single mechanical keyboard key press" },
+  { cmd: 'earshot find keys.ogg "a single mechanical key press"', out: "0:03.94-0:04.19 (0.24 s stroke, strong)" },
+  { cmd: "earshot critique film.mp4", out: "VERDICT: close. 21 of 23 scored metrics in range" },
+];
+---
+
+<section class="ear wrap" aria-labelledby="ear-h">
+  <div class="ear-copy">
+    <h2 id="ear-h" class="work-h" data-reveal="line">
+      <span class="line"><span>earshot</span></span>
+    </h2>
+    <p class="work-p" data-reveal="up" style="--d:80ms">Ears for coding agents. AI that can hear, review and make sound.</p>
+    <p class="work-meta" data-reveal="up" style="--d:140ms">
+      It tells an agent what a file sounds like, finds the moment it asked for and scores a film's sound against
+      professional launch films. Runs on a CPU, as a CLI and an MCP server.
+    </p>
+    <div class="work-actions" data-reveal="up" style="--d:200ms">
+      <a class="button" href={project.url} target="_blank" rel="noopener">
+        Repository
+        <Icon name="arrow-up-right" size={16} />
+      </a>
+      <a class="button quiet" href={project.url} target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">
+        <Icon name="star" size={14} />
+        <span data-repo={project.repo}><span class="count">{compact(project.stars)}</span></span>
+      </a>
+    </div>
+  </div>
+
+  <figure class="listen" data-listen data-reveal="up" style="--d:120ms">
+    <div class="wave" aria-hidden="true">
+      <div class="bars">
+        {bars.map((v, i) => <span class="bar" style={`--v:${v.toFixed(3)};--t:${(i / (N - 1)).toFixed(4)}`} />)}
+      </div>
+      <div class="head" />
+      <ol class="events">
+        {
+          events.map((e) => (
+            <li style={`--at:${e.at}`} data-at={e.at}>
+              {e.label}
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+    <pre class="term"><code>{LINES.map((l) => (
+          <span class="cmd">
+            <span class="prompt">$ </span>
+            {l.cmd}
+            {"\n"}
+            <span class="out">{l.out}</span>
+            {"\n"}
+          </span>
+        ))}</code></pre>
+    <figcaption class="sr-only">A listening timeline as earshot draws it, and three commands with their answers from the earshot README.</figcaption>
+  </figure>
+</section>
+
+<script>
+  /* The playhead sweeps the take every 9 seconds while the figure is on screen; under a mouse it
+     follows the pointer instead. Bars it has passed are lit, and the event under it is named. */
+  const fig = document.querySelector<HTMLElement>("[data-listen]");
+  if (fig) {
+    const wave = fig.querySelector<HTMLElement>(".wave")!;
+    const items = Array.from(fig.querySelectorAll<HTMLElement>(".events li"));
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    let t = 0;
+    let last = 0;
+    let raf = 0;
+    let hover = false;
+    let visible = false;
+    const set = (v: number) => {
+      t = v;
+      wave.style.setProperty("--p", v.toFixed(4));
+      for (const li of items) {
+        const at = Number(li.dataset.at);
+        li.classList.toggle("is-on", v >= at && v < at + 0.12);
+      }
+    };
+    const frame = (now: number) => {
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      const paused = document.documentElement.classList.contains("motion-paused");
+      if (!hover && !paused) set((t + dt / 9) % 1);
+      raf = visible ? requestAnimationFrame(frame) : 0;
+    };
+    if (reduced) set(0.52);
+    else {
+      new IntersectionObserver(([e]) => {
+        visible = e.isIntersecting;
+        if (visible && !raf) {
+          last = performance.now();
+          raf = requestAnimationFrame(frame);
+        }
+      }).observe(fig);
+      wave.addEventListener("pointermove", (e) => {
+        if (e.pointerType !== "mouse") return;
+        hover = true;
+        const r = wave.getBoundingClientRect();
+        set(Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)));
+      });
+      wave.addEventListener("pointerleave", () => (hover = false));
+    }
+  }
+</script>
+
+<style>
+  .ear {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    row-gap: 3rem;
+    align-items: center;
+    padding-top: var(--section);
+  }
+  .ear-copy {
+    grid-column: 1 / span 5;
+  }
+  .ear-copy .work-p {
+    margin-top: 2rem;
+  }
+  .listen {
+    grid-column: 7 / -1;
+    margin: 0;
+    padding: clamp(1.25rem, 2.4vw, 2rem);
+    border-radius: 14px;
+    background: #0d0d0d;
+  }
+  .wave {
+    --p: 0;
+    position: relative;
+    height: clamp(9rem, 16vw, 13rem);
+    cursor: ew-resize;
+  }
+  .bars {
+    position: absolute;
+    inset: 0 0 2.25rem;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+  /* Bars the playhead has passed are lit; the rest wait in a dim grey. */
+  .bar {
+    flex: 1;
+    height: 100%;
+    border-radius: 2px;
+    background: #ededed;
+    opacity: calc(0.22 + 0.78 * (1 - clamp(0, (var(--t) - var(--p)) * 100, 1)));
+    transform: scaleY(max(0.04, var(--v)));
+  }
+  .head {
+    position: absolute;
+    top: 0;
+    bottom: 2.25rem;
+    left: calc(var(--p) * 100%);
+    width: 2px;
+    margin-left: -1px;
+    background: #ededed;
+  }
+  .events {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .events li {
+    position: absolute;
+    left: calc(var(--at) * 100%);
+    max-width: 40%;
+    overflow: hidden;
+    color: var(--muted);
+    font-size: var(--step-small);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity 240ms var(--ease-out),
+      transform 240ms var(--ease-out);
+  }
+  .events li:last-child {
+    right: 0;
+    left: auto;
+  }
+  .events li:global(.is-on) {
+    color: var(--text);
+    opacity: 1;
+    transform: none;
+  }
+  .term {
+    margin: 1.5rem 0 0;
+    padding: 1.25rem 0 0;
+    overflow-x: auto;
+    border-top: 0;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    scrollbar-width: none;
+  }
+  .term code {
+    font-family: ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace;
+  }
+  .cmd {
+    display: block;
+    color: var(--text);
+  }
+  .cmd + .cmd {
+    margin-top: 0.6rem;
+  }
+  .prompt,
+  .out {
+    color: var(--muted);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .events li {
+      transition: none;
+    }
+  }
+  @media (max-width: 860px) {
+    .ear-copy,
+    .listen {
+      grid-column: 1 / -1;
+    }
+  }
+</style>
