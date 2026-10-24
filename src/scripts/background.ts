@@ -52,12 +52,19 @@ async function start(canvas: HTMLCanvasElement) {
   }
 
   // A soft light in the dither follows the mouse (not touch), sent at most once a frame.
+  // Not on /demos: the ground there stays still under the cursor. Checked per move, since
+  // view transitions keep this listener across pages.
+  const still = () => location.pathname.replace(/\/$/, "") === "/demos";
   if (!reducedMotion && matchMedia("(hover: hover) and (pointer: fine)").matches) {
     let pending: PointerEvent | null = null;
     addEventListener(
       "pointermove",
       (e) => {
         if (e.pointerType !== "mouse") return;
+        if (still()) {
+          post({ type: "pointer", x: e.clientX / CELL, y: e.clientY / CELL, on: false });
+          return;
+        }
         if (!pending) requestAnimationFrame(() => {
           post({ type: "pointer", x: pending!.clientX / CELL, y: pending!.clientY / CELL, on: true });
           pending = null;
