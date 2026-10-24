@@ -103,7 +103,6 @@
    }
   ],
   "tools": [
-   "Claude",
    "Codex"
   ],
   "crop": "top"
