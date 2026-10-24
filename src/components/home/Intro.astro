@@ -100,6 +100,7 @@ const style = (p: Piece) =>
     `--mw:${p.m[2]}%`,
     `--mr:${p.m[3]}deg`,
     `--z:${p.layer}`,
+    `--dz:${p.z}`,
     `--i:${order.indexOf(p.id) + 1}`,
     p.photo ? `--ar:${p.photo.w}/${p.photo.h}` : "--ar:1",
   ].join(";");
@@ -727,6 +728,47 @@ const style = (p: Piece) =>
     }
     .side {
       --cw: min(100cqw - 2 * var(--pad), 58cqw, 142.8cqh - 1rem);
+    }
+  }
+
+  /* Without the pinned scene (phones, short screens) the pieces still part as the hero leaves:
+     each rises faster than the page by its own depth. */
+  @supports (animation-timeline: view()) {
+    @media (prefers-reduced-motion: no-preference) {
+      :global(html:not(.scene)) .piece {
+        animation: piece-away linear both;
+        animation-timeline: view();
+        animation-range: exit 0% exit 100%;
+      }
+    }
+  }
+  /* At rest the collage breathes: every tile and photograph floats a few pixels on its own slow
+     cycle, out of step with the others. */
+  @media (prefers-reduced-motion: no-preference) {
+    .piece .tile,
+    .is-photo img {
+      animation: float 6.5s ease-in-out infinite alternate;
+      animation-delay: calc(var(--i) * -1.37s);
+    }
+    .is-photo img {
+      animation-duration: 8s;
+    }
+    :global(.motion-paused) .piece .tile,
+    :global(.motion-paused) .is-photo img {
+      animation-play-state: paused;
+    }
+  }
+  @keyframes float {
+    from {
+      translate: 0 -3px;
+    }
+    to {
+      translate: 0 4px;
+    }
+  }
+  @keyframes piece-away {
+    to {
+      translate: 0 calc(var(--dz) * -24vh);
     }
   }
 

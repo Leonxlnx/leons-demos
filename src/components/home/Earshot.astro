@@ -88,6 +88,13 @@ const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<spa
         }
       </ol>
     </div>
+    <div class="listen-bar">
+      <button class="button quiet play" type="button" data-play hidden>
+        <Icon name="play" size={14} />
+        <span class="play-label">Listen</span>
+      </button>
+      <span class="play-note">Six seconds of sound, every one made in code</span>
+    </div>
     <pre class="term"><code set:html={TERM} /></pre>
     <figcaption class="sr-only">A listening timeline as earshot draws it, and three commands with their answers from the earshot README.</figcaption>
   </figure>
@@ -95,7 +102,11 @@ const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<spa
 
 <script>
   /* The playhead sweeps the take every 9 seconds while the figure is on screen; under a mouse it
-     follows the pointer instead. Bars it has passed are lit, and the event under it is named. */
+     follows the pointer instead. Bars it has passed are lit, and the event under it is named.
+     Listen plays the take for real, six seconds made in code with Web Audio the way earshot forge
+     makes its sounds: key presses (filtered noise clicks), a glockenspiel note and a ding (decaying
+     sines with a bright partial), a pop (a falling sine) and two whooshes (noise through a swept
+     band-pass). The playhead follows the audio clock while it plays. */
   const fig = document.querySelector<HTMLElement>("[data-listen]");
   if (fig) {
     const wave = fig.querySelector<HTMLElement>(".wave")!;
@@ -118,9 +129,125 @@ const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<spa
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       const paused = document.documentElement.classList.contains("motion-paused");
-      if (!hover && !paused) set((t + dt / 9) % 1);
-      raf = visible ? requestAnimationFrame(frame) : 0;
+      if (playing && ctx) set(Math.min(1, Math.max(0, (ctx.currentTime - ctxStart) / T)));
+      else if (!hover && !paused && !reduced) set((t + dt / 9) % 1);
+      raf = visible || playing ? requestAnimationFrame(frame) : 0;
     };
+    // The take, in seconds, and where each sound sits on the 0..1 timeline above.
+    const T = 6;
+    let playing = false;
+    let ctxStart = 0;
+    let ctx: AudioContext | null = null;
+    const button = fig.querySelector<HTMLButtonElement>("[data-play]");
+    const label = button?.querySelector(".play-label");
+
+    function noise(ac: AudioContext, seconds: number) {
+      const buf = ac.createBuffer(1, Math.ceil(ac.sampleRate * seconds), ac.sampleRate);
+      const d = buf.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+      const src = ac.createBufferSource();
+      src.buffer = buf;
+      return src;
+    }
+    function env(ac: AudioContext, at: number, peak: number, attack: number, decay: number, out: AudioNode) {
+      const g = ac.createGain();
+      g.gain.setValueAtTime(0.0001, at);
+      g.gain.exponentialRampToValueAtTime(peak, at + attack);
+      g.gain.exponentialRampToValueAtTime(0.0001, at + attack + decay);
+      g.connect(out);
+      return g;
+    }
+    function key(ac: AudioContext, at: number, out: AudioNode) {
+      const n = noise(ac, 0.08);
+      const hp = ac.createBiquadFilter();
+      hp.type = "bandpass";
+      hp.frequency.value = 2400 + Math.random() * 900;
+      hp.Q.value = 1.2;
+      n.connect(hp).connect(env(ac, at, 0.5, 0.002, 0.05, out));
+      n.start(at);
+      // The thock under the click.
+      const o = ac.createOscillator();
+      o.frequency.setValueAtTime(190, at);
+      o.frequency.exponentialRampToValueAtTime(90, at + 0.05);
+      o.connect(env(ac, at, 0.35, 0.002, 0.06, out));
+      o.start(at);
+      o.stop(at + 0.1);
+    }
+    function bell(ac: AudioContext, at: number, freq: number, decay: number, out: AudioNode) {
+      for (const [mult, peak] of [
+        [1, 0.32],
+        [2.76, 0.1],
+        [5.4, 0.04],
+      ]) {
+        const o = ac.createOscillator();
+        o.frequency.value = freq * mult;
+        o.connect(env(ac, at, peak, 0.004, decay / mult, out));
+        o.start(at);
+        o.stop(at + decay + 0.1);
+      }
+    }
+    function pop(ac: AudioContext, at: number, out: AudioNode) {
+      const o = ac.createOscillator();
+      o.frequency.setValueAtTime(900, at);
+      o.frequency.exponentialRampToValueAtTime(220, at + 0.07);
+      o.connect(env(ac, at, 0.4, 0.003, 0.08, out));
+      o.start(at);
+      o.stop(at + 0.15);
+    }
+    function whoosh(ac: AudioContext, at: number, out: AudioNode) {
+      const n = noise(ac, 0.8);
+      const bp = ac.createBiquadFilter();
+      bp.type = "bandpass";
+      bp.Q.value = 0.9;
+      bp.frequency.setValueAtTime(350, at);
+      bp.frequency.exponentialRampToValueAtTime(3800, at + 0.38);
+      bp.frequency.exponentialRampToValueAtTime(900, at + 0.7);
+      const g = ac.createGain();
+      g.gain.setValueAtTime(0.0001, at);
+      g.gain.exponentialRampToValueAtTime(0.55, at + 0.34);
+      g.gain.exponentialRampToValueAtTime(0.0001, at + 0.72);
+      n.connect(bp).connect(g).connect(out);
+      n.start(at);
+    }
+    function listen() {
+      if (playing) return;
+      const AC = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (!AC) return;
+      ctx ??= new AC();
+      const ac = ctx;
+      ac.resume();
+      const master = ac.createGain();
+      master.gain.value = 0.42;
+      master.connect(ac.destination);
+      const t0 = ac.currentTime + 0.08;
+      for (let i = 0; i < 6; i++) key(ac, t0 + T * 0.04 + i * 0.11 + Math.random() * 0.015, master);
+      bell(ac, t0 + T * 0.2, 1568, 1.1, master);
+      pop(ac, t0 + T * 0.36, master);
+      whoosh(ac, t0 + T * 0.5 - 0.34, master);
+      whoosh(ac, t0 + T * 0.7 - 0.34, master);
+      bell(ac, t0 + T * 0.9, 2093, 1.6, master);
+      playing = true;
+      ctxStart = t0;
+      fig!.classList.add("is-playing");
+      if (label) label.textContent = "Listening";
+      button!.disabled = true;
+      setTimeout(() => {
+        playing = false;
+        fig!.classList.remove("is-playing");
+        if (label) label.textContent = "Listen again";
+        button!.disabled = false;
+        master.disconnect();
+      }, (T + 0.4) * 1000);
+      if (!raf) {
+        last = performance.now();
+        raf = requestAnimationFrame(frame);
+      }
+    }
+    if (button) {
+      button.hidden = false;
+      button.addEventListener("click", listen);
+    }
+
     if (reduced) set(0.52);
     else {
       new IntersectionObserver(([e]) => {
@@ -131,7 +258,7 @@ const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<spa
         }
       }).observe(fig);
       wave.addEventListener("pointermove", (e) => {
-        if (e.pointerType !== "mouse") return;
+        if (e.pointerType !== "mouse" || playing) return;
         hover = true;
         const r = wave.getBoundingClientRect();
         set(Math.min(1, Math.max(0, (e.clientX - r.left) / r.width)));
@@ -227,6 +354,32 @@ const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<spa
     color: var(--text);
     opacity: 1;
     transform: none;
+  }
+  .listen-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1rem;
+    margin-top: 1.25rem;
+  }
+  .play {
+    min-height: 2.5rem;
+    padding-inline: 1.1rem;
+  }
+  .play[hidden],
+  .play[hidden] + .play-note {
+    display: none;
+  }
+  .play:disabled {
+    cursor: default;
+  }
+  .play-note {
+    color: var(--muted);
+    font-size: var(--step-small);
+  }
+  /* While it plays, the lit bars breathe with the sound. */
+  :global(.is-playing) .bar {
+    transition: opacity 60ms linear;
   }
   .term {
     margin: 1.5rem 0 0;
