@@ -64,6 +64,11 @@ const maxPlaying = () => (innerWidth >= 700 ? 4 : 2);
 const loaded = (v: HTMLVideoElement) => v.hasAttribute("src");
 let paused = false;
 
+// The pause button shows only while a video that may play is on screen (.has-motion), paused or
+// not, so it is there to start them again.
+const inView = new Set<HTMLVideoElement>();
+const markMotion = () => document.documentElement.classList.toggle("has-motion", inView.size > 0);
+
 // A card plays X's 720p cut, or its 360p one wherever the card is at most 640 device pixels
 // wide, which that cut still fills (sharp phone screens get the 720p cut).
 const source = (v: HTMLVideoElement) =>
@@ -147,7 +152,10 @@ if (autoplay && "IntersectionObserver" in window) {
         const r = e.isIntersecting ? e.intersectionRatio : 0;
         ratio.set(v, r);
         if (r < MIN_RATIO) release(v);
+        if (r >= MIN_RATIO && !broken.has(v)) inView.add(v);
+        else inView.delete(v);
       }
+      markMotion();
       schedule();
     },
     { threshold: [0, 0.25, 0.5, 0.75, 1] },
@@ -156,6 +164,8 @@ if (autoplay && "IntersectionObserver" in window) {
     v.addEventListener("error", () => {
       broken.add(v);
       release(v);
+      inView.delete(v);
+      markMotion();
       schedule();
     });
     io.observe(v);

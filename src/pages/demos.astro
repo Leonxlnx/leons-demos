@@ -72,7 +72,7 @@ import { DEMOS, VISIBLE_FILTERS, VISIBLE_TOOL_FILTERS } from "../lib/demos";
   /* Pause for the videos (WCAG 2.2.2), the homepage's button. It rides in the bottom corner, on
      the grid's right edge, and parks just under the grid: once the end comes up, it scrolls away
      with the cards and never lands on the footer. It takes no room in the page: the margins
-     cancel its height. */
+     cancel its height. A solid fill with a hairline edge, nothing blurred behind it. */
   .motion {
     position: sticky;
     bottom: max(1rem, env(safe-area-inset-bottom));
@@ -86,12 +86,25 @@ import { DEMOS, VISIBLE_FILTERS, VISIBLE_TOOL_FILTERS } from "../lib/demos";
     border-radius: 999px;
     background: var(--surface);
     color: var(--text);
-    transition: transform var(--t-press) var(--ease-out);
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.14);
+    opacity: 0;
+    transition:
+      transform var(--t-press) var(--ease-out),
+      opacity var(--t-ui) var(--ease-out);
+    pointer-events: none;
   }
   .motion[hidden] {
     display: none;
   }
-  /* A light ring around a dark one, so focus shows on the page and over a video alike. */
+  /* It shows while a video is on screen (the page script marks the page), and always when the
+     keyboard reaches it. */
+  :global(.has-motion) .motion,
+  .motion:focus-visible {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  /* A light ring around a dark one, so focus shows on the page and over a video alike. The dark
+     ring covers the hairline edge. */
   .motion:focus-visible {
     box-shadow: 0 0 0 2px var(--bg);
   }

@@ -3,6 +3,7 @@
  * Taste Skill, the main work: what it is, the install command (types itself), the two live
  * figures as odometers, and a band of pages agents built with it that slides with the scroll.
  */
+import Icon from "../Icon.astro";
 import { compact } from "../../lib/format";
 import { column, glyphs } from "../../lib/odometer";
 import type { ViewProject } from "../../lib/projects";
@@ -75,7 +76,11 @@ const OUTPUTS = [
         <span class="caret" aria-hidden="true"></span>
       </span>
       <button class="copy" type="button" data-copy={INSTALL}>
-        <span class="roll">
+        <span class="glyph" aria-hidden="true">
+          <Icon name="copy" size={18} />
+          <Icon name="check" size={18} />
+        </span>
+        <span class="roll sr-only">
           <span>Copy</span>
           <span aria-hidden="true">Copied</span>
         </span>
@@ -89,7 +94,6 @@ const OUTPUTS = [
   </div>
 
   <div class="outputs" data-outputs>
-    <p class="outputs-cap wrap" data-reveal="up">Pages coding agents built with it</p>
     <ul class="band" aria-label="Pages built with Taste Skill">
       {
         OUTPUTS.map((o, i) => (
@@ -104,6 +108,21 @@ const OUTPUTS = [
     </ul>
   </div>
 </section>
+
+<script>
+  /* A copy that fails (no clipboard access) must not show the check. The page script still marks
+     the button done, with its hidden label set to "Select and copy", so here the glyph stays the
+     copy glyph and the command is selected instead, ready to copy by hand. */
+  for (const b of document.querySelectorAll<HTMLButtonElement>(".install [data-copy]")) {
+    const label = b.querySelector(".roll > span + span");
+    const code = b.closest(".install")?.querySelector("code");
+    new MutationObserver(() => {
+      const failed = b.classList.contains("is-done") && label?.textContent !== "Copied";
+      b.toggleAttribute("data-failed", failed);
+      if (failed && code) getSelection()?.selectAllChildren(code);
+    }).observe(b, { attributes: true, attributeFilter: ["class"] });
+  }
+</script>
 
 <style>
   /* The seam above it ends in solid paper and supplies the transition space, so the section
@@ -146,11 +165,11 @@ const OUTPUTS = [
     gap: 1rem 2rem;
     margin-top: clamp(2.5rem, 5vw, 4rem);
   }
+  /* One row: the command, then the copy button. */
   .install {
     display: inline-flex;
-    flex-wrap: wrap;
     align-items: center;
-    gap: 0.5rem 1rem;
+    gap: 1rem;
     padding: 0.375rem 0.375rem 0.375rem 1.25rem;
     border-radius: 999px;
     background: var(--paper-2);
@@ -159,55 +178,56 @@ const OUTPUTS = [
     position: relative;
     display: inline-block;
   }
+  /* Literal terminal text, the one place the page sets monospace. */
   .install code {
-    font: inherit;
-    font-size: var(--step-body);
+    font-family: var(--mono);
+    font-size: 0.9375rem;
+    letter-spacing: 0;
+    white-space: nowrap;
     user-select: all;
   }
   .caret {
     display: none;
   }
+  /* A circle with a copy glyph that turns into a check once the command is on the clipboard.
+     Its label stays for screen readers, and the status line beside it speaks the result. */
   .copy {
     display: none;
-    min-height: 2.75rem;
-    padding: 0 1.1rem;
+    flex: none;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
     border-radius: 999px;
     background: var(--paper-ink);
     color: var(--paper);
-    font-size: var(--step-body);
-    font-weight: 500;
     transition: transform var(--t-press) var(--ease-out);
   }
   .copy:active {
-    transform: scale(0.97);
+    transform: scale(0.94);
   }
   .copy:focus-visible {
     background: #333;
   }
   /* Only once the page script runs, which is what makes it work. */
   :global(.reveal) .copy {
-    display: inline-flex;
-    align-items: center;
-  }
-  /* The label turns over instead of swapping, and the pill keeps one width. */
-  .roll {
     display: grid;
-    height: 1.25em;
-    height: 1lh;
-    overflow: clip;
-    line-height: 1.25;
   }
-  .roll > span {
+  .glyph {
+    display: grid;
+  }
+  .glyph :global(.icon) {
     grid-area: 1 / 1;
-    transition: transform var(--t-ui) var(--ease-out);
+    transition:
+      opacity var(--t-ui) var(--ease-out),
+      transform var(--t-ui) var(--ease-out);
   }
-  .roll > span + span {
-    transform: translateY(100%);
+  .glyph :global(.icon + .icon),
+  .copy.is-done:not([data-failed]) .glyph :global(.icon:first-child) {
+    opacity: 0;
+    transform: scale(0.6);
   }
-  .copy.is-done .roll > span:first-child {
-    transform: translateY(-100%);
-  }
-  .copy.is-done .roll > span + span {
+  .copy.is-done:not([data-failed]) .glyph :global(.icon + .icon) {
+    opacity: 1;
     transform: none;
   }
   .taste-links {
@@ -221,25 +241,29 @@ const OUTPUTS = [
     margin-block: -0.6rem;
   }
 
+  /* The figures stand on the heading's columns, the second on the copy's left edge, each with its
+     caption under it. They share one size, set by the narrower right column: --fig resolves
+     against the row (the .specimens container), and 17.5% of it is a little under half of five
+     columns, so the wider figure keeps clear of the right edge. */
   .specimens {
     margin-top: clamp(5rem, 12svh, 9rem);
-  }
-  /* Each figure is sized by its own column: --fig is resolved inside the .specimen container.
-     On a wide screen the caption sits beside its figure; below 1180px it would fit beside one
-     and not the other, so there both captions go under (see the end). */
-  .specimen {
-    --fig: min(var(--step-monument), 37cqi);
-    display: flex;
-    grid-column: span 6;
-    align-items: flex-start;
-    flex-wrap: wrap;
-    gap: clamp(0.75rem, 1.5vw, 1.5rem);
-    margin: 0;
     container-type: inline-size;
   }
+  .specimen {
+    --fig: min(var(--step-monument), 17.5cqi);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+    margin: 0;
+  }
+  .specimen:first-child {
+    grid-column: 1 / span 7;
+  }
+  .specimen:last-child {
+    grid-column: 8 / -1;
+  }
   .specimen figcaption {
-    max-width: 9ch;
-    padding-top: 0.35rem;
     color: var(--paper-muted);
     font-size: var(--step-body);
     line-height: 1.35;
@@ -288,11 +312,6 @@ const OUTPUTS = [
   .outputs {
     margin-top: clamp(4rem, 8vw, 7.5rem);
   }
-  .outputs-cap {
-    margin: 0 auto 1.5rem;
-    color: var(--paper-muted);
-    font-size: var(--step-body);
-  }
   .band {
     display: flex;
     gap: clamp(0.75rem, 1.4vw, 1.5rem);
@@ -305,14 +324,16 @@ const OUTPUTS = [
     flex: none;
     width: clamp(18rem, 42vw, 46rem);
   }
+  /* In greyscale like the rest of the page, with a hairline, so a page as light as the paper
+     keeps its edge. */
   .shot img {
     display: block;
     width: 100%;
     height: auto;
-    border-radius: 6px;
+    border-radius: var(--radius-media);
     background: var(--paper-2);
-    /* A hairline, so a page as light as the paper keeps its edge. */
     box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.06);
+    filter: grayscale(1);
   }
   @supports (animation-timeline: view()) {
     @media (prefers-reduced-motion: no-preference) {
@@ -449,31 +470,19 @@ const OUTPUTS = [
     }
   }
 
-  /* Only a phone is too narrow for the one-row capsule: there it fills the column and Copy
-     becomes a full-width bar. */
+  /* On a phone the capsule fills the column, command at the left and the circle at the right.
+     The command steps down only as far as it must to stay on one line: 0.61em is a little over
+     the advance of the monospace faces in the stack, and 4.75rem the capsule's padding, gap and
+     circle with some room to spare. */
   @media (max-width: 480px) {
     .install {
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
       width: 100%;
-      gap: 0.75rem;
-      padding: 1rem 1.25rem;
-      border-radius: 1.5rem;
+      justify-content: space-between;
+      gap: 0.5rem;
+      padding: 0.25rem 0.25rem 0.25rem 1rem;
     }
-    :global(.reveal) .copy {
-      justify-content: center;
-    }
-  }
-  /* Up to 1180px both figures take their caption under them, so the pair always matches. */
-  @media (max-width: 1180px) {
-    .specimen {
-      flex-direction: column;
-      gap: 0.6rem;
-    }
-    .specimen figcaption {
-      max-width: none;
-      padding-top: 0;
+    .install code {
+      font-size: min(0.9375rem, (100vw - 2 * var(--pad) - 4.75rem) / (var(--chars) * 0.61));
     }
   }
   @media (max-width: 860px) {
@@ -490,8 +499,13 @@ const OUTPUTS = [
     .specimens {
       margin-top: 4rem;
     }
+    /* Half the row each; a figure is 40% of its half. */
+    .specimen:first-child,
+    .specimen:last-child {
+      grid-column: span 6;
+    }
     .specimen {
-      --fig: min(19rem, 40cqi);
+      --fig: min(19rem, 20cqi - 0.2 * var(--gutter));
     }
     .cut {
       height: auto;

@@ -2,8 +2,10 @@
 /*
  * One half of a ring of polished metal that circles a group of things: the back half passes
  * behind them, the front half in front, so the group reads as one object in one space. Place
- * both halves on the same box. It draws itself on as it arrives. --ring-rim, --ring-tube and
- * --ring-glint set its weight (in units of a 1000-wide ring). Decorative.
+ * both halves on the same box. --ring-rim, --ring-tube and --ring-glint set its weight (in units
+ * of a 1000-wide ring). It is still: whoever places it fades or moves the box, so the SVG itself
+ * is painted once, its soft shadow included (an SVG filter is rasterised with the paint, where a
+ * CSS filter would cost a pass on every frame the box moves). Decorative.
  */
 interface Props {
   id: string;
@@ -12,6 +14,7 @@ interface Props {
 }
 const { id, half, class: cls } = Astro.props;
 const g = `ring-${id}-${half}`;
+const shade = `${g}-shade`;
 ---
 
 <svg class:list={["ring", `ring-${half}`, cls]} viewBox="0 0 1000 240" aria-hidden="true" focusable="false">
@@ -24,11 +27,14 @@ const g = `ring-${id}-${half}`;
       <stop offset="0.78" stop-color="#6c6c6c"></stop>
       <stop offset="1" stop-color="#d8d8d8"></stop>
     </linearGradient>
+    <filter id={shade} x="-5%" y="-30%" width="110%" height="170%">
+      <feDropShadow dx="0" dy="6" stdDeviation="6" flood-color="#000" flood-opacity="0.1"></feDropShadow>
+    </filter>
   </defs>
-  <g class="body">
-    <ellipse class="rim" cx="500" cy="120" rx="492" ry="112" pathLength="1"></ellipse>
-    <ellipse class="tube" cx="500" cy="120" rx="492" ry="112" pathLength="1" stroke={`url(#${g})`}></ellipse>
-    <ellipse class="glint" cx="500" cy="117.5" rx="490" ry="110" pathLength="1"></ellipse>
+  <g class="body" filter={`url(#${shade})`}>
+    <ellipse class="rim" cx="500" cy="120" rx="492" ry="112"></ellipse>
+    <ellipse class="tube" cx="500" cy="120" rx="492" ry="112" stroke={`url(#${g})`}></ellipse>
+    <ellipse class="glint" cx="500" cy="117.5" rx="490" ry="110"></ellipse>
   </g>
 </svg>
 
@@ -37,7 +43,6 @@ const g = `ring-${id}-${half}`;
     position: absolute;
     overflow: visible;
     pointer-events: none;
-    filter: drop-shadow(0 6px 6px rgba(0, 0, 0, 0.1));
   }
   /* Each half shows its side of the long axis; the box is turned as a whole, so the cut turns
      with it. The back half sits a little further into the haze. */
@@ -64,17 +69,5 @@ const g = `ring-${id}-${half}`;
   .glint {
     stroke: rgba(255, 255, 255, 0.95);
     stroke-width: var(--ring-glint, 1.4);
-  }
-
-  @media (prefers-reduced-motion: no-preference) {
-    ellipse {
-      stroke-dasharray: 1 1;
-      animation: draw 1700ms cubic-bezier(0.65, 0, 0.35, 1) var(--ring-delay, 800ms) backwards;
-    }
-  }
-  @keyframes draw {
-    from {
-      stroke-dashoffset: 1;
-    }
   }
 </style>

@@ -93,7 +93,6 @@ const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<spa
         <Icon name="play" size={14} />
         <span class="play-label">Listen</span>
       </button>
-      <span class="play-note">Six seconds of sound, every one made in code</span>
       <span class="sr-only" role="status" aria-live="polite" data-play-status></span>
     </div>
     <pre class="term"><code set:html={TERM} /></pre>
@@ -333,17 +332,16 @@ const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<spa
     padding-top: var(--section);
   }
   .ear-copy {
-    grid-column: 1 / span 5;
+    grid-column: 1 / span 6;
   }
   .ear-copy .work-p {
     margin-top: 2rem;
   }
+  /* The listening sits on the ground like the copy, from the same left edge as the TasteCode
+     and cinetic copy. */
   .listen {
-    grid-column: 7 / -1;
+    grid-column: 8 / -1;
     margin: 0;
-    padding: clamp(1.25rem, 2.4vw, 2rem);
-    border-radius: 14px;
-    background: #0d0d0d;
   }
   .wave {
     position: relative;
@@ -370,13 +368,13 @@ const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<spa
     transform: scaleY(max(0.04, var(--v)));
   }
   /* Bars the playhead has passed are lit; the rest wait in a dim grey. The grey is one veil in
-     the panel's colour at 78%, the same as each bar at 22% opacity, and its left edge is the
-     playhead. Only the veil moves, by transform, so the 120 bars are drawn once and never
+     the ground's colour (--bg) at 78%, the same as each bar at 22% opacity, and its left edge is
+     the playhead. Only the veil moves, by transform, so the 120 bars are drawn once and never
      restyled. Without the script it rests a little past the middle. */
   .sweep {
     position: absolute;
     inset: 0;
-    background: rgb(13 13 13 / 0.78);
+    background: rgb(10 10 10 / 0.78);
     transform: translateX(54%);
   }
   .sweep::before {
@@ -417,28 +415,16 @@ const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<spa
     gap: 0.75rem 1rem;
     margin-top: 1.25rem;
   }
-  /* The panel is darker than the page, so the button takes a lighter fill to read as one. */
   .listen .play {
-    min-height: 3rem;
     padding-inline: 1.2rem;
-    background: #1f1f1f;
   }
-  .listen .play:focus-visible {
-    background: #2a2a2a;
-  }
-  .play[hidden],
-  .play[hidden] + .play-note {
+  .play[hidden] {
     display: none;
   }
   /* While the take plays the button rests: it keeps focus but takes no press. */
   .play[aria-disabled="true"] {
     cursor: default;
     transform: none;
-  }
-  .play-note {
-    color: var(--muted);
-    font-size: var(--step-small);
-    text-wrap: balance;
   }
   /* On a phone every second bar goes, so the rest keep a real width. */
   @media (max-width: 560px) {
@@ -458,7 +444,7 @@ const TERM = LINES.map((l) => `<span class="prompt">$</span> ${esc(l.cmd)}\n<spa
     scrollbar-width: none;
   }
   .term code {
-    font-family: ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace;
+    font-family: var(--mono);
   }
   .term :global(.prompt),
   .term :global(.out) {

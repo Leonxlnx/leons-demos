@@ -19,8 +19,15 @@
   /* Section names (Taste Skill, TasteCode, Demos) and headings (about, GitHub, Recognition). */
   --step-section: clamp(3.25rem, 0.6rem + 8.2vw, 9.5rem);
   --step-heading: clamp(2.5rem, 1rem + 4vw, 5.5rem);
-  /* The space above a section, inside main and in the close after it. */
-  --section: clamp(6rem, 12vw, 12rem);
+  /* Names inside a section: the repositories, the programmes, the contact line. */
+  --step-title: clamp(1.75rem, 0.8rem + 2.4vw, 3rem);
+  /* The space above a section, inside main and in the close after it. A phone gets a little
+     less, so a screen holds more than one beat; from 800px up it is the same 12vw. */
+  --section: clamp(4.5rem, 12vw, 12rem);
+  /* Literal terminal text only. */
+  --mono: ui-monospace, "SF Mono", "Cascadia Code", Consolas, monospace;
+  /* The one edge of a picture on the dark ground: a hairline of light. */
+  --edge-dark: 0 0 0 1px rgb(255 255 255 / 0.08);
   /* The space under the closing reel, where the pause button parks (index.astro). */
   --reel-foot: clamp(3rem, 6vw, 5rem);
 }
@@ -36,10 +43,11 @@ main {
 }
 
 /* Section names slide in from the right as they come up the screen, tied to the scroll, on top
-   of their own line reveal. */
+   of their own line reveal. Phones keep only the line reveal. TasteCode's name drifts with its
+   icon as one unit (.tc-name is a .drift), so the gap between them never changes. */
 @supports (animation-timeline: view()) {
-  @media (prefers-reduced-motion: no-preference) {
-    .work-h,
+  @media (prefers-reduced-motion: no-preference) and (min-width: 861px) {
+    .work-h:not(.tc-name .work-h),
     .drift {
       animation: name-drift linear both;
       animation-timeline: view();
@@ -281,37 +289,37 @@ main {
   contain-intrinsic-size: auto 1254px;
 }
 .ear {
-  contain-intrinsic-size: auto 767px;
+  contain-intrinsic-size: auto 703px;
 }
 .cin {
-  contain-intrinsic-size: auto 2121px;
+  contain-intrinsic-size: auto 2028px;
 }
 .oss {
-  contain-intrinsic-size: auto 762px;
+  contain-intrinsic-size: auto 743px;
 }
 .recog {
-  contain-intrinsic-size: auto 742px;
+  contain-intrinsic-size: auto 738px;
 }
 .demos {
   contain-intrinsic-size: auto 648px;
 }
 @media (max-width: 560px) {
   .tc {
-    contain-intrinsic-size: auto 918px;
+    contain-intrinsic-size: auto 894px;
   }
   .ear {
-    contain-intrinsic-size: auto 1101px;
+    contain-intrinsic-size: auto 957px;
   }
   .cin {
-    contain-intrinsic-size: auto 1602px;
+    contain-intrinsic-size: auto 1463px;
   }
   .oss {
-    contain-intrinsic-size: auto 785px;
+    contain-intrinsic-size: auto 761px;
   }
   .recog {
-    contain-intrinsic-size: auto 893px;
+    contain-intrinsic-size: auto 842px;
   }
   .demos {
-    contain-intrinsic-size: auto 454px;
+    contain-intrinsic-size: auto 430px;
   }
 }

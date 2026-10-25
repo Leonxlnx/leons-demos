@@ -354,6 +354,7 @@ video {
 
 /* A card is a picture with its caption under it, on the page itself: no box, no outline. */
 .card {
+  --btn-h: 2rem;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -379,6 +380,16 @@ video {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+/* A hairline inside the corners, so a dark picture keeps its edge on the dark page. It comes
+   after the picture and video, so it lies over them, and takes no clicks. */
+.media::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.07);
+  pointer-events: none;
 }
 .media video {
   opacity: 0;
@@ -453,12 +464,14 @@ video {
   }
 }
 
+/* As tall as a pill, so the likes sit on one line across a row whether a card has links or not. */
 .foot {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: 0.5rem 0.75rem;
+  min-height: var(--btn-h);
   margin-top: auto;
 }
 
@@ -493,7 +506,7 @@ video {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  height: 2rem;
+  height: var(--btn-h);
   padding: 0 0.85rem;
   border-radius: 999px;
   background: var(--surface);
@@ -509,28 +522,18 @@ video {
 .btn:active {
   transform: scale(0.96);
 }
-.btn--primary {
-  color: #000;
-  background: #fff;
-}
-/* A fill one step up: grey pills lighten, the white one greys a little. */
+/* Every pill rests in the same quiet grey, the way to the demo itself included. Focus lifts a
+   fill one step; on that one it turns white. */
 .btn:focus-visible {
   color: #fff;
   background: #262626;
 }
 .btn--primary:focus-visible {
   color: #000;
-  background: #d4d4d4;
+  background: #fff;
 }
 
-/* An icon button is a circle: as wide as it is tall, here and in the touch sizes below. */
-.btn--icon {
-  width: 2rem;
-  padding: 0;
-  color: var(--muted);
-}
-
-/* Touch: 40px controls with a little more room between them. */
+/* Touch: 44px controls with a little more room between them. */
 @media (pointer: coarse) {
   .filters {
     gap: 0.25rem;
@@ -545,13 +548,11 @@ video {
   .links {
     gap: 0.5rem;
   }
-  .btn {
-    height: 2.5rem;
-    padding: 0 1rem;
+  .card {
+    --btn-h: 2.75rem;
   }
-  .btn--icon {
-    width: 2.5rem;
-    padding: 0;
+  .btn {
+    padding: 0 1rem;
   }
 }
 

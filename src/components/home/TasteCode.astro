@@ -16,7 +16,7 @@ const { project } = Astro.props;
 
 <section class="tc wrap" aria-labelledby="tc-h">
   <div class="tc-head">
-    <div class="tc-name">
+    <div class="tc-name drift">
       <img class="tc-icon" src="/work/tastecode-icon.webp" alt="" width="192" height="192" loading="lazy" decoding="async" data-reveal="up" />
       <h2 id="tc-h" class="work-h" data-reveal="line">
         <span class="line"><span>TasteCode</span></span>
@@ -106,10 +106,10 @@ const { project } = Astro.props;
     width: min(100%, (100svh - 7rem) * 1.6);
     margin: 0 auto;
     overflow: hidden;
-    border-radius: 12px;
+    border-radius: var(--radius-media);
     background: #111;
     /* The window's own hairline edge, which the picture leaves out. */
-    box-shadow: 0 0 0 1px var(--line-2);
+    box-shadow: var(--edge-dark);
     transform-origin: 50% 100%;
   }
   .tc-window picture,
@@ -144,9 +144,6 @@ const { project } = Astro.props;
     .tc-name,
     .tc-copy {
       grid-column: 1 / -1;
-    }
-    .tc-window {
-      border-radius: 8px;
     }
   }
 </style>

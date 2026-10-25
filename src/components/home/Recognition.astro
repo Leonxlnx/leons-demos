@@ -110,7 +110,7 @@ const split = (s: string) => {
   .lead {
     grid-column: span 6;
     container-type: inline-size;
-    font-size: clamp(1.75rem, 0.6rem + 2.6vw, 3.25rem);
+    font-size: var(--step-title);
   }
   /* Each entry hangs from its own hairline and rises in with it, so its text never crosses
      the rule of the entry below. */
@@ -129,14 +129,15 @@ const split = (s: string) => {
   }
   .what {
     display: block;
-    font-size: clamp(1.5rem, 0.4rem + 1.9vw, 2.5rem);
+    font-size: var(--step-lead);
     font-weight: 500;
-    line-height: 1.04;
-    letter-spacing: -0.04em;
+    line-height: 1.1;
+    letter-spacing: -0.03em;
     text-wrap: balance;
   }
   .lead .what {
     font-size: inherit;
+    line-height: 1.04;
     letter-spacing: -0.045em;
   }
   .where {

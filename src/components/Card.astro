@@ -53,18 +53,17 @@ const sizes = "(max-width: 699px) calc(100vw - 2rem), (max-width: 1057px) 47vw, 
           )
         }
       </span>
-      <span class="links">
-        {
-          demo.links_.map((l) => (
-            <a class:list={["btn", l.primary && "btn--primary"]} href={l.url} target="_blank" rel="noopener">
-              {l.label}
-            </a>
-          ))
-        }
-        <a class="btn btn--icon" href={demo.post_url} target="_blank" rel="noopener" aria-label="View on X">
-          <Icon name="x" size={12} />
-        </a>
-      </span>
+      {
+        demo.links_.length > 0 && (
+          <span class="links">
+            {demo.links_.map((l) => (
+              <a class:list={["btn", l.primary && "btn--primary"]} href={l.url} target="_blank" rel="noopener">
+                {l.label}
+              </a>
+            ))}
+          </span>
+        )
+      }
     </div>
   </div>
 </article>

@@ -2,13 +2,17 @@
  * The hero and about scene (components/home/Intro.astro).
  *
  * With motion allowed and a hero that fits the screen, html.scene pins the hero and the about
- * section as one stage, 110svh of scroll long (an inline script at the top of the intro sets the
+ * section as one stage, 85svh of scroll long (an inline script at the top of the intro sets the
  * class before it is first laid out, so the page never jumps; this module confirms it).
  * Scrolling, the name and the intro rise away, the ring opens and fades, everything else in the
  * collage flies outward, the tiles settle back toward Leon's shoulders and, while he sinks, come
- * up beside the about text as one cluster, thick and turned. Once they land they float in CSS
- * and this script asks for no more frames. Progress is eased toward the scroll position each
- * frame, so the stage moves with a little weight. Transforms and opacity only.
+ * up beside the about text as one cluster, thick and turned; the text, the photographs and the
+ * ring come in with them. Through the rest of the run the cluster keeps drifting up a little, so
+ * nothing stands frozen before the page moves on. Everything is set from the progress, so
+ * scrolling back plays it backwards. Progress is eased toward the scroll position by time, so
+ * the stage moves with the same weight at any frame rate; the loop stops once it arrives and
+ * the landed tiles have settled.
+ * Transforms and opacity only.
  */
 
 const intro = document.querySelector<HTMLElement>("[data-intro]");
@@ -29,20 +33,40 @@ function init(intro: HTMLElement) {
   const heroTop = hero.querySelector<HTMLElement>(".hero-top")!;
   const rings = Array.from(collage.querySelectorAll<SVGSVGElement>(".ring"));
   const reveals = Array.from(about.querySelectorAll<HTMLElement>("[data-reveal]"));
+  const copy = about.querySelector<HTMLElement>(".about-copy")!;
+  // The photographs and the about ring; the right photograph comes a beat after the left. Once
+  // the page is idle after its entrance they wait at a trace of opacity (below one level of grey)
+  // rather than at none, so the browser paints them then instead of in the middle of the scroll.
+  let floor = 0;
+  const extras = [
+    ...Array.from(about.querySelectorAll<HTMLElement>(".panel")).map((el) => ({ el, lag: el.classList.contains("panel-r") ? 0.03 : 0 })),
+    ...Array.from(about.querySelectorAll<SVGSVGElement>(".about-ring")).map((el) => ({ el, lag: 0 })),
+  ];
 
   const vh = () => innerHeight;
   const clamp = (v: number, a = 0, b = 1) => Math.min(b, Math.max(a, v));
   const seg = (v: number, a: number, b: number) => clamp((v - a) / (b - a));
   const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
   const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
-  const easeInOut = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  // Sine in-out: soft at both ends, without the long flat shoulders of a cubic.
+  const ease = (t: number) => 0.5 - 0.5 * Math.cos(Math.PI * t);
 
   // The timeline, in scene progress. The phases overlap, so no frame is left half empty.
   const DIP = [0, 0.12]; // the tiles settle back toward his shoulders
-  const RISE = [0.08, 0.6]; // and come up to the cluster
-  const SINK = [0.06, 0.28]; // Leon sinks below the edge, gone before the about text
-  const HERE = 0.24; // the about text comes in
-  const LANDED = 0.6; // the tiles are in place and float on their own
+  const RISE = [0.04, 0.68]; // and, already growing, come up to the cluster
+  const SINK = [0.04, 0.26]; // Leon sinks below the edge, gone as the about text comes in
+  const HERE = 0.14; // the about text comes in
+  const LANDED = 0.68; // the tiles are in place and float on their own
+  // Afloat, once landed: each tile sinks a few pixels and comes back up, out of step with the
+  // others, and is at rest within five seconds. It runs in this loop rather than as a CSS
+  // animation, because starting one on the 3D tiles re-rasters every slab in a single frame.
+  const BOB = 2.4; // seconds down, and as long back up
+  const STAGGER = 0.14; // seconds between the tiles
+  const AFLOAT = 2 * BOB + 3 * STAGGER;
+  const bob = (i: number) => {
+    const t = clamp((scene.ft - (i + 1) * STAGGER) / (2 * BOB));
+    return 3 - 3 * Math.cos(2 * Math.PI * t); // 0, down to 6px, back to 0
+  };
 
   interface Box {
     cx: number;
@@ -80,6 +104,7 @@ function init(intro: HTMLElement) {
     flyers: [] as Flyer[],
     visible: true,
     here: false,
+    ft: 0, // seconds afloat since the tiles landed
     // Where the intro starts on the page and how far it scrolls, read only on measure.
     top: 0,
     run: 0,
@@ -134,8 +159,14 @@ function init(intro: HTMLElement) {
     const H = vh();
     const W = innerWidth;
     const a = easeOut(seg(p, 0, 0.3));
-    const dip = easeInOut(seg(p, DIP[0], DIP[1]));
-    const b = easeInOut(seg(p, RISE[0], RISE[1]));
+    const dip = ease(seg(p, DIP[0], DIP[1]));
+    // The rise is front-loaded (the square root), so the tiles visibly grow while Leon sinks; it
+    // still lands softly.
+    const b = ease(Math.sqrt(seg(p, RISE[0], RISE[1])));
+    // After landing, the cluster and its text keep drifting up through the rest of the run.
+    const hold = seg(p, LANDED, 1) * H * 0.04;
+    // The float fades out as the tiles leave the landing, so scrolling back never snaps them.
+    const afloat = seg(p, LANDED - 0.05, LANDED);
 
     heroTop.style.transform = `translate3d(0, ${(-a * H * 0.32).toFixed(2)}px, 0)`;
     heroTop.style.opacity = String(clamp(1 - seg(p, 0, 0.2) * 1.1));
@@ -149,9 +180,9 @@ function init(intro: HTMLElement) {
     }
 
     // Leon stands while the tiles dip behind him, then sinks below the edge.
-    const sink = easeInOut(seg(p, SINK[0], SINK[1]));
+    const sink = ease(seg(p, SINK[0], SINK[1]));
     me.style.transform = `translate3d(0, ${(sink * 105).toFixed(2)}%, 0)`;
-    const mo = clamp(1 - seg(p, 0.22, SINK[1]));
+    const mo = clamp(1 - seg(p, 0.18, SINK[1]));
     me.style.opacity = String(mo);
     me.style.visibility = mo < 0.01 ? "hidden" : "";
 
@@ -165,14 +196,14 @@ function init(intro: HTMLElement) {
       f.el.style.visibility = o < 0.01 ? "hidden" : "";
     }
 
-    for (const m of scene.moves) {
+    for (const [i, m] of scene.moves.entries()) {
       // Dip: toward his shoulders, a little smaller, as if pushed back. Rise: from there to the
       // slot, growing to its size.
       const toScale = m.to.w / m.from.w;
       // Sideways they move first, so they are clear of the about text by the time it comes in.
-      const x = lerp(0, m.to.cx - m.from.cx, easeOut(seg(p, RISE[0], 0.32)));
-      const y = lerp(dip * H * 0.08, m.to.cy - m.from.cy, b);
+      const x = lerp(0, m.to.cx - m.from.cx, easeOut(seg(p, RISE[0], 0.36)));
       const s = lerp(1 - dip * 0.1, toScale, b);
+      const y = lerp(dip * H * 0.08, m.to.cy - m.from.cy, b) - hold + bob(i) * s * afloat;
       m.el.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) rotate(${(-m.r * b).toFixed(2)}deg) scale(${s.toFixed(4)})`;
       m.el.style.zIndex = b > 0.5 ? m.zi : "";
       // One transform on the body: the turn, and the thickness as a stretch in depth.
@@ -180,12 +211,18 @@ function init(intro: HTMLElement) {
       m.body.style.transform = `rotateX(${lerp(m.rx0, m.rx, b).toFixed(2)}deg) rotateY(${lerp(m.ry0, m.ry, b).toFixed(2)}deg) rotateZ(${lerp(0, m.rz, b).toFixed(2)}deg) scaleZ(${thick.toFixed(4)})`;
     }
 
-    // Classes change only when their state does.
-    const landed = p >= LANDED;
-    if (landed !== about.classList.contains("is-settled")) {
-      about.classList.toggle("is-settled", landed);
-      intro.classList.toggle("is-afloat", landed);
+    // The about text rises in as the tiles clear the way; the photographs and the ring arrive as
+    // the tiles land. The individual translate leaves their own transform and rotate alone.
+    const c = easeOut(seg(p, HERE, 0.34));
+    copy.style.opacity = c.toFixed(3);
+    copy.style.transform = `translate3d(0, ${((1 - c) * 24 - hold).toFixed(2)}px, 0)`;
+    for (const { el, lag } of extras) {
+      const s = ease(seg(p, 0.46 + lag, LANDED + lag));
+      el.style.opacity = Math.max(s, floor).toFixed(3);
+      el.style.translate = `0 ${((1 - s) * 24 - hold).toFixed(2)}px`;
     }
+
+    // Classes change only when their state does.
     const here = p > HERE;
     if (here !== scene.here) {
       scene.here = here;
@@ -195,12 +232,24 @@ function init(intro: HTMLElement) {
   }
 
   let raf = 0;
-  function frame() {
+  let last = 0;
+  function frame(now: number) {
     raf = 0;
-    scene.p += (scene.target - scene.p) * 0.14;
+    // The time since the last frame (one frame's worth on the first), capped so a stall does
+    // not jump the stage.
+    const dt = last ? Math.min(64, now - last) : 16.7;
+    last = now;
+    scene.p += (scene.target - scene.p) * (1 - Math.exp(-dt / 105));
     if (Math.abs(scene.target - scene.p) < 0.0004) scene.p = scene.target;
+    // The float's clock runs while the tiles are landed and motion is not paused, and starts
+    // over once they have left.
+    const paused = root.classList.contains("motion-paused");
+    if (scene.p < LANDED - 0.05) scene.ft = 0;
+    else if (scene.p >= LANDED && !paused) scene.ft = Math.min(AFLOAT, scene.ft + dt / 1000);
     render();
-    if (scene.visible && scene.p !== scene.target) raf = requestAnimationFrame(frame);
+    const floating = scene.p >= LANDED && scene.ft < AFLOAT && !paused;
+    if (scene.visible && (scene.p !== scene.target || floating)) raf = requestAnimationFrame(frame);
+    else last = 0;
   }
   const wake = () => {
     if (scene.on && !raf && scene.visible) raf = requestAnimationFrame(frame);
@@ -231,12 +280,16 @@ function init(intro: HTMLElement) {
         }
         // Back to each tile's resting angle and thickness.
         for (const m of scene.moves) m.body.style.transform = "";
-        about.classList.remove("is-here", "is-settled");
-        intro.classList.remove("is-afloat");
+        for (const el of [copy, ...extras.map((x) => x.el)]) {
+          el.style.opacity = "";
+          el.style.transform = "";
+          el.style.translate = "";
+        }
+        about.classList.remove("is-here");
         // The about text was waiting for the scene; without it, it is simply shown.
         for (const el of reveals) el.classList.add("is-in");
         scene.here = false;
-        scene.p = scene.target = 0;
+        scene.p = scene.target = scene.ft = 0;
       }
     }
     if (on) {
@@ -244,6 +297,8 @@ function init(intro: HTMLElement) {
       readScroll();
       scene.p = scene.target;
       render();
+      // Landed already (a reload further down): the float still plays.
+      wake();
     }
   }
 
@@ -265,8 +320,19 @@ function init(intro: HTMLElement) {
     clearTimeout(resizeTimer);
     resizeTimer = window.setTimeout(decide, 120);
   });
+  setTimeout(() => {
+    const prime = () => {
+      floor = 0.002;
+      if (scene.on) render();
+    };
+    if ("requestIdleCallback" in window) requestIdleCallback(prime, { timeout: 2000 });
+    else prime();
+  }, 2500);
+  // Resuming from the pause button picks the float up where it stopped.
+  new MutationObserver(wake).observe(root, { attributeFilter: ["class"] });
   new IntersectionObserver(([e]) => {
     scene.visible = e.isIntersecting;
+    if (!scene.visible) last = 0;
     if (scene.visible && scene.on) {
       readScroll();
       wake();

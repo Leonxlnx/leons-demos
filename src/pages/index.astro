@@ -87,7 +87,8 @@ const jsonLd = {
      collage (WCAG 2.2.2). It rides in the bottom corner, out of the way, and its place in the page is just
      under the reel: once that comes up, it parks there and scrolls away with it, so it is on
      screen as long as the reel is and never lands on the email. It takes no room in the page:
-     the margins cancel its height. */
+     the margins cancel its height. A hairline edge keeps it apart from the dark run; it is
+     solid, since a blurred sticky button would cost a pass every frame. */
   .motion {
     --park: 1rem;
     position: sticky;
@@ -102,6 +103,7 @@ const jsonLd = {
     border-radius: 999px;
     background: #141414;
     color: #ededed;
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.14);
     opacity: 0;
     transition:
       transform var(--t-press) var(--ease-out),
@@ -111,13 +113,15 @@ const jsonLd = {
   .motion[hidden] {
     display: none;
   }
-  /* It shows once the page has left the hero. */
-  :global(.past-hero) .motion,
+  /* It shows while something that moves on its own is on screen (the page script marks the
+     page), and always when the keyboard reaches it. */
+  :global(.has-motion) .motion,
   .motion:focus-visible {
     opacity: 1;
     pointer-events: auto;
   }
-  /* A dark ring around a light one, so focus shows on the dark run and on paper alike. */
+  /* A dark ring around a light one, so focus shows on the dark run and on paper alike. The light
+     ring covers the hairline edge. */
   .motion:focus-visible {
     outline: 2px solid #141414;
     outline-offset: 2px;

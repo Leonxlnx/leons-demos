@@ -2,7 +2,7 @@
 /*
  * cinetic: films made from code. The lead film's screen opens to the full width as it scrolls in,
  * and each film's colour comes up once it holds the middle of the screen. Films play muted, only
- * while on screen, and stop with the pause button.
+ * while they hold it, and stop with the pause button.
  */
 import Icon from "../Icon.astro";
 import { compact } from "../../lib/format";
@@ -104,29 +104,25 @@ const LEDGERLY = film("ledgerly", 1920, 1080, 1280, "(max-width: 560px) 100vw, m
       </div>
       <figcaption><span>Ledgerly</span><span class="cap-note">A feature loop</span></figcaption>
     </figure>
-    <p class="more-note" data-reveal="up" style="--d:180ms">
-      Every film starts as three concepts, a beat grid and a soundtrack made with earshot, then gets checked frame by
-      frame before it ships.
-    </p>
   </div>
 </section>
 
 <script>
-  /* Films load and play only while on screen and while motion is allowed; each film keeps its
-     colour only while it holds the middle of the screen. A still is asked for a screen early,
-     a smaller film waits to rise in until its still is decoded, so it never arrives as an empty
-     frame, and a video starts loading only once its still is in. The still gives way once the
-     film has a frame of its own. */
+  /* Films play only while they hold the middle of the screen (lit) and while motion is allowed,
+     and keep their colour for as long. A screen early, a film's still is asked for and its video
+     starts to buffer, so it is ready to play by the time it is lit. A smaller film waits to rise
+     in until its still is decoded, so it never arrives as an empty frame, and a video plays only
+     once its still is in. The still gives way once the film has a frame of its own. */
   const films = Array.from(document.querySelectorAll<HTMLElement>("[data-film]"));
   const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
   const root = document.documentElement;
-  const visible = new Set<HTMLElement>();
+  const lit = new Set<HTMLElement>();
   const ready = new Set<HTMLElement>();
   const sync = () => {
     const paused = root.classList.contains("motion-paused");
     for (const f of films) {
       const v = f.querySelector("video")!;
-      if (visible.has(f) && ready.has(f) && !paused && !reduced && !document.hidden) {
+      if (lit.has(f) && ready.has(f) && !paused && !reduced && !document.hidden) {
         if (v.preload === "none") v.preload = "auto";
         v.play().catch(() => {});
       } else v.pause();
@@ -158,31 +154,29 @@ const LEDGERLY = film("ledgerly", 1920, 1080, 1280, "(max-width: 560px) 100vw, m
         for (const e of entries) {
           if (!e.isIntersecting) continue;
           e.target.querySelector<HTMLImageElement>(".still")!.loading = "eager";
+          // With motion allowed, the video buffers now; reduced motion never plays it.
+          const v = e.target.querySelector("video");
+          if (v && v.preload === "none" && !reduced) v.preload = "auto";
           early.unobserve(e.target);
         }
       },
       { rootMargin: "100% 0px" },
     );
     films.forEach((f) => early.observe(f));
-    const io = new IntersectionObserver(
+    // The middle band of the screen: a film in it is lit and plays, one that leaves it pauses.
+    const band = new IntersectionObserver(
       (entries) => {
         for (const e of entries) {
           const f = e.target as HTMLElement;
-          if (e.isIntersecting) visible.add(f);
-          else visible.delete(f);
+          f.classList.toggle("is-lit", e.isIntersecting);
+          if (e.isIntersecting) lit.add(f);
+          else lit.delete(f);
         }
         sync();
       },
-      { threshold: 0.25 },
-    );
-    films.forEach((f) => io.observe(f));
-    const lit = new IntersectionObserver(
-      (entries) => {
-        for (const e of entries) (e.target as HTMLElement).classList.toggle("is-lit", e.isIntersecting);
-      },
       { rootMargin: "-30% 0px -30% 0px" },
     );
-    films.forEach((f) => lit.observe(f));
+    films.forEach((f) => band.observe(f));
   }
   document.addEventListener("visibilitychange", sync);
   new MutationObserver(sync).observe(root, { attributes: true, attributeFilter: ["class"] });
@@ -218,7 +212,9 @@ const LEDGERLY = film("ledgerly", 1920, 1080, 1280, "(max-width: 560px) 100vw, m
   .frame {
     position: relative;
     overflow: hidden;
+    border-radius: var(--radius-media);
     background: #111;
+    box-shadow: var(--edge-dark);
     isolation: isolate;
   }
   .frame::after {
@@ -288,15 +284,19 @@ const LEDGERLY = film("ledgerly", 1920, 1080, 1280, "(max-width: 560px) 100vw, m
   .screen-wrap {
     margin-top: clamp(3rem, 6vw, 5rem);
   }
+  /* The lead takes no hairline: it opens out of shutters in the ground's colour, and an edge
+     around the full width would draw the whole frame behind them. */
   .screen .frame {
     aspect-ratio: 16 / 9;
+    box-shadow: none;
   }
   /* The lead's colour comes up slowly, as the full-width film settles in the middle. */
   .screen .frame::after {
     transition-duration: 700ms;
   }
+  /* On the wrap's edge: the film is full width, so past 1680px the caption steps in with it. */
   .screen figcaption {
-    padding-inline: var(--pad);
+    padding-inline: max(var(--pad), (100% - 1680px) / 2 + var(--pad));
   }
   .screen .cap-note {
     max-width: 44ch;
@@ -313,7 +313,7 @@ const LEDGERLY = film("ledgerly", 1920, 1080, 1280, "(max-width: 560px) 100vw, m
         animation-range: entry 0% cover 45%;
       }
       .shutter {
-        --r: 14px;
+        --r: var(--radius-media);
         position: absolute;
         top: 0;
         bottom: 0;
@@ -380,26 +380,13 @@ const LEDGERLY = film("ledgerly", 1920, 1080, 1280, "(max-width: 560px) 100vw, m
   }
   .tall .frame {
     aspect-ratio: 9 / 16;
-    border-radius: 10px;
   }
   .wide .frame {
     aspect-ratio: 16 / 9;
-    border-radius: 10px;
-  }
-  .more-note {
-    grid-column: 2;
-    max-width: 34rem;
-    margin: 0;
-    color: var(--muted);
-    font-size: var(--step-body);
-    line-height: 1.55;
   }
   @media (max-width: 860px) {
     .cin-head .work-h,
     .cin-copy {
-      grid-column: 1 / -1;
-    }
-    .more-note {
       grid-column: 1 / -1;
     }
   }

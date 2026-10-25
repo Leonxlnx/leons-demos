@@ -1,5 +1,5 @@
 /*
- * Homepage: section entrances, the pause button, the Munich clocks, the copy button, live star
+ * Homepage: section entrances, the pause button, the Munich clock, the copy button, live star
  * counts and the closing reel. The hero and about scene has its own script (intro.ts).
  */
 
@@ -34,19 +34,21 @@ if (motionButton && !reducedMotion) {
     motionButton.setAttribute("aria-pressed", String(paused));
     icon.setAttribute("href", paused ? "#i-play" : "#i-pause");
   });
-  // It appears once the hero has gone, where the moving parts are: once the page's first 120svh
-  // have left the top of the screen. An observer only hears when overlap changes, and a jump
-  // (End, Home, a link, a dragged scrollbar) can clear a thin mark without ever touching it, so
-  // the probe spans that whole band and every jump in or out of it is seen.
-  const hero = document.querySelector("[data-intro]");
-  if (hero && "IntersectionObserver" in window) {
-    const marker = document.createElement("div");
-    // An invisible probe, not a rule.
-    marker.style.cssText = "position:absolute;top:0;left:0;height:120svh;width:1px;pointer-events:none"; // taste-skill-ignore
-    marker.setAttribute("aria-hidden", "true");
-    document.body.append(marker);
-    new IntersectionObserver(([e]) => root.classList.toggle("past-hero", !e.isIntersecting && e.boundingClientRect.bottom <= 0)).observe(marker);
-  }
+  // It shows only while something that moves for longer than five seconds is on screen: the
+  // waveform, a film or the reel (.has-motion). The collage settles within five seconds, so the
+  // hero and about need none. Without an observer it simply stays.
+  const moving = document.querySelectorAll("[data-listen], [data-film], .reel");
+  if ("IntersectionObserver" in window) {
+    const seen = new Set<Element>();
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) {
+        if (e.isIntersecting) seen.add(e.target);
+        else seen.delete(e.target);
+      }
+      root.classList.toggle("has-motion", seen.size > 0);
+    });
+    moving.forEach((el) => io.observe(el));
+  } else root.classList.add("has-motion");
   // At the end it parks under the reel and scrolls away with it, clear of the email: that is
   // CSS alone (position: sticky, in index.astro).
 }
