@@ -211,14 +211,14 @@ main {
   }
   .reveal [data-reveal="up"] {
     opacity: 0;
-    transform: translateY(24px);
+    transform: translateY(16px);
   }
   .reveal [data-reveal="up"].is-in {
     opacity: 1;
     transform: none;
     transition:
-      opacity 900ms var(--ease-out),
-      transform 900ms var(--ease-out);
+      opacity 600ms var(--ease-out),
+      transform 600ms var(--ease-out);
     transition-delay: calc(var(--d, 0ms) + var(--b, 0) * var(--stagger));
   }
   .reveal [data-reveal="fade"] {
@@ -272,54 +272,3 @@ main {
   }
 }
 
-/* ------------------------------------------------------------ rendering */
-
-/* Sections further down are skipped until they come near the screen: no layout, paint or
-   animation work for them on load or while far away. The sizes are their measured heights, so
-   the scrollbar barely moves when one renders; "auto" keeps the real size once it has been seen. */
-.tc,
-.ear,
-.cin,
-.oss,
-.recog,
-.demos {
-  content-visibility: auto;
-}
-.tc {
-  contain-intrinsic-size: auto 1254px;
-}
-.ear {
-  contain-intrinsic-size: auto 703px;
-}
-.cin {
-  contain-intrinsic-size: auto 2028px;
-}
-.oss {
-  contain-intrinsic-size: auto 743px;
-}
-.recog {
-  contain-intrinsic-size: auto 738px;
-}
-.demos {
-  contain-intrinsic-size: auto 648px;
-}
-@media (max-width: 560px) {
-  .tc {
-    contain-intrinsic-size: auto 894px;
-  }
-  .ear {
-    contain-intrinsic-size: auto 957px;
-  }
-  .cin {
-    contain-intrinsic-size: auto 1463px;
-  }
-  .oss {
-    contain-intrinsic-size: auto 761px;
-  }
-  .recog {
-    contain-intrinsic-size: auto 842px;
-  }
-  .demos {
-    contain-intrinsic-size: auto 430px;
-  }
-}

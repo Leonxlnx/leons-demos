@@ -4,10 +4,10 @@
  * With motion allowed and a hero that fits the screen, html.scene pins the hero and the about
  * section as one stage, 85svh of scroll long (an inline script at the top of the intro sets the
  * class before it is first laid out, so the page never jumps; this module confirms it).
- * Scrolling, the name and the intro rise away, the ring opens and fades, everything else in the
+ * Scrolling, the name and the intro rise away, everything else in the
  * collage flies outward, the tiles settle back toward Leon's shoulders and, while he sinks, come
- * up beside the about text as one cluster, thick and turned; the text, the photographs and the
- * ring come in with them. Through the rest of the run the cluster keeps drifting up a little, so
+ * up beside the about text as one cluster, thick and turned; the text and the photographs come
+ * in with them. Through the rest of the run the cluster keeps drifting up a little, so
  * nothing stands frozen before the page moves on. Everything is set from the progress, so
  * scrolling back plays it backwards. Progress is eased toward the scroll position by time, so
  * the stage moves with the same weight at any frame rate; the loop stops once it arrives and
@@ -31,16 +31,14 @@ function init(intro: HTMLElement) {
   const tiles = pieces.filter((p) => p.classList.contains("is-tile"));
   const flying = pieces.filter((p) => !p.classList.contains("is-tile"));
   const heroTop = hero.querySelector<HTMLElement>(".hero-top")!;
-  const rings = Array.from(collage.querySelectorAll<SVGSVGElement>(".ring"));
   const reveals = Array.from(about.querySelectorAll<HTMLElement>("[data-reveal]"));
   const copy = about.querySelector<HTMLElement>(".about-copy")!;
-  // The photographs and the about ring; the right photograph comes a beat after the left. Once
+  // The photographs; the right one comes a beat after the left. Once
   // the page is idle after its entrance they wait at a trace of opacity (below one level of grey)
   // rather than at none, so the browser paints them then instead of in the middle of the scroll.
   let floor = 0;
   const extras = [
     ...Array.from(about.querySelectorAll<HTMLElement>(".panel")).map((el) => ({ el, lag: el.classList.contains("panel-r") ? 0.03 : 0 })),
-    ...Array.from(about.querySelectorAll<SVGSVGElement>(".about-ring")).map((el) => ({ el, lag: 0 })),
   ];
 
   const vh = () => innerHeight;
@@ -118,7 +116,7 @@ function init(intro: HTMLElement) {
 
   /** Reads every start and end place with all scene transforms cleared. */
   function measure() {
-    const moved = [me, heroTop, ...rings, ...pieces];
+    const moved = [me, heroTop, ...pieces];
     for (const el of moved) el.style.transform = "";
     const origin = stage.getBoundingClientRect();
     const c = collage.getBoundingClientRect();
@@ -171,14 +169,6 @@ function init(intro: HTMLElement) {
     heroTop.style.transform = `translate3d(0, ${(-a * H * 0.32).toFixed(2)}px, 0)`;
     heroTop.style.opacity = String(clamp(1 - seg(p, 0, 0.2) * 1.1));
 
-    // The ring opens out round his head and fades first.
-    const ro = clamp(1 - seg(p, 0, 0.14));
-    for (const r of rings) {
-      r.style.transform = `translate3d(0, ${(-a * H * 0.06).toFixed(2)}px, 0) scale(${(1 + a * 0.22).toFixed(4)})`;
-      r.style.opacity = String(ro);
-      r.style.visibility = ro < 0.01 ? "hidden" : "";
-    }
-
     // Leon stands while the tiles dip behind him, then sinks below the edge.
     const sink = ease(seg(p, SINK[0], SINK[1]));
     me.style.transform = `translate3d(0, ${(sink * 105).toFixed(2)}%, 0)`;
@@ -211,8 +201,8 @@ function init(intro: HTMLElement) {
       m.body.style.transform = `rotateX(${lerp(m.rx0, m.rx, b).toFixed(2)}deg) rotateY(${lerp(m.ry0, m.ry, b).toFixed(2)}deg) rotateZ(${lerp(0, m.rz, b).toFixed(2)}deg) scaleZ(${thick.toFixed(4)})`;
     }
 
-    // The about text rises in as the tiles clear the way; the photographs and the ring arrive as
-    // the tiles land. The individual translate leaves their own transform and rotate alone.
+    // The about text rises in as the tiles clear the way; the photographs arrive as the tiles
+    // land. The individual translate leaves their own transform and rotate alone.
     const c = easeOut(seg(p, HERE, 0.34));
     copy.style.opacity = c.toFixed(3);
     copy.style.transform = `translate3d(0, ${((1 - c) * 24 - hold).toFixed(2)}px, 0)`;
@@ -239,7 +229,7 @@ function init(intro: HTMLElement) {
     // not jump the stage.
     const dt = last ? Math.min(64, now - last) : 16.7;
     last = now;
-    scene.p += (scene.target - scene.p) * (1 - Math.exp(-dt / 105));
+    scene.p += (scene.target - scene.p) * (1 - Math.exp(-dt / 60));
     if (Math.abs(scene.target - scene.p) < 0.0004) scene.p = scene.target;
     // The float's clock runs while the tiles are landed and motion is not paused, and starts
     // over once they have left.
@@ -272,7 +262,7 @@ function init(intro: HTMLElement) {
     if (on !== scene.on) {
       scene.on = on;
       if (!on) {
-        for (const el of [me, heroTop, ...rings, ...pieces]) {
+        for (const el of [me, heroTop, ...pieces]) {
           el.style.transform = "";
           el.style.opacity = "";
           el.style.visibility = "";

@@ -4,13 +4,13 @@ Leon Lin's personal site ([@LexnLin](https://x.com/LexnLin) · [GitHub](https://
 
 - `/` is the portfolio, one section component each in `src/components/home`:
   - **Intro**: the hero, on paper. His name, and a collage that rises piece by piece from below the screen: Leon seen
-    from behind as a black silhouette, the three models he builds with as glass tiles round his head, a metal ring
-    through them (`Ring.astro`), his laptop with TasteCode open, the Frauenkirche, a tablet of photographs, his guitar
-    and a football (all in `public/home/v2`). Nothing on the site reacts to hover. With motion allowed and a hero that
-    fits the screen, `src/scripts/intro.ts` pins the hero and the about section as one stage: scrolling, the ring and
-    the photographs leave, the tiles drop behind his shoulders and come up beside the about text as one cluster, with
-    a ring and two photographs behind it. On phones and short screens the about section simply follows, and the pieces
-    part as the hero scrolls away.
+    from behind as a black silhouette, the three models he builds with as glass tiles round his head, his laptop with
+    TasteCode open, the Frauenkirche, a tablet of photographs, his guitar and a football (all in `public/home/v2`).
+    Nothing on the site reacts to hover. With motion allowed and a hero that fits the screen, `src/scripts/intro.ts`
+    pins the hero and the about section as one stage: scrolling, the photographs leave and the tiles come up beside
+    the about text as one cluster, with two photographs behind it. On phones and short screens the about section
+    simply follows. Wheel scrolling glides (Lenis, `src/scripts/smooth.ts`) on mouse and trackpad; touch keeps the
+    browser's own scrolling.
   - **Taste Skill**: what it is, live stars and installs as odometers, the install command, and a band of pages
     agents built with it that slides with the scroll.
   - **TasteCode**, **earshot**, **cinetic**: one short section each on the dark ground. The TasteCode window stands up

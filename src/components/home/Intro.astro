@@ -1,8 +1,8 @@
 ---
 /*
  * The hero and the about section, one scene. The hero is one dense collage around Leon seen
- * from behind: the three models he builds with as glass tiles round his head, a ring of metal
- * through them, his laptop with TasteCode open, the towers of the Frauenkirche over his
+ * from behind: the three models he builds with as glass tiles round his head, his laptop with
+ * TasteCode open, the towers of the Frauenkirche over his
  * shoulder, a tablet of photographs from his week, and his guitar and football in front. With
  * motion allowed and a screen the hero fits, intro.ts pins the two as one stage: scrolling, the
  * hero leaves, the collage flies apart, the tiles sink behind his shoulders and come back up as
@@ -13,7 +13,6 @@ import { existsSync } from "node:fs";
 import { join } from "node:path";
 import Icon from "../Icon.astro";
 import Nav from "../Nav.astro";
-import Ring from "./Ring.astro";
 
 interface Props {
   email: string;
@@ -27,8 +26,6 @@ interface Piece {
   d: [number, number, number, number];
   /** Stacked place in the 1000x1000 collage; on phones only 11-89% of its width is on screen. */
   m: [number, number, number, number];
-  /** How far it rises ahead of the page as the hero scrolls away (phones). */
-  z: number;
   /** Stacking: behind the figure (1, 2) or in front of it (4, 5). */
   layer: number;
   /** A turn in depth for flat photographs, so they face the figure. */
@@ -62,14 +59,14 @@ const ME_SRCSET = v2("me-sm.png") ? "/home/v2/me-sm.png 800w, /home/v2/me.png 14
 // Claude stands behind his head, ChatGPT and Gemini lean in from either side; the laptop and the
 // towers stand behind his shoulders, the tablet, guitar and football come forward.
 const ALL: Piece[] = [
-  { id: "claude", kind: "tile", d: [39, 1, 22, -3], m: [37, 7, 26, -3], z: 0.5, layer: 1, tile: { icon: "claude", name: "Claude", rx: 14, ry: 0 } },
-  { id: "openai", kind: "tile", d: [21.5, 13, 20, -9], m: [14, 17, 25, -9], z: 0.7, layer: 2, tile: { icon: "openai", name: "ChatGPT", rx: 10, ry: 24 } },
-  { id: "gemini", kind: "tile", d: [58.5, 9, 20, 8], m: [61, 15, 25, 8], z: 0.7, layer: 2, tile: { icon: "gemini", name: "Gemini", rx: 10, ry: -24 } },
-  { id: "laptop", kind: "cut", d: [3, 38, 36, -4], m: [2, 47, 42, -4], z: 0.9, layer: 2, tilt: 14, img: cut("laptop") },
-  { id: "towers", kind: "cut", d: [72, 17, 21, 3], m: [67, 34, 23, 3], z: 0.8, layer: 2, img: cut("towers") },
-  { id: "tablet", kind: "cut", d: [61, 52, 35, 5], m: [52, 64, 43, 5], z: 1.2, layer: 4, tilt: -12, img: cut("tablet") },
-  { id: "guitar", kind: "cut", d: [28, 47, 13, -10], m: [29, 55, 14, -12], z: 1.1, layer: 4, img: cut("guitar") },
-  { id: "football", kind: "cut", d: [12, 76, 12.5, 0], m: [14, 80, 16, 0], z: 1.3, layer: 5, img: cut("football") },
+  { id: "claude", kind: "tile", d: [39, 1, 22, -3], m: [37, 7, 26, -3], layer: 1, tile: { icon: "claude", name: "Claude", rx: 14, ry: 0 } },
+  { id: "openai", kind: "tile", d: [21.5, 13, 20, -9], m: [14, 17, 25, -9], layer: 2, tile: { icon: "openai", name: "ChatGPT", rx: 10, ry: 24 } },
+  { id: "gemini", kind: "tile", d: [58.5, 9, 20, 8], m: [61, 15, 25, 8], layer: 2, tile: { icon: "gemini", name: "Gemini", rx: 10, ry: -24 } },
+  { id: "laptop", kind: "cut", d: [3, 38, 36, -4], m: [2, 47, 42, -4], layer: 2, tilt: 14, img: cut("laptop") },
+  { id: "towers", kind: "cut", d: [72, 17, 21, 3], m: [67, 34, 23, 3], layer: 2, img: cut("towers") },
+  { id: "tablet", kind: "cut", d: [61, 52, 35, 5], m: [52, 64, 43, 5], layer: 4, tilt: -12, img: cut("tablet") },
+  { id: "guitar", kind: "cut", d: [28, 47, 13, -10], m: [29, 55, 14, -12], layer: 4, img: cut("guitar") },
+  { id: "football", kind: "cut", d: [12, 76, 12.5, 0], m: [14, 80, 16, 0], layer: 5, img: cut("football") },
 ];
 const PIECES = ALL.filter((p) => p.kind === "tile" || p.img);
 
@@ -111,7 +108,6 @@ const style = (p: Piece) =>
     `--mw:${p.m[2]}%`,
     `--mr:${p.m[3]}deg`,
     `--z:${p.layer}`,
-    `--dz:${p.z}`,
     `--i:${order.indexOf(p.id) + 1}`,
     `--tilt:${p.tilt ?? 0}deg`,
     p.img ? `--ar:${p.img.w}/${p.img.h}` : "--ar:1",
@@ -157,7 +153,6 @@ const style = (p: Piece) =>
 
       <div class="hero-body">
         <div class="collage" data-collage>
-          <Ring id="hero" half="back" class="hero-ring" />
           <img
             class="me"
             src="/home/v2/me.png"
@@ -170,7 +165,6 @@ const style = (p: Piece) =>
             decoding="async"
             data-piece="me"
           />
-          <Ring id="hero" half="front" class="hero-ring" />
           {
             PIECES.map((p) => (
               <figure
@@ -253,7 +247,6 @@ const style = (p: Piece) =>
               />
             ))
           }
-          <Ring id="about" half="back" class="about-ring" />
           {
             MODELS.map((m, i) => (
               <div
@@ -275,7 +268,6 @@ const style = (p: Piece) =>
               </div>
             ))
           }
-          <Ring id="about" half="front" class="about-ring" />
         </div>
       </div>
     </section>
@@ -403,23 +395,6 @@ const style = (p: Piece) =>
     height: auto;
     user-select: none;
     pointer-events: none;
-  }
-  /* The ring circles his head: its back half behind the tiles, its front half across his neck.
-     Same weight as the about ring. Its two ends land on the laptop and the towers, so they fade
-     out over a short length rather than end in a hook. */
-  .collage :global(.hero-ring) {
-    --ring-rim: 17;
-    --ring-tube: 12;
-    --ring-glint: 2.4;
-    top: 22%;
-    left: 14%;
-    z-index: 0;
-    width: 72%;
-    rotate: -12deg;
-    mask-image: linear-gradient(90deg, transparent 0, #000 8%, #000 92%, transparent 100%);
-  }
-  .collage :global(.hero-ring.ring-front) {
-    z-index: 3;
   }
   .piece {
     position: absolute;
@@ -591,8 +566,7 @@ const style = (p: Piece) =>
     margin-top: 1.75rem;
     padding-inline: 1.35rem;
   }
-  /* The cluster: three tiles close together, a ring through them and two photographs behind,
-     turned toward them. Isolated, so its back layers stay over the section's paper. */
+  /* The cluster: three tiles close together and two photographs behind, turned toward them. Isolated, so its back layers stay over the section's paper. */
   .models {
     position: relative;
     grid-column: 6 / -1;
@@ -612,19 +586,6 @@ const style = (p: Piece) =>
     --rx: inherit;
     --ry: inherit;
     --rz: inherit;
-  }
-  .models :global(.about-ring) {
-    --ring-rim: 17;
-    --ring-tube: 12;
-    --ring-glint: 2.4;
-    top: 49%;
-    left: -6%;
-    z-index: -1;
-    width: 112%;
-    rotate: -10deg;
-  }
-  .models :global(.about-ring.ring-front) {
-    z-index: 3;
   }
   .panel {
     position: absolute;
@@ -665,8 +626,8 @@ const style = (p: Piece) =>
     overflow: clip;
     background: var(--paper);
   }
-  /* The about section lies over the hero, without a layer of its own: its photographs and the
-     back of its ring sit under the flying tiles, the front of the ring and the text over them. */
+  /* The about section lies over the hero, without a layer of its own: its photographs sit under
+     the flying tiles, the text over them. */
   :global(.scene) .hero {
     background: none;
   }
@@ -684,13 +645,12 @@ const style = (p: Piece) =>
   :global(.scene) .about.is-here {
     pointer-events: auto;
   }
-  /* The about text, the photographs and the ring are moved by the scroll (intro.ts sets their
+  /* The about text and the photographs are moved by the scroll (intro.ts sets their
      opacity and place from the scene's progress, so scrolling back plays them backwards). Hidden
      here until it runs; the text stays in the accessibility tree and find-in-page, and focusing
      into it scrolls the scene on to it. */
   :global(.scene) .about-copy,
-  :global(.scene) .panel,
-  :global(.scene) .models :global(.about-ring) {
+  :global(.scene) .panel {
     opacity: 0;
     will-change: transform, opacity;
   }
@@ -701,8 +661,7 @@ const style = (p: Piece) =>
   }
   :global(.scene) .piece,
   :global(.scene) .me,
-  :global(.scene) .hero-top,
-  :global(.scene) .collage :global(.ring) {
+  :global(.scene) .hero-top {
     will-change: transform, opacity;
   }
   /* Into Taste Skill. The landed cluster stands mid-screen, its foot about 22svh above the
@@ -739,8 +698,7 @@ const style = (p: Piece) =>
       animation-delay: 560ms;
     }
     /* The collage comes up from below the screen, piece by piece: the figure first, then the
-       tiles round his head, then what stands behind him, then the front; the ring fades in
-       round them last (opacity only, so it stays on the compositor). */
+       tiles round his head, then what stands behind him, then the front. */
     :global(.js) .me {
       animation: come-up 1500ms cubic-bezier(0.16, 1, 0.3, 1) 200ms backwards;
     }
@@ -749,9 +707,6 @@ const style = (p: Piece) =>
         piece-up 1500ms cubic-bezier(0.16, 1, 0.3, 1) backwards,
         float 1.6s ease-in-out 2 alternate both;
       animation-delay: calc(330ms + var(--i) * 80ms), calc(700ms + var(--i) * 50ms);
-    }
-    :global(.js) .collage :global(.hero-ring) {
-      animation: ring-in 900ms var(--ease-out) 1000ms backwards;
     }
     /* Arriving through a view transition, the name and nav are carried over: no intro. */
     :global(.vt) .name .line > span,
@@ -764,11 +719,6 @@ const style = (p: Piece) =>
   @keyframes come-up {
     from {
       transform: translateY(38%);
-    }
-  }
-  @keyframes ring-in {
-    from {
-      opacity: 0;
     }
   }
   @keyframes piece-up {
@@ -801,23 +751,6 @@ const style = (p: Piece) =>
     }
     to {
       transform: translateY(5px);
-    }
-  }
-
-  /* Without the pinned scene (phones, short screens) the pieces still part as the hero leaves:
-     each rises faster than the page by its own depth. */
-  @supports (animation-timeline: view()) {
-    @media (prefers-reduced-motion: no-preference) {
-      :global(html:not(.scene)) .piece {
-        animation: piece-away linear both;
-        animation-timeline: view();
-        animation-range: exit 0% exit 100%;
-      }
-    }
-  }
-  @keyframes piece-away {
-    to {
-      translate: 0 calc(var(--dz) * -24vh);
     }
   }
 
@@ -872,11 +805,6 @@ const style = (p: Piece) =>
       top: 35.5%;
       left: 14.5%;
       width: 68%;
-    }
-    .collage :global(.hero-ring) {
-      top: 39%;
-      left: 11%;
-      width: 78%;
     }
     .piece {
       top: var(--my);

@@ -72,7 +72,8 @@ if (clocks.length) {
 
 /* ------------------------------------------------------------------ entrances */
 
-// Each block gets .is-in once, the first time it is on screen. A batch that arrives together
+// Each block gets .is-in once, just before it comes on screen, so it has finished arriving by
+// the time it is read and never looks half-faded mid-scroll. A batch that arrives together
 // staggers through --b (at most four steps), so a fast scroll never queues a long cascade.
 // Blocks inside a held section ([data-hold], the about text while the scene runs) are left to
 // their scene.
@@ -89,7 +90,7 @@ if ("IntersectionObserver" in window) {
           io.unobserve(e.target);
         }
       },
-      { rootMargin: "0px 0px -8% 0px", threshold },
+      { rootMargin: "0px 0px 12% 0px", threshold },
     );
     return io;
   };
