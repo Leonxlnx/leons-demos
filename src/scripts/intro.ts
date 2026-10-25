@@ -5,7 +5,7 @@
  * section as one stage, 85svh of scroll long (an inline script at the top of the intro sets the
  * class before it is first laid out, so the page never jumps; this module confirms it).
  * Scrolling, the name and the intro rise away, everything else in the
- * collage flies outward, the tiles settle back toward Leon's shoulders and, while he sinks, come
+ * laptop drops away, the tiles settle back a little and come
  * up beside the about text as one cluster, thick and turned; the text and the photographs come
  * in with them. Through the rest of the run the cluster keeps drifting up a little, so
  * nothing stands frozen before the page moves on. Everything is set from the progress, so
@@ -26,7 +26,6 @@ function init(intro: HTMLElement) {
   const hero = intro.querySelector<HTMLElement>(".hero")!;
   const about = intro.querySelector<HTMLElement>("[data-about]")!;
   const collage = intro.querySelector<HTMLElement>("[data-collage]")!;
-  const me = collage.querySelector<HTMLElement>(".me")!;
   const pieces = Array.from(collage.querySelectorAll<HTMLElement>(".piece"));
   const tiles = pieces.filter((p) => p.classList.contains("is-tile"));
   const flying = pieces.filter((p) => !p.classList.contains("is-tile"));
@@ -52,7 +51,6 @@ function init(intro: HTMLElement) {
   // The timeline, in scene progress. The phases overlap, so no frame is left half empty.
   const DIP = [0, 0.12]; // the tiles settle back toward his shoulders
   const RISE = [0.04, 0.68]; // and, already growing, come up to the cluster
-  const SINK = [0.04, 0.26]; // Leon sinks below the edge, gone as the about text comes in
   const HERE = 0.14; // the about text comes in
   const LANDED = 0.68; // the tiles are in place and float on their own
   // Afloat, once landed: each tile sinks a few pixels and comes back up, out of step with the
@@ -116,7 +114,7 @@ function init(intro: HTMLElement) {
 
   /** Reads every start and end place with all scene transforms cleared. */
   function measure() {
-    const moved = [me, heroTop, ...pieces];
+    const moved = [heroTop, ...pieces];
     for (const el of moved) el.style.transform = "";
     const origin = stage.getBoundingClientRect();
     const c = collage.getBoundingClientRect();
@@ -158,7 +156,7 @@ function init(intro: HTMLElement) {
     const W = innerWidth;
     const a = easeOut(seg(p, 0, 0.3));
     const dip = ease(seg(p, DIP[0], DIP[1]));
-    // The rise is front-loaded (the square root), so the tiles visibly grow while Leon sinks; it
+    // The rise is front-loaded (the square root), so the tiles visibly grow as the laptop drops away; it
     // still lands softly.
     const b = ease(Math.sqrt(seg(p, RISE[0], RISE[1])));
     // After landing, the cluster and its text keep drifting up through the rest of the run.
@@ -169,12 +167,6 @@ function init(intro: HTMLElement) {
     heroTop.style.transform = `translate3d(0, ${(-a * H * 0.32).toFixed(2)}px, 0)`;
     heroTop.style.opacity = String(clamp(1 - seg(p, 0, 0.2) * 1.1));
 
-    // Leon stands while the tiles dip behind him, then sinks below the edge.
-    const sink = ease(seg(p, SINK[0], SINK[1]));
-    me.style.transform = `translate3d(0, ${(sink * 105).toFixed(2)}%, 0)`;
-    const mo = clamp(1 - seg(p, 0.18, SINK[1]));
-    me.style.opacity = String(mo);
-    me.style.visibility = mo < 0.01 ? "hidden" : "";
 
     for (const f of scene.flyers) {
       const k = easeOut(seg(p, 0, 0.28));
@@ -262,7 +254,7 @@ function init(intro: HTMLElement) {
     if (on !== scene.on) {
       scene.on = on;
       if (!on) {
-        for (const el of [me, heroTop, ...pieces]) {
+        for (const el of [heroTop, ...pieces]) {
           el.style.transform = "";
           el.style.opacity = "";
           el.style.visibility = "";

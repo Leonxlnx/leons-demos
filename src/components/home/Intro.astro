@@ -1,13 +1,11 @@
 ---
 /*
- * The hero and the about section, one scene. The hero is one dense collage around Leon seen
- * from behind: the three models he builds with as glass tiles round his head, his laptop with
- * TasteCode open, the towers of the Frauenkirche over his
- * shoulder, a tablet of photographs from his week, and his guitar and football in front. With
+ * The hero and the about section, one scene. The hero is his name and one picture: his laptop
+ * with TasteCode open, and the three models he builds with rising behind it as glass tiles. With
  * motion allowed and a screen the hero fits, intro.ts pins the two as one stage: scrolling, the
- * hero leaves, the collage flies apart, the tiles sink behind his shoulders and come back up as
- * one cluster beside the about text, thick and turned. Without the script the about section
- * simply follows the hero, with its own still tiles.
+ * hero leaves, the laptop drops away and the tiles come up beside the about text as one cluster,
+ * thick and turned. Without the script the about section simply follows the hero, with its own
+ * still tiles.
  */
 import { existsSync } from "node:fs";
 import { join } from "node:path";
@@ -40,10 +38,6 @@ const v2 = (file: string) => existsSync(join(process.cwd(), "public", "home", "v
 // Each has a small file (sm: its width) for phones.
 const CUT = {
   laptop: { w: 1397, h: 1113, sm: 640, alt: "TasteCode, Leon's desktop app for coding agents, open on a laptop" },
-  tablet: { w: 1200, h: 867, sm: 640, alt: "A tablet with two photographs: a snowy valley in the Alps and an ice hockey faceoff" },
-  towers: { w: 620, h: 699, sm: 320, alt: "The towers of the Frauenkirche in Munich" },
-  guitar: { w: 488, h: 1100, sm: 240, alt: "An archtop electric guitar" },
-  football: { w: 520, h: 515, sm: 240, alt: "A football" },
 };
 const cut = (id: keyof typeof CUT) => {
   if (!v2(`${id}.webp`)) return undefined;
@@ -51,22 +45,17 @@ const cut = (id: keyof typeof CUT) => {
   const srcset = v2(`${id}-sm.webp`) ? `/home/v2/${id}-sm.webp ${sm}w, /home/v2/${id}.webp ${img.w}w` : undefined;
   return { src: `/home/v2/${id}.webp`, srcset, ...img };
 };
-/** Drawn width of a collage piece: a share of the stacked collage (132vw, 56rem at most) or of the wide one. */
+/** Drawn width of a collage piece: a share of the stacked collage (56rem at most) or of the wide one. */
 const STACKED = "(max-width: 860px) or (max-aspect-ratio: 4/5)";
-const sizes = (desktop: number, phone: number) => `${STACKED} calc(min(132vw, 56rem) * ${phone / 100}), calc(min(100vw, 1500px) * ${desktop / 100})`;
-const ME_SRCSET = v2("me-sm.png") ? "/home/v2/me-sm.png 800w, /home/v2/me.png 1400w" : undefined;
+const sizes = (desktop: number, phone: number) => `${STACKED} calc(min(100vw, 56rem) * ${phone / 100}), calc(min(100vw, 1500px) * ${desktop / 100})`;
 
-// Claude stands behind his head, ChatGPT and Gemini lean in from either side; the laptop and the
-// towers stand behind his shoulders, the tablet, guitar and football come forward.
+// The laptop stands in the middle; the tiles rise behind its lid, Claude in the centre and a little
+// higher, ChatGPT and Gemini leaning in from either side.
 const ALL: Piece[] = [
-  { id: "claude", kind: "tile", d: [39, 1, 22, -3], m: [37, 7, 26, -3], layer: 1, tile: { icon: "claude", name: "Claude", rx: 14, ry: 0 } },
-  { id: "openai", kind: "tile", d: [21.5, 13, 20, -9], m: [14, 17, 25, -9], layer: 2, tile: { icon: "openai", name: "ChatGPT", rx: 10, ry: 24 } },
-  { id: "gemini", kind: "tile", d: [58.5, 9, 20, 8], m: [61, 15, 25, 8], layer: 2, tile: { icon: "gemini", name: "Gemini", rx: 10, ry: -24 } },
-  { id: "laptop", kind: "cut", d: [3, 38, 36, -4], m: [2, 47, 42, -4], layer: 2, tilt: 14, img: cut("laptop") },
-  { id: "towers", kind: "cut", d: [72, 17, 21, 3], m: [67, 34, 23, 3], layer: 2, img: cut("towers") },
-  { id: "tablet", kind: "cut", d: [61, 52, 35, 5], m: [52, 64, 43, 5], layer: 4, tilt: -12, img: cut("tablet") },
-  { id: "guitar", kind: "cut", d: [28, 47, 13, -10], m: [29, 55, 14, -12], layer: 4, img: cut("guitar") },
-  { id: "football", kind: "cut", d: [12, 76, 12.5, 0], m: [14, 80, 16, 0], layer: 5, img: cut("football") },
+  { id: "claude", kind: "tile", d: [39.5, 0, 21, -3], m: [36.5, 10, 27, -3], layer: 1, tile: { icon: "claude", name: "Claude", rx: 14, ry: 0 } },
+  { id: "openai", kind: "tile", d: [21.5, 6, 19, -10], m: [12, 18, 25, -10], layer: 2, tile: { icon: "openai", name: "ChatGPT", rx: 10, ry: 24 } },
+  { id: "gemini", kind: "tile", d: [59.5, 4, 19, 9], m: [63, 16, 25, 9], layer: 2, tile: { icon: "gemini", name: "Gemini", rx: 10, ry: -24 } },
+  { id: "laptop", kind: "cut", d: [25, 33, 50, 0], m: [9, 34, 82, 0], layer: 3, img: cut("laptop") },
 ];
 const PIECES = ALL.filter((p) => p.kind === "tile" || p.img);
 
@@ -96,7 +85,7 @@ const PANELS = [
   }));
 
 // Entrance order: the tiles round his head first, then what stands behind him, then the front.
-const order = ["claude", "openai", "gemini", "towers", "laptop", "tablet", "guitar", "football"];
+const order = ["laptop", "claude", "openai", "gemini"];
 const style = (p: Piece) =>
   [
     `--x:${p.d[0]}%`,
@@ -153,18 +142,6 @@ const style = (p: Piece) =>
 
       <div class="hero-body">
         <div class="collage" data-collage>
-          <img
-            class="me"
-            src="/home/v2/me.png"
-            srcset={ME_SRCSET}
-            sizes={ME_SRCSET && sizes(52, 68)}
-            alt="Leon, seen from behind"
-            width="1400"
-            height="1343"
-            fetchpriority="high"
-            decoding="async"
-            data-piece="me"
-          />
           {
             PIECES.map((p) => (
               <figure
@@ -386,16 +363,6 @@ const style = (p: Piece) =>
     aspect-ratio: 1000 / 600;
     translate: -50% 0;
   }
-  .me {
-    position: absolute;
-    top: 27.5%;
-    left: 23%;
-    z-index: 3;
-    width: 52%;
-    height: auto;
-    user-select: none;
-    pointer-events: none;
-  }
   .piece {
     position: absolute;
     top: var(--y);
@@ -421,7 +388,7 @@ const style = (p: Piece) =>
     filter: drop-shadow(0 18px 22px rgba(0, 0, 0, 0.16)) drop-shadow(0 3px 5px rgba(0, 0, 0, 0.12));
     user-select: none;
   }
-  /* Only the laptop and the tablet turn in depth to face the figure. Their shadow stays on the
+  /* A picture turned in depth (--tilt) keeps its shadow on the
      flat parent: a filter on the turned picture itself would flatten it at a lower resolution. */
   .is-tilted .cut {
     filter: none;
@@ -660,7 +627,6 @@ const style = (p: Piece) =>
     content-visibility: hidden;
   }
   :global(.scene) .piece,
-  :global(.scene) .me,
   :global(.scene) .hero-top {
     will-change: transform, opacity;
   }
@@ -697,11 +663,7 @@ const style = (p: Piece) =>
     :global(.js) .intro-text > :nth-child(3) {
       animation-delay: 560ms;
     }
-    /* The collage comes up from below the screen, piece by piece: the figure first, then the
-       tiles round his head, then what stands behind him, then the front. */
-    :global(.js) .me {
-      animation: come-up 1500ms cubic-bezier(0.16, 1, 0.3, 1) 200ms backwards;
-    }
+    /* The collage comes up from below the screen: the laptop first, then the tiles out of it. */
     :global(.js) .piece-in {
       animation:
         piece-up 1500ms cubic-bezier(0.16, 1, 0.3, 1) backwards,
@@ -714,11 +676,6 @@ const style = (p: Piece) =>
       opacity: 1;
       transform: none;
       animation: none;
-    }
-  }
-  @keyframes come-up {
-    from {
-      transform: translateY(38%);
     }
   }
   @keyframes piece-up {
@@ -801,11 +758,6 @@ const style = (p: Piece) =>
       aspect-ratio: 1;
       overflow: visible clip;
     }
-    .me {
-      top: 35.5%;
-      left: 14.5%;
-      width: 68%;
-    }
     .piece {
       top: var(--my);
       left: var(--mx);
@@ -864,15 +816,14 @@ const style = (p: Piece) =>
       left: 64%;
     }
   }
-  /* Phones: the band is at least as tall as the screen is wide, and the collage fills it, wider
-     than the screen (up to 132vw); the hero's clip trims the laptop, the towers and the tablet at
-     the sides, and the rest stands inside the middle 78% of its width. */
+  /* Phones: the band is at least as tall as the screen is wide, and the collage fills its width. */
   @media (max-width: 599px) {
     .hero {
       grid-template-rows: auto auto minmax(100vw, 1fr) auto;
     }
     .collage {
-      --cw: clamp(100vw, 100cqh, 132vw);
+      --cw: 100vw;
+      align-self: center;
     }
     /* On the tallest phones the band outgrows the collage: the tiles take up the difference, so
        they stay close under the name. */
