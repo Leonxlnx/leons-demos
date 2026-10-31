@@ -371,6 +371,40 @@
   ]
  },
  {
+  "id": "2116201656450793714",
+  "category": "Other",
+  "title": "Atmospheric night city stills made with Opus 5.5",
+  "created_at": "2026-10-30T16:12:46.000Z",
+  "likes": 790,
+  "reposts": 16,
+  "views": 33942,
+  "post_url": "https://x.com/LexnLin/status/2116201656450793714",
+  "text": "made with opus 5.5 https://t.co/WHs5MGfMFX",
+  "links": [],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HV5BvvuXAAAk38F.jpg"
+   },
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HV5ByJ8XgAAknt0.jpg"
+   },
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HV5B32eXoAA50y6.jpg"
+   },
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HV5CIc0XUAAc0w-.png"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
   "id": "2085876281443336319",
   "category": "Animations/Videos",
   "title": "OpenAI logo animation made in Codex (improved single-HTML version on CodePen)",
@@ -446,6 +480,33 @@
     "type": "video",
     "image": "https://pbs.twimg.com/amplify_video_thumb/2106493544466698240/img/njFkEDHh_m7TJ9Id.jpg",
     "video": "https://video.twimg.com/amplify_video/2106493544466698240/vid/avc1/1920x1080/p-pV3ZcvH4IPDEil.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2114370856810107201",
+  "category": "Web/Interactive",
+  "title": "Procedural campfire: 6.1M-cell combustion sim by Opus 5.5, no assets",
+  "created_at": "2026-10-25T14:57:50.000Z",
+  "likes": 710,
+  "reposts": 36,
+  "views": 54745,
+  "post_url": "https://x.com/LexnLin/status/2114370856810107201",
+  "text": "I made some realistic fire with Opus 5.5\n\nthis is a real 3D combustion sim with 6.1 million cells, the flame colors are from blackbody physics + sparks and embers\n\nno assets and no sound files were used https://t.co/PHzkeD90te",
+  "links": [
+   "https://github.com/Leonxlnx/procedural-fire"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2114370860249428114"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2114369476552478720/img/-RIy46qSyNCgQcs-.jpg",
+    "video": "https://video.twimg.com/amplify_video/2114369476552478720/vid/avc1/1920x1080/owZ_KKx8DAuoo2Ka.mp4"
    }
   ],
   "tools": [
@@ -817,6 +878,35 @@
   ]
  },
  {
+  "id": "2114422260346110358",
+  "category": "Animations/Videos",
+  "title": "Afterglow: Opus 5.5 pianist film with original song, all code",
+  "created_at": "2026-10-25T18:22:05.000Z",
+  "likes": 383,
+  "reposts": 19,
+  "views": 31444,
+  "post_url": "https://x.com/LexnLin/status/2114422260346110358",
+  "text": "This is 5 days of agent runs with Opus 5.5\n\na pianist playing a grand piano in a sunset lake, and the song is an original that Opus 5.5 composed itself\n\nsound on :) https://t.co/FfdNNKBI9a",
+  "links": [
+   "https://github.com/Leonxlnx/afterglow"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2114422264389157313",
+   "https://x.com/i/status/2114422267128217927",
+   "https://x.com/i/status/2114422269497811224"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2114420874459643904/img/8MPgn1WcdsXFzq-G.jpg",
+    "video": "https://video.twimg.com/amplify_video/2114420874459643904/vid/avc1/1920x1080/zahchHCaOllRJkM5.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
   "id": "2110013871532490973",
   "category": "Animations/Videos",
   "title": "Motion video about an AI product, every frame code (Opus 5.5, 3B tokens)",
@@ -1160,6 +1250,46 @@
   ]
  },
  {
+  "id": "2115485798216687944",
+  "category": "Web/Interactive",
+  "title": "TasteSkill v2.5 short-prompt websites (Sonnet 5.5 / Opus 5.5)",
+  "created_at": "2026-10-28T16:48:12.000Z",
+  "likes": 197,
+  "reposts": 6,
+  "views": 12940,
+  "post_url": "https://x.com/LexnLin/status/2115485798216687944",
+  "text": "These are all done either with Sonnet 5.5 or Opus 5.5 using TasteSkill v2.5 (early version)\n\nvery very short prompts to test the \"creativity\" https://t.co/KKXlsx84zj",
+  "links": [],
+  "related_posts": [
+   "https://x.com/i/status/2115581850907480546"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2115485592771276800/img/PZ0-xVTo3ethsL-P.jpg",
+    "video": "https://video.twimg.com/amplify_video/2115485592771276800/vid/avc1/1680x980/IQgTuNrX9AmTeToi.mp4"
+   },
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2115485592704147456/img/eVqlGIvO8IySTW8j.jpg",
+    "video": "https://video.twimg.com/amplify_video/2115485592704147456/vid/avc1/1692x986/igpibqGf6tBljLco.mp4"
+   },
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2115485592775446528/img/6xjHF7Wh1BO-F1JC.jpg",
+    "video": "https://video.twimg.com/amplify_video/2115485592775446528/vid/avc1/1680x974/7fbXcqY1eFY_Z9lG.mp4"
+   },
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2115485592741965824/img/xpI-cRRry03f1xvI.jpg",
+    "video": "https://video.twimg.com/amplify_video/2115485592741965824/vid/avc1/1686x974/Fmug_9C-a4bExwN6.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
   "id": "2106791975320273260",
   "category": "Other",
   "title": "Claude Code mod for pacing Claude usage (image)",
@@ -1361,6 +1491,29 @@
   ],
   "poster": "/demos/posters/2096799556478357923.webp",
   "posterTime": 21
+ },
+ {
+  "id": "2115534575426297955",
+  "category": "Animations/Videos",
+  "title": "Early look at the new Cinetic version (skill + short prompt)",
+  "created_at": "2026-10-28T20:02:02.000Z",
+  "likes": 120,
+  "reposts": 4,
+  "views": 4980,
+  "post_url": "https://x.com/LexnLin/status/2115534575426297955",
+  "text": "an early look at the new cinetic version\n\nno references were used. only the skill plus a simple prompt https://t.co/IjWbPIrbV0",
+  "links": [],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2115534257535823872/img/3bIx9XcduxBGi5sr.jpg",
+    "video": "https://video.twimg.com/amplify_video/2115534257535823872/vid/avc1/1920x1080/g06BKTNtAWYgPW_x.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
  },
  {
   "id": "2103069626473341273",
@@ -1664,6 +1817,29 @@
   ]
  },
  {
+  "id": "2115480239698800851",
+  "category": "Animations/Videos",
+  "title": "Katana attack VFX by Sonnet 5.5 Ultracode",
+  "created_at": "2026-10-28T16:26:07.000Z",
+  "likes": 95,
+  "reposts": 6,
+  "views": 6663,
+  "post_url": "https://x.com/LexnLin/status/2115480239698800851",
+  "text": "katana attack vfx by Sonnet 5.5 Ultracode https://t.co/DAK42D7E8f",
+  "links": [],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2115480013994708992/img/TBA4A3CwqqQgfIcQ.jpg",
+    "video": "https://video.twimg.com/amplify_video/2115480013994708992/vid/avc1/1920x1080/zrgzbgO6E08VTZ9_.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
   "id": "2110490842716672003",
   "category": "Web/Interactive",
   "title": "Tap-to-Fit pricing: pick features, cheapest plan is selected (Opus 5.5)",
@@ -1707,6 +1883,29 @@
     "type": "video",
     "image": "https://pbs.twimg.com/amplify_video_thumb/2113997836840751106/img/QmQv-TjwWQuOSEft.jpg",
     "video": "https://video.twimg.com/amplify_video/2113997836840751106/vid/avc1/1280x720/X-R5_IwitJMAmAsC.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2115245154043097125",
+  "category": "Animations/Videos",
+  "title": "Cinetic motion experiment with Claude Opus 5.5",
+  "created_at": "2026-10-28T00:51:58.000Z",
+  "likes": 79,
+  "reposts": 1,
+  "views": 4361,
+  "post_url": "https://x.com/LexnLin/status/2115245154043097125",
+  "text": "experimenting with claude opus 5.5 and motion\n\nI think the next cinetic update should be pretty awesome and for most launches where you don't have the budget for an expensive motion video you should use cinetic.\n(better than this example ;)) https://t.co/xOmXkGL1JR",
+  "links": [],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2115244544769875968/img/dN_we8_w1mFFyLh4.jpg",
+    "video": "https://video.twimg.com/amplify_video/2115244544769875968/vid/avc1/1920x1080/BUXLh0Yz_vbXJ301.mp4"
    }
   ],
   "tools": [
