@@ -2071,5 +2071,684 @@
   "tools": [
    "Kimi"
   ]
+ },
+ {
+  "id": "2119558994352304202",
+  "category": "Animations/Videos",
+  "title": "Escapement: 36s cinematic short by Opus 5.5, Blender driven from Python, no 3D assets",
+  "created_at": "2026-11-08T22:33:38.000Z",
+  "likes": 2451,
+  "reposts": 102,
+  "views": 127718,
+  "post_url": "https://x.com/LexnLin/status/2119558994352304202",
+  "text": "this might be the best thing i've built with opus 5.5 \n\nevery frame is python, no 3D assets were used https://t.co/x9FQt1rG6i",
+  "links": [
+   "https://github.com/Leonxlnx/escapement"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2119558997162287560",
+   "https://x.com/i/status/2119559005999693836",
+   "https://x.com/i/status/2119679291814264929",
+   "https://x.com/i/status/2119472738158965141"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2119557088401571840/img/afQskn-2o5EZB1BB.jpg",
+    "video": "https://video.twimg.com/amplify_video/2119557088401571840/vid/avc1/1920x1080/QoHJyHGbGBRcGi0N.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2119880654858977333",
+  "category": "Animations/Videos",
+  "title": "First Bloom: painterly 30-second film by Fable 5.2 and Opus 5.5 subagents",
+  "created_at": "2026-11-09T19:51:48.000Z",
+  "likes": 1653,
+  "reposts": 50,
+  "views": 148044,
+  "post_url": "https://x.com/LexnLin/status/2119880654858977333",
+  "text": "wow, this took ONLY about 30minutes with Fable 5.2 and a few opus 5.5 subagents https://t.co/piKAKVc9hg",
+  "links": [
+   "https://github.com/Leonxlnx/first-bloom"
+  ],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2119880037172146176/img/KfYiYvUz5T6HE_2d.jpg",
+    "video": "https://video.twimg.com/amplify_video/2119880037172146176/vid/avc1/1920x1080/E4G1BysAeWIl4yTX.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2117230395406364857",
+  "category": "Web/Interactive",
+  "title": "Halo above the clouds: ring restaurant in three.js by Opus 5.5",
+  "created_at": "2026-11-02T12:20:37.000Z",
+  "likes": 1422,
+  "reposts": 56,
+  "views": 92522,
+  "post_url": "https://x.com/LexnLin/status/2117230395406364857",
+  "text": "Opus 5.5 built this in threejs\n\nsound on :) https://t.co/VvWWm8zz3f",
+  "links": [
+   "https://github.com/Leonxlnx/halo-above-the-clouds"
+  ],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2117228866473246720/img/ICPiLPaoSzU6TpQj.jpg",
+    "video": "https://video.twimg.com/amplify_video/2117228866473246720/vid/avc1/1920x1080/-inx0B7nFB_N0W0c.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ],
+  "poster": "/demos/posters/2117230395406364857.webp",
+  "posterTime": 15
+ },
+ {
+  "id": "2120910879361548565",
+  "category": "Web/Interactive",
+  "title": "Realistic bedroom in three.js by Fable 5.2, all code",
+  "created_at": "2026-11-12T16:05:32.000Z",
+  "likes": 855,
+  "reposts": 23,
+  "views": 47373,
+  "post_url": "https://x.com/LexnLin/status/2120910879361548565",
+  "text": "I built a realistic bedroom with Fable 5.2 in threejs\n\neverything you see is code! (no pre-made 3d assets/textures were used) https://t.co/0QsYrhEWXj",
+  "links": [
+   "https://github.com/Leonxlnx/room-at-dawn"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2120910881697436028",
+   "https://x.com/i/status/2120910883429691456"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2120909786296295424/img/vdEvO70IarX0V7Lw.jpg",
+    "video": "https://video.twimg.com/amplify_video/2120909786296295424/vid/avc1/3840x2160/ZzPOqGAcMZlV7SBb.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ],
+  "poster": "/demos/posters/2120910879361548565.webp",
+  "posterTime": 40
+ },
+ {
+  "id": "2120167637133238295",
+  "category": "Animations/Videos",
+  "title": "Claude logo animation made with Fable 5.2 high",
+  "created_at": "2026-11-10T14:52:10.000Z",
+  "likes": 630,
+  "reposts": 8,
+  "views": 108442,
+  "post_url": "https://x.com/LexnLin/status/2120167637133238295",
+  "text": "Claude logo animation made with Fable 5.2 high https://t.co/Dl2MsBlYio",
+  "links": [],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2120167523039518720/img/z7QrGgNnnENhBtxB.jpg",
+    "video": "https://video.twimg.com/amplify_video/2120167523039518720/vid/avc1/2560x1440/1zRebOXK7I92mAvT.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2120426302440419721",
+  "category": "Other",
+  "title": "Planetary stills generated with code by Fable 5.2",
+  "created_at": "2026-11-11T08:00:00.000Z",
+  "likes": 611,
+  "reposts": 16,
+  "views": 13352,
+  "post_url": "https://x.com/LexnLin/status/2120426302440419721",
+  "text": "Claude Fable 5.2 can generate pretty decent \"images\" with code https://t.co/tRdiJJfe2T",
+  "links": [],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HWyofgXWAAAz0mZ.jpg"
+   },
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HWyogKaX0AAwchb.jpg"
+   },
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HWyohE5WwAE9u5n.jpg"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2118327859282612400",
+  "category": "Animations/Videos",
+  "title": "Cinetic v1.5 film made with Opus 5.5",
+  "created_at": "2026-11-05T13:01:32.000Z",
+  "likes": 519,
+  "reposts": 29,
+  "views": 17184,
+  "post_url": "https://x.com/LexnLin/status/2118327859282612400",
+  "text": "Cinetic v1.5 is out!\n\nthis video was made with cinetic and Opus 5.5 \n\nsome changes:\n- 34 prebuilt scenes, which are randomly used\n- animations are way smoother now\n- better sfx \n- better rules to avoid slow or sloppy films\n\nnpx skills add Leonxlnx/cinetic https://t.co/bCMWldefUL",
+  "links": [
+   "https://github.com/Leonxlnx/cinetic"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2118327863279800603"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2118327289595215872/img/kpy504nIGs8eO6N0.jpg",
+    "video": "https://video.twimg.com/amplify_video/2118327289595215872/vid/avc1/1920x1080/E9QtioXjR1lZFA0x.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2121563033809854623",
+  "category": "Other",
+  "title": "Beach kite stills made with Fable 5.2",
+  "created_at": "2026-11-14T11:16:58.000Z",
+  "likes": 418,
+  "reposts": 12,
+  "views": 12725,
+  "post_url": "https://x.com/LexnLin/status/2121563033809854623",
+  "text": "Anthropic has the best creative image generation model without actually having one\n\n(used a prompt from @kevin_t_ngo and changed it a bit :)) https://t.co/ZeiZLlEisU",
+  "links": [],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HXFOTmiW4AAf0ZX.jpg"
+   },
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HXFOUc6WUAITk1z.jpg"
+   },
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HXFOVJ0XYAABCVT.jpg"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2121737343287828694",
+  "category": "Web/Interactive",
+  "title": "Little city in three.js by Fable 5.2, no assets, all code (except sound)",
+  "created_at": "2026-11-14T22:49:37.000Z",
+  "likes": 398,
+  "reposts": 16,
+  "views": 15863,
+  "post_url": "https://x.com/LexnLin/status/2121737343287828694",
+  "text": "Claude Fable 5.2 built a little city in threejs and the colors look INSANE\n\nno assets were used, everything is code (except sound) https://t.co/xCS3JLDiXx",
+  "links": [],
+  "related_posts": [
+   "https://x.com/i/status/2121737346832105869"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2121736588514197504/img/FBtrV7uNJnyuAcoz.jpg",
+    "video": "https://video.twimg.com/amplify_video/2121736588514197504/vid/avc1/3840x2160/1Rcr08kUxI-Q3eMQ.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2120686766571040950",
+  "category": "Other",
+  "title": "JavaScript meadow stills made with Fable 5.2",
+  "created_at": "2026-11-12T01:15:00.000Z",
+  "likes": 385,
+  "reposts": 7,
+  "views": 10212,
+  "post_url": "https://x.com/LexnLin/status/2120686766571040950",
+  "text": "this is made by fable 5.5 with javascript https://t.co/H0EDBRKzkw",
+  "links": [],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HW4Sp8aWIAE84Rb.jpg"
+   },
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HW4Sp8iXMAACqzO.jpg"
+   },
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HW4Sp8iWEAEmn1z.jpg"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2121634005745635683",
+  "category": "Web/Interactive",
+  "title": "Painted 3D world in three.js with a brushstroke shader, Opus 5.5, no assets",
+  "created_at": "2026-11-14T15:58:59.000Z",
+  "likes": 366,
+  "reposts": 18,
+  "views": 13219,
+  "post_url": "https://x.com/LexnLin/status/2121634005745635683",
+  "text": "a painted 3D world with Opus 5.5 https://t.co/fgHexNKXBi",
+  "links": [],
+  "related_posts": [
+   "https://x.com/i/status/2121634008752963871"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2121627502737014784/img/SVTVBADLOsoSnMCj.jpg",
+    "video": "https://video.twimg.com/amplify_video/2121627502737014784/vid/avc1/1920x1080/9XB9mZH2U9TZJzCp.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2121395037565337862",
+  "category": "Animations/Videos",
+  "title": "Launch video for Opus 5.6, made with Fable 5.2",
+  "created_at": "2026-11-14T00:09:25.000Z",
+  "likes": 358,
+  "reposts": 8,
+  "views": 22719,
+  "post_url": "https://x.com/LexnLin/status/2121395037565337862",
+  "text": "video for Opus 5.6 launch by Fable 5.2\n\nthis took LESS than an hour and used up ~3% fable weekly limit https://t.co/zj5a4z9GMS",
+  "links": [],
+  "related_posts": [
+   "https://x.com/i/status/2121395040497049992"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2121394451062853632/img/zHyEGDYJmYhMtCVY.jpg",
+    "video": "https://video.twimg.com/amplify_video/2121394451062853632/vid/avc1/1920x1080/F5TNLj63CuwbUD48.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2118056518096466150",
+  "category": "Animations/Videos",
+  "title": "TasteCode v0.5 launch film, made with Opus 5.5",
+  "created_at": "2026-11-04T19:03:20.000Z",
+  "likes": 333,
+  "reposts": 8,
+  "views": 17402,
+  "post_url": "https://x.com/LexnLin/status/2118056518096466150",
+  "text": "We are releasing TasteCode v0.5 today\n\nIt is one desktop app for your coding agents (Codex, Claude Code, Grok, Cursor), and we're building it for creative work\nwebsites, impressive 3D demos, motion videos, etc\n\nWe are still in beta, but everything's free and opensource for windows + macos :)\nhttps://t.co/Ek4U7lY8BQ",
+  "links": [
+   "https://github.com/Leonxlnx/tastecode",
+   "https://github.com/Leonxlnx/tastecode-v0.5-launch-film"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2117784696574664862"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2118019246345056256/img/DU-yk9Mpak2NQM8V.jpg",
+    "video": "https://video.twimg.com/amplify_video/2118019246345056256/vid/avc1/1920x1080/GnYsd5UN0ruGgUJc.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ],
+  "poster": "/demos/posters/2118056518096466150.webp",
+  "posterTime": 35
+ },
+ {
+  "id": "2120186998707163533",
+  "category": "Web/Interactive",
+  "title": "3D basketball court built with Gemini 4 Carbon, no pre-made assets",
+  "created_at": "2026-11-10T16:09:06.000Z",
+  "likes": 312,
+  "reposts": 7,
+  "views": 9981,
+  "post_url": "https://x.com/LexnLin/status/2120186998707163533",
+  "text": "I had early access to Gemini 4 Carbon and I built this 3d basketball court with it (no pre made 3d assets used)\n\nImproved a lot in areas that involve any form of taste/visuals such as 3d, websites, motion graphics over Argon https://t.co/VdiWsOA9nX",
+  "links": [],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2120184009300840448/img/bjzZFCtS4hLXykh0.jpg",
+    "video": "https://video.twimg.com/amplify_video/2120184009300840448/vid/avc1/1920x1080/1-2PvRYuag3FWb4z.mp4"
+   }
+  ],
+  "tools": [],
+  "poster": "/demos/posters/2120186998707163533.webp",
+  "posterTime": 10
+ },
+ {
+  "id": "2121253191748669705",
+  "category": "Games",
+  "title": "Unsung Vale: open-world RPG demo by Fable 5.2, no assets, all code",
+  "created_at": "2026-11-13T14:45:46.000Z",
+  "likes": 303,
+  "reposts": 12,
+  "views": 12431,
+  "post_url": "https://x.com/LexnLin/status/2121253191748669705",
+  "text": "I built an open world RPG game demo with Fable 5.2\n\nno assets were used! everything you see here is made with code https://t.co/8tvccuWExt",
+  "links": [
+   "https://unsung-vale.vercel.app/",
+   "https://github.com/Leonxlnx/unsung-vale"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2121253193963213158"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2121249406418595840/img/EH8_GxVWW9rJ92Oc.jpg",
+    "video": "https://video.twimg.com/amplify_video/2121249406418595840/vid/avc1/3840x2160/xPQ6MPyf9RMPPf-2.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2118860490734707053",
+  "category": "Web/Interactive",
+  "title": "AI notes landing page in one prompt with TasteSkill, Opus 5.5 medium",
+  "created_at": "2026-11-07T00:18:02.000Z",
+  "likes": 301,
+  "reposts": 7,
+  "views": 12393,
+  "post_url": "https://x.com/LexnLin/status/2118860490734707053",
+  "text": "This website was made with Opus 5.5 medium(!) in one prompt using a new version of TasteSkill I've been working on.\n\nthe prompt was ONLY\n\"I need a landing page for my ai note taking app, use the design-taste-frontend skill\"\n\n(result without the skill is in the replies + links) https://t.co/QFaX4Fffmp https://t.co/BEOQbUTVy8",
+  "links": [
+   "https://claude.ai/artifact/V7aB8sBFuFFXjDiCNMpYWh?sk=iCNiHj0WhbLfGKk73Mjgrw",
+   "https://claude.ai/artifact/4UFyhgGEnZZUmwTJJe9XCd?sk=u7LUv0mC5xLoSzs-qBMdlQ"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2118860498699764104",
+   "https://x.com/i/status/2118860495214276638",
+   "https://x.com/i/status/2118742758282178956"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2118857873153294336/img/9MbbsO6fSJKI_iAU.jpg",
+    "video": "https://video.twimg.com/amplify_video/2118857873153294336/vid/avc1/1692x988/jvYD80eqpGi9v_sg.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2121668667389730990",
+  "category": "Other",
+  "title": "JavaScript painting by Fable 5.2",
+  "created_at": "2026-11-14T18:16:43.000Z",
+  "likes": 287,
+  "reposts": 7,
+  "views": 7608,
+  "post_url": "https://x.com/LexnLin/status/2121668667389730990",
+  "text": "a JavaScript painting by Claude Fable 5.2 https://t.co/SWDZRMgFXM",
+  "links": [],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HXGsiTHW8AAV70U.jpg"
+   },
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HXGsjXtW0AA-ZIi.jpg"
+   },
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HXGskOOXYAE8oo_.jpg"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2120078530889289729",
+  "category": "Other",
+  "title": "Rainy theater stills made with Fable 5.2, all code",
+  "created_at": "2026-11-10T08:58:05.000Z",
+  "likes": 282,
+  "reposts": 10,
+  "views": 6930,
+  "post_url": "https://x.com/LexnLin/status/2120078530889289729",
+  "text": "pure code, made with fable 5.2 https://t.co/YkGx1MAI0D",
+  "links": [],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HWwIHH-XgAAG8co.jpg"
+   },
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HWwIJP1XgAAnVaX.jpg"
+   },
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HWwIKwmXgAA-y3B.jpg"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2118144657557262530",
+  "category": "Web/Interactive",
+  "title": "tasteskill.dev redesign, built with TasteSkill v2.5 in one prompt, Opus 5.5",
+  "created_at": "2026-11-05T00:53:34.000Z",
+  "likes": 268,
+  "reposts": 2,
+  "views": 8334,
+  "post_url": "https://x.com/LexnLin/status/2118144657557262530",
+  "text": "https://t.co/25T9niev4R redesign is here!\n\nThanks to @itsluneri for the AWESOME design. (y'all gotta follow him, he designs a LOT of good things)\n\nAll animations and full site was then built using tasteskill v2.5 (coming out soon btw) with one prompt :) https://t.co/DaoQlSZ8Yw",
+  "links": [
+   "https://www.tasteskill.dev/"
+  ],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2118143982324555776/img/cNeg8nV9DZVGE399.jpg",
+    "video": "https://video.twimg.com/amplify_video/2118143982324555776/vid/avc1/1684x1034/12JfpcofRftzOjx_.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2116864398568374341",
+  "category": "Web/Interactive",
+  "title": "GitHub profile page",
+  "created_at": "2026-11-01T12:06:16.000Z",
+  "likes": 234,
+  "reposts": 5,
+  "views": 9700,
+  "post_url": "https://x.com/LexnLin/status/2116864398568374341",
+  "text": "I updated my github profile page :)\nhttps://t.co/mFOx071W5a https://t.co/cnJPILDfvd",
+  "links": [
+   "https://github.com/Leonxlnx"
+  ],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2116864239453233152/img/XfhPGOcylakHzjFW.jpg",
+    "video": "https://video.twimg.com/amplify_video/2116864239453233152/vid/avc1/1686x1028/CkSgUElhGxALfH3B.mp4"
+   }
+  ],
+  "tools": []
+ },
+ {
+  "id": "2117760169480442201",
+  "category": "Web/Interactive",
+  "title": "Cliffside living room in three.js by Opus 5.5",
+  "created_at": "2026-11-03T23:25:45.000Z",
+  "likes": 162,
+  "reposts": 10,
+  "views": 16817,
+  "post_url": "https://x.com/LexnLin/status/2117760169480442201",
+  "text": "I tried to build a pretty realistic and clean cliffside room with Opus 5.5 https://t.co/TtizeAKMvv",
+  "links": [
+   "https://github.com/Leonxlnx/casa-ocaso"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2117760171849981983",
+   "https://x.com/i/status/2117760174719107553"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2117750881215000576/img/wT0f6bHxXCYx2Lrr.jpg",
+    "video": "https://video.twimg.com/amplify_video/2117750881215000576/vid/avc1/3840x2160/Xrcd31NFypxS5_zh.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2120257009539006855",
+  "category": "Games",
+  "title": "Boxing game made with Fable 5.2",
+  "created_at": "2026-11-10T20:47:18.000Z",
+  "likes": 97,
+  "reposts": 1,
+  "views": 6822,
+  "post_url": "https://x.com/LexnLin/status/2120257009539006855",
+  "text": "This is a boxing game made with fable 5.2 https://t.co/PxVtWchOHU",
+  "links": [],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2120256610660442112/img/gIgGppHyMEVBEpuc.jpg",
+    "video": "https://video.twimg.com/amplify_video/2120256610660442112/vid/avc1/1920x1080/IwSwjCHeMJlexcgF.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ],
+  "poster": "/demos/posters/2120257009539006855.webp",
+  "posterTime": 20
+ },
+ {
+  "id": "2119966127149429093",
+  "category": "Games",
+  "title": "FEED: backrooms horror where you are the monster, made with Fable 5.2",
+  "created_at": "2026-11-10T01:31:26.000Z",
+  "likes": 95,
+  "reposts": 1,
+  "views": 6745,
+  "post_url": "https://x.com/LexnLin/status/2119966127149429093",
+  "text": "fable 5.2 made this. absolute beast\n\nthe backrooms, but instead of trying to escape, you are the monster and your task is to catch people\n\nplay it here! \nhttps://t.co/O4WoL9Boix https://t.co/nTjeVukVXC",
+  "links": [
+   "https://feed-backrooms.vercel.app/",
+   "https://github.com/Leonxlnx/feed-backrooms"
+  ],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2119959903062183936/img/7Iw53TmYQa2xxvPH.jpg",
+    "video": "https://video.twimg.com/amplify_video/2119959903062183936/vid/avc1/1280x720/X10eV4fLngmXri42.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2117391462044455132",
+  "category": "Animations/Videos",
+  "title": "Fighting scene by Opus 5.5 in 30 minutes (Rocketbox avatars, everything else code)",
+  "created_at": "2026-11-02T23:00:38.000Z",
+  "likes": 71,
+  "reposts": 2,
+  "views": 5062,
+  "post_url": "https://x.com/LexnLin/status/2117391462044455132",
+  "text": "Fighting scene made with Opus 5.5 and a 30min time limit\n\n(this time it edited a MakeHuman base for the bodies, everything else is code) https://t.co/yuHUnzV0aB",
+  "links": [],
+  "related_posts": [
+   "https://x.com/i/status/2117391920435487188"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2117390846748213248/img/dEPjEa9VZ6ywRL66.jpg",
+    "video": "https://video.twimg.com/amplify_video/2117390846748213248/vid/avc1/1920x1080/bGg-o2iGkAPkVYLM.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2121934071429468543",
+  "category": "Games",
+  "title": "Valle Morta: FPS in a war-ruined alpine valley by Fable 5.2, all code",
+  "created_at": "2026-11-15T11:51:20.000Z",
+  "likes": 22,
+  "reposts": 1,
+  "views": 831,
+  "post_url": "https://x.com/LexnLin/status/2121934071429468543",
+  "text": "I built this fps with Fable 5.2 over the last 2 days\n\nno pre-made 3d assets were used! everything you see is made with code\n\nhttps://t.co/1HdvIY3qDk https://t.co/PqXLWY8ygz",
+  "links": [
+   "https://valle-morta.vercel.app/",
+   "https://github.com/Leonxlnx/valle-morta"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2121934075229303036",
+   "https://x.com/i/status/2121934078408597998"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2121932247418781696/img/_s7lHFdK3-GkQAxM.jpg",
+    "video": "https://video.twimg.com/amplify_video/2121932247418781696/vid/avc1/3840x2160/pD4ekVQZGGrOVgAh.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
  }
 ]
