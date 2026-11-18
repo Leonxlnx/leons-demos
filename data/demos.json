@@ -2750,5 +2750,341 @@
   "tools": [
    "Claude"
   ]
+ },
+ {
+  "id": "2122570437628760348",
+  "category": "Other",
+  "title": "Drawings made with Fable 5.2",
+  "created_at": "2026-11-17T06:00:02.000Z",
+  "likes": 588,
+  "reposts": 13,
+  "views": 15775,
+  "post_url": "https://x.com/LexnLin/status/2122570437628760348",
+  "text": "Claude Fable 5.2 and its drawings https://t.co/neqibYYJtn",
+  "links": [],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HXR-5K-XIAAFGPq.jpg"
+   },
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HXR-7dIXwAA7NRn.jpg"
+   },
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HXR-74RWcAAC3Mf.jpg"
+   },
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HXR-9NeWgAA15Ez.jpg"
+   },
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HXR-9wAXEAArD5U.jpg"
+   },
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HXR-_EkXQAAPYve.jpg"
+   },
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HXR-_lfWYAAuG9c.jpg"
+   },
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HXR_AAkWYAAAXdO.jpg"
+   },
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HXR_AdmXMAAciPg.jpg"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2122253351241027714",
+  "category": "Other",
+  "title": "JavaScript still life made with Fable 5.2",
+  "created_at": "2026-11-16T09:00:03.000Z",
+  "likes": 506,
+  "reposts": 9,
+  "views": 19853,
+  "post_url": "https://x.com/LexnLin/status/2122253351241027714",
+  "text": "fable 5.2 is the best image model for creative art, this is javascript https://t.co/EHT45LxwC1",
+  "links": [],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HXNHFlzWkAATVdo.jpg"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2122359035751989341",
+  "category": "Web/Interactive",
+  "title": "Walking apartment block in three.js by Fable 5.2, no assets",
+  "created_at": "2026-11-16T16:00:00.000Z",
+  "likes": 415,
+  "reposts": 18,
+  "views": 18211,
+  "post_url": "https://x.com/LexnLin/status/2122359035751989341",
+  "text": "moving apartment with Fable 5.2 https://t.co/axGn5teVa4",
+  "links": [
+   "https://github.com/Leonxlnx/walking-block"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2122359036372791396",
+   "https://x.com/i/status/2122359036079157677"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2122327938720784384/img/OktRTUn1aupvubwf.jpg",
+    "video": "https://video.twimg.com/amplify_video/2122327938720784384/vid/avc1/1920x1080/u-NghamtAaLuL6ly.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ],
+  "poster": "/demos/posters/2122359035751989341.webp",
+  "posterTime": 10
+ },
+ {
+  "id": "2122823164635881853",
+  "category": "Animations/Videos",
+  "title": "Mechanical moon in Blender by Fable 5.2, no pre-made assets",
+  "created_at": "2026-11-17T22:44:17.000Z",
+  "likes": 349,
+  "reposts": 17,
+  "views": 8191,
+  "post_url": "https://x.com/LexnLin/status/2122823164635881853",
+  "text": "A mechanical moon in Blender by Fable 5.2 https://t.co/PwYogeJVxh",
+  "links": [
+   "https://github.com/Leonxlnx/mechanical-moon"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2122823166447808564"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2122821966499311616/img/_DoB2mldEtMpLilH.jpg",
+    "video": "https://video.twimg.com/amplify_video/2122821966499311616/vid/avc1/1920x1080/smDkdZ4qD-TB7W9B.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ],
+  "poster": "/demos/posters/2122823164635881853.webp",
+  "posterTime": 35
+ },
+ {
+  "id": "2122112228522623459",
+  "category": "Animations/Videos",
+  "title": "Castle on a cliff, 9k lines of Blender Python by Fable 5.2, no assets",
+  "created_at": "2026-11-15T23:39:16.000Z",
+  "likes": 326,
+  "reposts": 11,
+  "views": 15304,
+  "post_url": "https://x.com/LexnLin/status/2122112228522623459",
+  "text": "I asked Fable 5.2 to build a castle on a cliff \n\nno pre-made 3D assets or textures were used, it's roughly 9k lines of python in Blender https://t.co/A8xKAdZ3t1",
+  "links": [
+   "https://github.com/Leonxlnx/castle-cinematic"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2122112232926675206",
+   "https://x.com/i/status/2122112236881940823"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2122110502281134081/img/3XH1qKMwl3h_INgk.jpg",
+    "video": "https://video.twimg.com/amplify_video/2122110502281134081/vid/avc1/3840x2160/Oz48CbKmSwgFShHt.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ],
+  "poster": "/demos/posters/2122112228522623459.webp",
+  "posterTime": 15
+ },
+ {
+  "id": "2122484769501937787",
+  "category": "Web/Interactive",
+  "title": "Sable: ADE for Claude Code and Codex, built in 3 prompts with Fable 5.2 and Opus 5.5",
+  "created_at": "2026-11-17T00:19:37.000Z",
+  "likes": 238,
+  "reposts": 6,
+  "views": 15587,
+  "post_url": "https://x.com/LexnLin/status/2122484769501937787",
+  "text": "Little experiment with Fable 5.2 and Opus 5.5: \nCreating a working ADE for Claude Code and Codex with good UI/UX in 3 prompts\n\nThis is the result!\nhttps://t.co/Y16OQyMOLW https://t.co/TzTsrHptHE",
+  "links": [
+   "https://github.com/Leonxlnx/sable"
+  ],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2122484183305990144/img/4lkjRu92eGQF38az.jpg",
+    "video": "https://video.twimg.com/amplify_video/2122484183305990144/vid/avc1/1920x1080/iChHKFeVS1C6Gxlj.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ],
+  "poster": "/demos/posters/2122484769501937787.webp",
+  "posterTime": 25
+ },
+ {
+  "id": "2122698775831671258",
+  "category": "Animations/Videos",
+  "title": "A drop of ink turns into a dragon, Blender film by Fable 5.2",
+  "created_at": "2026-11-17T14:30:00.000Z",
+  "likes": 212,
+  "reposts": 2,
+  "views": 10326,
+  "post_url": "https://x.com/LexnLin/status/2122698775831671258",
+  "text": "a drop of ink turns into a dragon, made with fable 5.2 https://t.co/N70ZcWxvXc",
+  "links": [
+   "https://github.com/Leonxlnx/ink-dragon"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2122698776418873452"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2122459630492123136/img/o6i9jJZi3EN6opHo.jpg",
+    "video": "https://video.twimg.com/amplify_video/2122459630492123136/vid/avc1/1920x1080/chpU2AoJIl1Te86H.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2122056542778535977",
+  "category": "Web/Interactive",
+  "title": "Beautiful Wonderland: painted three.js world by Fable 5.2",
+  "created_at": "2026-11-15T19:58:00.000Z",
+  "likes": 145,
+  "reposts": 5,
+  "views": 6653,
+  "post_url": "https://x.com/LexnLin/status/2122056542778535977",
+  "text": "Art with Claude Fable 5.2 https://t.co/22dcLfDu4i",
+  "links": [
+   "https://github.com/Leonxlnx/beautiful-wonderland"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2122056546695999812"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2122052717719781376/img/0LBIIFT1BNu-2kd8.jpg",
+    "video": "https://video.twimg.com/amplify_video/2122052717719781376/vid/avc1/1920x1080/qdj_kDvq0lZGWjFR.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2122917717279731886",
+  "category": "Other",
+  "title": "Detailed paintings made with Fable 5.2",
+  "created_at": "2026-11-18T05:00:00.000Z",
+  "likes": 82,
+  "reposts": 2,
+  "views": 2525,
+  "post_url": "https://x.com/LexnLin/status/2122917717279731886",
+  "text": "I love the details Fable 5.2 adds to its paintings https://t.co/9QbJTkuH2y",
+  "links": [],
+  "related_posts": [],
+  "media": [
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HXXgyhZXAAAjOjW.jpg"
+   },
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HXXgyhbWAAACDzt.jpg"
+   },
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HXXgyhYWkAAUWGW.jpg"
+   },
+   {
+    "type": "photo",
+    "image": "https://pbs.twimg.com/media/HXXgyhpWIAAeJwS.jpg"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ]
+ },
+ {
+  "id": "2123156510339465525",
+  "category": "Animations/Videos",
+  "title": "Horsetail Firefall in three.js by GPT 6.2 Astra, all code",
+  "created_at": "2026-11-18T20:48:53.000Z",
+  "likes": 44,
+  "reposts": 1,
+  "views": 1863,
+  "post_url": "https://x.com/LexnLin/status/2123156510339465525",
+  "text": "A firefall build with GPT 6.2 Astra. (all code) https://t.co/9J3hCS2EC8",
+  "links": [
+   "https://github.com/Leonxlnx/horsetail-firefall"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2123156513321799795"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2123148879977668610/img/ZBNxPqINy-wNZ0M6.jpg",
+    "video": "https://video.twimg.com/amplify_video/2123148879977668610/vid/avc1/1920x1080/LJZIsnerReF_LiGX.mp4"
+   }
+  ],
+  "tools": [
+   "Codex"
+  ]
+ },
+ {
+  "id": "2123174205306908806",
+  "category": "Animations/Videos",
+  "title": "Koi pond inside a keyboard key, Blender film by Fable 5.2",
+  "created_at": "2026-11-18T21:59:11.000Z",
+  "likes": 16,
+  "reposts": 0,
+  "views": 422,
+  "post_url": "https://x.com/LexnLin/status/2123174205306908806",
+  "text": "Fable 5.2 built a koi pond inside a keyboard key\n\nmade using Blender https://t.co/01Oaua5IQd",
+  "links": [
+   "https://github.com/Leonxlnx/koi-pond-keycap"
+  ],
+  "related_posts": [
+   "https://x.com/i/status/2123174208121557186"
+  ],
+  "media": [
+   {
+    "type": "video",
+    "image": "https://pbs.twimg.com/amplify_video_thumb/2123173961248772096/img/lDA-R03VFZhnt1Fi.jpg",
+    "video": "https://video.twimg.com/amplify_video/2123173961248772096/vid/avc1/1920x1080/fbSZ-p_9TO_bZB0-.mp4"
+   }
+  ],
+  "tools": [
+   "Claude"
+  ],
+  "poster": "/demos/posters/2123174205306908806.webp",
+  "posterTime": 15
  }
 ]
